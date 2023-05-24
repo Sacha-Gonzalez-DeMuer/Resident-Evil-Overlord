@@ -1,0 +1,14 @@
+﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
+  PrototypingScene.cpp
+     Creating library D:\DAE_SEM4\Graphics Prog 2\OverlordEngine\_build\Release\OverlordProject.lib and object D:\DAE_SEM4\Graphics Prog 2\OverlordEngine\_build\Release\OverlordProject.exp
+  Generating code
+  5 of 7041 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    6 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\OverlordEngine\_build\Release\OverlordProject.exe
+  0 File(s) copied
+  0 File(s) copied
+  0 File(s) copied
+  0 File(s) copied
+  0 File(s) copied

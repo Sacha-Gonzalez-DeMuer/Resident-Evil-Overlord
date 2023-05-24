@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MainGame.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Materials\ColorMaterial.cpp" />
+    <ClCompile Include="Prefabs\SpherePrefab.cpp" />
+    <ClCompile Include="Prefabs\TorusPrefab.cpp" />
+    <ClCompile Include="Prefabs\CubePrefab.cpp" />
+    <ClCompile Include="Scenes\Week 3\ComponentTestScene.cpp" />
+    <ClCompile Include="Prefabs\Player.cpp" />
+    <ClCompile Include="Prefabs\PongGameSettings.cpp" />
+    <ClCompile Include="Scenes\Week 3\PongScene.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\Week 3\MinionScene.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\Week 4\ModelTestScene.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Materials\DiffuseMaterial.cpp" />
+    <ClCompile Include="Scenes\Week 4\UberMaterialScene.cpp" />
+    <ClCompile Include="Materials\UberMaterial.cpp" />
+    <ClCompile Include="Materials\SpikyMaterial.cpp" />
+    <ClCompile Include="Scenes\Week 4\SpikyScene.cpp" />
+    <ClCompile Include="Prefabs\BoneObject.cpp" />
+    <ClCompile Include="Scenes\Week 5\SoftwareSkinningScene_1.cpp" />
+    <ClCompile Include="Scenes\Week 5\SoftwareSkinningScene_2.cpp" />
+    <ClCompile Include="Scenes\Week 5\SoftwareSkinningScene_3.cpp" />
+    <ClCompile Include="Scenes\Week 4\SpriteTestScene.cpp" />
+    <ClCompile Include="Scenes\Week 6\HardwareSkinningScene.cpp" />
+    <ClCompile Include="Materials\DiffuseMaterial_Skinned.cpp" />
+    <ClCompile Include="Scenes\Week 7\FontTestScene.cpp" />
+    <ClCompile Include="Scenes\Week 7\PickingScene.cpp" />
+    <ClCompile Include="Prefabs\Character.cpp" />
+    <ClCompile Include="Scenes\Week 7\CharacterScene.cpp" />
+    <ClCompile Include="Scenes\ResidentEvil\PrototypingScene.cpp" />
+    <ClCompile Include="Materials\Shadow\DiffuseMaterial_Shadow.cpp" />
+    <ClCompile Include="Materials\Shadow\DiffuseMaterial_Shadow_Skinned.cpp" />
+    <ClCompile Include="Scenes\Week 8\ShadowMappingScene.cpp" />
+    <ClCompile Include="Scenes\Week 9\ParticleScene.cpp" />
+    <ClCompile Include="Utils\StaticMeshFactory.cpp" />
+    <ClCompile Include="Utils\FbxLoader.cpp" />
+    <ClCompile Include="Scenes\Week 11\DeferredRenderingScene.cpp" />
+    <ClCompile Include="Materials\Deferred\BasicMaterial.cpp" />
+    <ClCompile Include="Materials\Deferred\BasicMaterial_Deferred.cpp" />
+    <ClCompile Include="ResidentEvil\Camera\ReCamera.cpp" />
+    <ClCompile Include="ResidentEvil\Camera\ReCameraManager.cpp" />
+    <ClCompile Include="ResidentEvil\Player\RePlayerController.cpp" />
+    <ClCompile Include="ResidentEvil\Camera\CameraSwitch.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MainGame.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Materials\ColorMaterial.h" />
+    <ClInclude Include="Prefabs\SpherePrefab.h" />
+    <ClInclude Include="Prefabs\TorusPrefab.h" />
+    <ClInclude Include="Prefabs\CubePrefab.h" />
+    <ClInclude Include="Scenes\Week 3\ComponentTestScene.h" />
+    <ClInclude Include="Prefabs\Player.h" />
+    <ClInclude Include="Prefabs\PongGameSettings.h" />
+    <ClInclude Include="Scenes\Week 3\PongScene.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\Week 3\MinionScene.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\Week 4\ModelTestScene.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="FilePaths.h" />
+    <ClInclude Include="Materials\DiffuseMaterial.h" />
+    <ClInclude Include="Scenes\Week 4\UberMaterialScene.h" />
+    <ClInclude Include="Materials\UberMaterial.h" />
+    <ClInclude Include="Materials\SpikyMaterial.h" />
+    <ClInclude Include="Scenes\Week 4\SpikyScene.h" />
+    <ClInclude Include="Prefabs\BoneObject.h" />
+    <ClInclude Include="Scenes\Week 5\SoftwareSkinningScene_1.h" />
+    <ClInclude Include="Scenes\Week 5\SoftwareSkinningScene_2.h" />
+    <ClInclude Include="Scenes\Week 5\SoftwareSkinningScene_3.h" />
+    <ClInclude Include="Scenes\Week 4\SpriteTestScene.h" />
+    <ClInclude Include="Scenes\Week 6\HardwareSkinningScene.h" />
+    <ClInclude Include="Materials\DiffuseMaterial_Skinned.h" />
+    <ClInclude Include="Scenes\Week 7\CharacterScene.h" />
+    <ClInclude Include="Scenes\Week 7\FontTestScene.h" />
+    <ClInclude Include="Scenes\Week 7\PickingScene.h" />
+    <ClInclude Include="Prefabs\Character.h" />
+    <ClInclude Include="Scenes\ResidentEvil\PrototypingScene.h" />
+    <ClInclude Include="Materials\Shadow\DiffuseMaterial_Shadow.h" />
+    <ClInclude Include="Materials\Shadow\DiffuseMaterial_Shadow_Skinned.h" />
+    <ClInclude Include="Scenes\Week 8\ShadowMappingScene.h" />
+    <ClInclude Include="Scenes\Week 9\ParticleScene.h" />
+    <ClInclude Include="Utils\StaticMeshFactory.h" />
+    <ClInclude Include="Utils\FbxLoader.h" />
+    <ClInclude Include="Scenes\Week 11\DeferredRenderingScene.h" />
+    <ClInclude Include="Materials\Deferred\BasicMaterial.h" />
+    <ClInclude Include="Materials\Deferred\BasicMaterial_Deferred.h" />
+    <ClInclude Include="ResidentEvil\Camera\ReCamera.h" />
+    <ClInclude Include="ResidentEvil\Camera\ReCameraManager.h" />
+    <ClInclude Include="ResidentEvil\Player\RePlayerController.h" />
+    <ClInclude Include="ResidentEvil\Camera\CameraSwitch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Scenes">
+      <UniqueIdentifier>{e9c3774c-bfeb-4620-ab37-3ed997aa3199}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Textures\TestSprite.jpg" />
+  </ItemGroup>
+</Project>
