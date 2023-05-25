@@ -6,12 +6,12 @@
 //#define W4
 //#define W5
 //#define W6
-//#define W7
+#define W7
 //#define W8
 //#define W9
 //#define W10
  //#define W11 //Deferred Rendering
-#define EXAM
+//#define EXAM
 
 /*MILESTONE Content*/
 //#define MILESTONE_1
@@ -135,8 +135,8 @@ void MainGame::Initialize()
 
 #ifdef W7
 	SceneManager::Get()->AddGameScene(new FontTestScene());
-	SceneManager::Get()->AddGameScene(new PickingScene());
-	SceneManager::Get()->AddGameScene(new CharacterScene());
+	//SceneManager::Get()->AddGameScene(new PickingScene());
+	//SceneManager::Get()->AddGameScene(new CharacterScene());
 #endif
 
 #ifdef W8

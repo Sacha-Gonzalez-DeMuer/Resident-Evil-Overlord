@@ -1,5 +1,4 @@
 #pragma once
-
 #include <fbxsdk.h>
 namespace dae
 {

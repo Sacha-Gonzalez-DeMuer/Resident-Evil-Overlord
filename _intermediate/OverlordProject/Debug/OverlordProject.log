@@ -1,5 +1,63 @@
 ﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
+  stdafx.cpp
+cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
   RePlayerAnimController.cpp
+  MainHallScene.cpp
+  InteractableComponent.cpp
+  IInteractable.cpp
+  PostGrayscale.cpp
+  PostBlur.cpp
+  PostAmbientOcclusion.cpp
+  ReDoor.cpp
+  CameraSwitch.cpp
+  BasicMaterial.cpp
+  BasicMaterial_Deferred.cpp
+  DiffuseMaterial_Skinned.cpp
+  DiffuseMaterial_Shadow.cpp
+  DiffuseMaterial_Shadow_Skinned.cpp
+  BoneObject.cpp
+  DiffuseMaterial.cpp
+  Character.cpp
+  ReCamera.cpp
+  ReCameraManager.cpp
+  RePlayerController.cpp
+  Generating Code...
+  Compiling...
+  DiningHallScene.cpp
+  PostProcessingScene.cpp
+  DeferredRenderingScene.cpp
+  ModelTestScene.cpp
+  PongGameSettings.cpp
+  Player.cpp
+  PongScene.cpp
+  ComponentTestScene.cpp
+  CubePrefab.cpp
+  SpherePrefab.cpp
+  TorusPrefab.cpp
+  ColorMaterial.cpp
+  MinionScene.cpp
+  SpikyMaterial.cpp
+  SpikyScene.cpp
+  SoftwareSkinningScene_1.cpp
+  SoftwareSkinningScene_2.cpp
+  SoftwareSkinningScene_3.cpp
+  SpriteTestScene.cpp
+  HardwareSkinningScene.cpp
+  Generating Code...
+  Compiling...
+  CharacterScene.cpp
+  FontTestScene.cpp
+  PickingScene.cpp
+  ShadowMappingScene.cpp
+  ParticleScene.cpp
+  FbxLoader.cpp
+  StaticMeshFactory.cpp
+  Main.cpp
+  MainGame.cpp
+  UberMaterialScene.cpp
+  UberMaterial.cpp
+  Generating Code...
+     Creating library D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.lib and object D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.exp
   OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.exe
   0 File(s) copied
   0 File(s) copied

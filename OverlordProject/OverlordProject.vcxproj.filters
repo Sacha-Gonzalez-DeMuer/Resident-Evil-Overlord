@@ -42,7 +42,6 @@
     <ClCompile Include="Scenes\Week 8\ShadowMappingScene.cpp" />
     <ClCompile Include="Scenes\Week 9\ParticleScene.cpp" />
     <ClCompile Include="Utils\StaticMeshFactory.cpp" />
-    <ClCompile Include="Utils\FbxLoader.cpp" />
     <ClCompile Include="Scenes\Week 11\DeferredRenderingScene.cpp" />
     <ClCompile Include="Materials\Deferred\BasicMaterial.cpp" />
     <ClCompile Include="Materials\Deferred\BasicMaterial_Deferred.cpp" />
@@ -59,6 +58,7 @@
     <ClCompile Include="ResidentEvil\World\InteractableComponent.cpp" />
     <ClCompile Include="Scenes\ResidentEvil\MainHallScene.cpp" />
     <ClCompile Include="ResidentEvil\Player\RePlayerAnimController.cpp" />
+    <ClCompile Include="Utils\FbxLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -102,7 +102,6 @@
     <ClInclude Include="Scenes\Week 8\ShadowMappingScene.h" />
     <ClInclude Include="Scenes\Week 9\ParticleScene.h" />
     <ClInclude Include="Utils\StaticMeshFactory.h" />
-    <ClInclude Include="Utils\FbxLoader.h" />
     <ClInclude Include="Scenes\Week 11\DeferredRenderingScene.h" />
     <ClInclude Include="Materials\Deferred\BasicMaterial.h" />
     <ClInclude Include="Materials\Deferred\BasicMaterial_Deferred.h" />
@@ -119,6 +118,7 @@
     <ClInclude Include="ResidentEvil\World\InteractableComponent.h" />
     <ClInclude Include="Scenes\ResidentEvil\MainHallScene.h" />
     <ClInclude Include="ResidentEvil\Player\RePlayerAnimController.h" />
+    <ClInclude Include="Utils\FbxLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scenes">

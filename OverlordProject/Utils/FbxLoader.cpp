@@ -8,6 +8,7 @@
 #include "ResidentEvil/Camera/ReCamera.h"
 #include "ResidentEvil/Camera/ReCameraManager.h"
 
+//TODO: remove this
 #pragma warning (disable: 4129)
 #if _DEBUG
 #pragma comment(lib, "D:\\DAE_SEM4\\Graphics Prog 2\\OverlordEngine\\3rdParty\\FBX SDK\\2020.0.1\\lib\\vs2017\\x64\\Debug\\libfbxsdk-md.lib")
@@ -53,7 +54,7 @@ namespace dae
 	FbxLoader::~FbxLoader()
 	{
 		m_pFbxManager->Destroy();
-		//m_pFbxScene->Destroy();
+		m_pFbxScene->Destroy();
 	}
 
 	// converts loaded fbx scene to overlord scene (scene loaded in constructor)
@@ -392,6 +393,7 @@ what is the rotation matrix to convert from vector V1 to V2*/
 		pIOsettings->SetBoolProp(IMP_CAMERA, true);
 		pIOsettings->SetBoolProp(IMP_LIGHT, true);
 		m_pFbxManager->SetIOSettings(pIOsettings);
+		pIOsettings->Destroy();
 
 		return true;
 	}
