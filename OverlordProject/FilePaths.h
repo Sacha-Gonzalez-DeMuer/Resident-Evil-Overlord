@@ -30,14 +30,15 @@ namespace FilePath
 	const std::wstring SOLDIER_BODY_NORMAL{ L"ResidentEvil/Characters/ChrisRedfield/Mixamo/Soldier_body1_normal.png" };
 	const std::wstring SOLDIER_HEAD_DIFFUSE{ L"ResidentEvil/Characters/ChrisRedfield/Mixamo/Soldier_head6_diffuse.png " };
 	const std::wstring SOLDIER_HEAD_SPEC{ L"ResidentEvil/Characters/ChrisRedfield/Mixamo/Soldier_head6_specular.png" };
-	const std::wstring SOLDIER_WALKING_OVM{ L"ResidentEvil/Characters/ChrisRedfield/Mixamo/Soldier_Walking.ovm" };
+	const std::wstring SOLDIER_ANIMS_OVM{ L"ResidentEvil/Characters/ChrisRedfield/Mixamo/Soldier_AllAnims.ovm" };
 
 	// Dining Hall
 	const std::wstring FOLDER_ENV_DINING{ L"ResidentEvil/Environments/DiningHall/FBX/" };
 	const std::wstring ENV_DINING_FBX{ L"ResidentEvil/Environments/DiningHall/FBX/DiningHall.fbx" };
 	const std::wstring ENV_DINING_OVM{ L"ResidentEvil/Environments/DiningHall/FBX/DiningHall.ovm" };
-	const std::wstring ENV_DINING_NAVMESH{ L"ResidentEvil/Environments/DiningHall/DiningHall_NavMesh.ovm" };
+	const std::wstring ENV_DINING_NAVMESH{ L"ResidentEvil/Environments/DiningHall/DiningHall_NavMesh.ovpt" };
 
 	// Main Hall
 	const std::wstring FOLDER_ENV_MAINHALL{ L"ResidentEvil/Environments/MainHall/" };
+	const std::wstring ENV_MAIN_FBX{ L"ResidentEvil/Environments/MainHall/MainHall.fbx" };
 }

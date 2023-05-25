@@ -44,6 +44,23 @@ namespace StringUtil
 		return utf8_decode(std::string{ str });
 	}
 
+
+	inline char* ConvertWStringToChar(std::wstring str) /* courtesy of chatGPT */
+	{
+		// Get the length of the converted string
+		int length = WideCharToMultiByte(CP_UTF8, 0, str.c_str(), -1, NULL, 0, NULL, NULL);
+
+		// Allocate memory for the converted string
+		char* buffer = new char[length];
+
+		// Convert the string
+		WideCharToMultiByte(CP_UTF8, 0, str.c_str(), -1, buffer, length, NULL, NULL);
+
+		// Return the converted string
+		return buffer;
+	}
+
+
 	//inline std::wstring utf8_decode(LPCSTR str)
 	//{
 	//	return utf8_decode(std::string(str));

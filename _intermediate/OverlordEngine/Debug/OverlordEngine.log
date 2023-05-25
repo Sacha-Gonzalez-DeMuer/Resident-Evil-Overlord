@@ -25,6 +25,7 @@ cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
   Compiling...
   DeferredRenderer.cpp
   QuadRenderer.cpp
+  Delegate.cpp
   DebugRenderer.cpp
   ShadowMapRenderer.cpp
   SpriteRenderer.cpp
@@ -42,9 +43,9 @@ cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
   ModelAnimator.cpp
   ParticleMaterial.cpp
   PostProcessingMaterial.cpp
-  RenderTarget.cpp
   Generating Code...
   Compiling...
+  RenderTarget.cpp
   ShadowMapMaterial.cpp
   SpriteFont.cpp
   TextureData.cpp
@@ -61,4 +62,4 @@ cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
   Utils.cpp
   VertexHelper.cpp
   Generating Code...
-  OverlordEngine.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\OverlordEngine\OverlordEngine\_build\Debug\OverlordEngine.lib
+  OverlordEngine.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\OverlordEngine\_build\Debug\OverlordEngine.lib

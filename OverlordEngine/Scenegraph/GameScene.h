@@ -29,7 +29,6 @@ public:
 	const SceneContext& GetSceneContext() const { return m_SceneContext; }
 	SceneSettings& GetSceneSettings() { return m_SceneContext.settings; }
 	CameraComponent* GetActiveCamera() const { return m_pActiveCamera; }
-	CameraComponent* GetDefaultCamera() const { return m_pDefaultCamera; }
 
 	void AddPostProcessingEffect(PostProcessingMaterial* pMaterial);
 	void AddPostProcessingEffect(UINT materialId);

@@ -64,6 +64,14 @@ void SceneManager::NextScene()
 	}
 }
 
+void SceneManager::SetScene(const int index)
+{
+	if (index >= 0 && index < static_cast<int>(m_pScenes.size()))
+	{
+		m_NewActiveScene = m_pScenes[index];
+	}
+}
+
 void SceneManager::PreviousScene()
 {
 	const UINT numScenes = static_cast<UINT>(m_pScenes.size());

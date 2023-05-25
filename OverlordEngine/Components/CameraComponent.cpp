@@ -127,7 +127,6 @@ GameObject* CameraComponent::Pick(CollisionGroup ignoreGroups) const
 	XMVECTOR nearPointWorld = XMVector3TransformCoord(nearPointV, XMLoadFloat4x4(&viewProjectionInv));
 	XMVECTOR farPointWorld = XMVector3TransformCoord(farPointV, XMLoadFloat4x4(&viewProjectionInv));
 
-	// raycast from near to far
 	PxQueryFilterData filterData{};
 	filterData.data.word0 = ~UINT(ignoreGroups);
 

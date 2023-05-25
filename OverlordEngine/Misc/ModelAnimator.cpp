@@ -93,7 +93,7 @@ void ModelAnimator::SetAnimation(const std::wstring& clipName)
 
 	//	Call Reset
 	//	Log a warning with an appropriate message
-	Reset(false);
+	Reset(false);	
 	Logger::LogWarning(L"ModelAnimator::SetAnimation(const std::wstring& clipName) > clipName is not found in the m_AnimationClips vector");
 }
 

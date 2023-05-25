@@ -1,54 +1,6 @@
 ﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
-  stdafx.cpp
-cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
-  Main.cpp
-  MainGame.cpp
-  ColorMaterial.cpp
-  BasicMaterial.cpp
-  BasicMaterial_Deferred.cpp
-  DiffuseMaterial.cpp
-  DiffuseMaterial_Skinned.cpp
-  DiffuseMaterial_Shadow.cpp
-  DiffuseMaterial_Shadow_Skinned.cpp
-  SpikyMaterial.cpp
-  UberMaterial.cpp
-  BoneObject.cpp
-  Character.cpp
-  CubePrefab.cpp
-  Player.cpp
-  PongGameSettings.cpp
-  SpherePrefab.cpp
-  TorusPrefab.cpp
-  CameraSwitch.cpp
-  CameraVolume.cpp
-  Generating Code...
-  Compiling...
-  CameraVolumeManager.cpp
-  PlayerController.cpp
-  PrototypingScene.cpp
-  DeferredRenderingScene.cpp
-  ComponentTestScene.cpp
-  MinionScene.cpp
-  PongScene.cpp
-  ModelTestScene.cpp
-  SpikyScene.cpp
-  SpriteTestScene.cpp
-  UberMaterialScene.cpp
-  SoftwareSkinningScene_1.cpp
-  SoftwareSkinningScene_2.cpp
-  SoftwareSkinningScene_3.cpp
-  HardwareSkinningScene.cpp
-  CharacterScene.cpp
-  FontTestScene.cpp
-  PickingScene.cpp
-  ShadowMappingScene.cpp
-  ParticleScene.cpp
-  Generating Code...
-  Compiling...
-  FbxLoader.cpp
-  StaticMeshFactory.cpp
-  Generating Code...
-  OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\OverlordEngine\_build\Debug\OverlordProject.exe
+  RePlayerAnimController.cpp
+  OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.exe
   0 File(s) copied
   0 File(s) copied
   0 File(s) copied

@@ -65,7 +65,8 @@
 #endif
 
 #ifdef EXAM
-#include "Scenes/ResidentEvil/PrototypingScene.h"
+#include "Scenes/ResidentEvil/DiningHallScene.h"
+#include "Scenes/ResidentEvil/MainHallScene.h"
 #endif
 
 #ifdef MILESTONE_1
@@ -155,7 +156,8 @@ void MainGame::Initialize()
 #endif
 
 #ifdef EXAM
-	SceneManager::Get()->AddGameScene(new PrototypingScene());
+	SceneManager::Get()->AddGameScene(new DiningHallScene());
+	SceneManager::Get()->AddGameScene(new MainHallScene());
 #endif
 
 #ifdef MILESTONE_1

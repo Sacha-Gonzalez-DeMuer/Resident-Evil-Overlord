@@ -52,7 +52,7 @@ namespace dae
 
 	FbxLoader::~FbxLoader()
 	{
-		//m_pFbxManager->Destroy();
+		m_pFbxManager->Destroy();
 		//m_pFbxScene->Destroy();
 	}
 
@@ -79,7 +79,7 @@ namespace dae
 		// load fbx scene data
 		FBXSceneData scene = GetScene(m_pFbxScene->GetRootNode());
 
-		// failed to support cameras :(
+		// failed to support cameras :
 		//for (const auto& cam : scene.cameras)
 		//	ConvertToOverlord(*cam, root.GetScene());
 
@@ -87,6 +87,12 @@ namespace dae
 		sceneContext.useDeferredRendering
 			? MaterialToOverlord_Deferred(scene.fbxMaterials, *ovmModel, fbxFolderPath)
 			: MaterialToOverlord_Forward(scene.fbxMaterials, *ovmModel, fbxFolderPath);
+	}
+
+	void FbxLoader::LoadLightsToOverlord(SceneContext& sceneContext)
+	{
+		FBXSceneData scene = GetScene(m_pFbxScene->GetRootNode());
+		AddLightsToOverlord(scene.lights, sceneContext);
 	}
 
 	void AddOffset(XMFLOAT4& toPos, XMFLOAT3& offset)// TODO: remove this function

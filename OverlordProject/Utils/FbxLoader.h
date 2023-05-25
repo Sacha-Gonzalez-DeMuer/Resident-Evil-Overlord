@@ -21,6 +21,7 @@ namespace dae
 
 		// loads fbx model materials into the ovm meshfilter, adds lights and cameras to the scene
 		void LoadToOverlord(GameObject& root, SceneContext& sceneContext, const std::wstring& fbxFolderPath);
+		void LoadLightsToOverlord(SceneContext& sceneContext);
 		void SetModelOffset(const XMFLOAT3& offset) { m_ModelOffset = offset; }
 	private:
 		bool InitializeFBX();

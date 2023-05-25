@@ -4,11 +4,6 @@
 DeferredLightRenderer::~DeferredLightRenderer()
 {
 	//Release Resources
-	if (m_pSphereVB == nullptr) return;
-	SafeRelease(m_pSphereVB);
-	SafeRelease(m_pSphereIB);
-	SafeRelease(m_pConeVB);
-	SafeRelease(m_pConeIB);
 	SafeRelease(m_pReadOnlyDepthStencilView);
 }
 
@@ -54,8 +49,6 @@ void DeferredLightRenderer::DirectionalLightPass(const SceneContext& sceneContex
 		m_pDirectionalLightMaterial->SetVariable_Texture(L"gTextureSpecular", gbufferSRVs[int(DeferredRenderer::eGBufferId::Specular)]);
 		m_pDirectionalLightMaterial->SetVariable_Texture(L"gTextureNormal", gbufferSRVs[int(DeferredRenderer::eGBufferId::Normal)]);
 		m_pDirectionalLightMaterial->SetVariable_Texture(L"gTextureDepth", gbufferSRVs[int(DeferredRenderer::eGBufferId::Depth)]);
-
-		m_pVolumetricLightMaterial->SetVariable_Texture(L"gShadowMap", gbufferSRVs[int(DeferredRenderer::eGBufferId::Shadow)]);
 
 		m_pDirectionalLightMaterial->SetVariable_Matrix(L"gMatrixViewProjInv", sceneContext.pCamera->GetViewProjectionInverse());
 		m_pDirectionalLightMaterial->SetVariable_Vector(L"gEyePos", sceneContext.pCamera->GetTransform()->GetWorldPosition());
