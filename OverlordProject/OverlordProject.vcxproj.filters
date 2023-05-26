@@ -8,29 +8,12 @@
     <ClCompile Include="Prefabs\SpherePrefab.cpp" />
     <ClCompile Include="Prefabs\TorusPrefab.cpp" />
     <ClCompile Include="Prefabs\CubePrefab.cpp" />
-    <ClCompile Include="Scenes\Week 3\ComponentTestScene.cpp" />
     <ClCompile Include="Prefabs\Player.cpp" />
     <ClCompile Include="Prefabs\PongGameSettings.cpp" />
-    <ClCompile Include="Scenes\Week 3\PongScene.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Scenes\Week 3\MinionScene.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Scenes\Week 4\ModelTestScene.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Materials\DiffuseMaterial.cpp" />
-    <ClCompile Include="Scenes\Week 4\UberMaterialScene.cpp" />
     <ClCompile Include="Materials\UberMaterial.cpp" />
     <ClCompile Include="Materials\SpikyMaterial.cpp" />
-    <ClCompile Include="Scenes\Week 4\SpikyScene.cpp" />
     <ClCompile Include="Prefabs\BoneObject.cpp" />
-    <ClCompile Include="Scenes\Week 5\SoftwareSkinningScene_1.cpp" />
-    <ClCompile Include="Scenes\Week 5\SoftwareSkinningScene_2.cpp" />
-    <ClCompile Include="Scenes\Week 5\SoftwareSkinningScene_3.cpp" />
-    <ClCompile Include="Scenes\Week 4\SpriteTestScene.cpp" />
-    <ClCompile Include="Scenes\Week 6\HardwareSkinningScene.cpp" />
     <ClCompile Include="Materials\DiffuseMaterial_Skinned.cpp" />
     <ClCompile Include="Scenes\Week 7\FontTestScene.cpp" />
     <ClCompile Include="Scenes\Week 7\PickingScene.cpp" />
@@ -55,30 +38,13 @@
     <ClInclude Include="Prefabs\SpherePrefab.h" />
     <ClInclude Include="Prefabs\TorusPrefab.h" />
     <ClInclude Include="Prefabs\CubePrefab.h" />
-    <ClInclude Include="Scenes\Week 3\ComponentTestScene.h" />
     <ClInclude Include="Prefabs\Player.h" />
     <ClInclude Include="Prefabs\PongGameSettings.h" />
-    <ClInclude Include="Scenes\Week 3\PongScene.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\Week 3\MinionScene.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\Week 4\ModelTestScene.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="FilePaths.h" />
     <ClInclude Include="Materials\DiffuseMaterial.h" />
-    <ClInclude Include="Scenes\Week 4\UberMaterialScene.h" />
     <ClInclude Include="Materials\UberMaterial.h" />
     <ClInclude Include="Materials\SpikyMaterial.h" />
-    <ClInclude Include="Scenes\Week 4\SpikyScene.h" />
     <ClInclude Include="Prefabs\BoneObject.h" />
-    <ClInclude Include="Scenes\Week 5\SoftwareSkinningScene_1.h" />
-    <ClInclude Include="Scenes\Week 5\SoftwareSkinningScene_2.h" />
-    <ClInclude Include="Scenes\Week 5\SoftwareSkinningScene_3.h" />
-    <ClInclude Include="Scenes\Week 4\SpriteTestScene.h" />
-    <ClInclude Include="Scenes\Week 6\HardwareSkinningScene.h" />
     <ClInclude Include="Materials\DiffuseMaterial_Skinned.h" />
     <ClInclude Include="Scenes\Week 7\CharacterScene.h" />
     <ClInclude Include="Scenes\Week 7\FontTestScene.h" />

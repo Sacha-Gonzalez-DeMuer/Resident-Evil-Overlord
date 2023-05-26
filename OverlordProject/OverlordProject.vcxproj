@@ -56,7 +56,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\FBX SDK\2020.0.1\include;$(SolutionDir)3rdParty\FBX SDK\2020.0.1\include;$(SolutionDir)OverlordEngine;$(ProjectDir);%(AdditionalIncludeDirectories);$(SolutionDir)3rdParty\FBX SDK\2020.0.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\FBX SDK\2020.0.1\include;$(SolutionDir)OverlordEngine;$(ProjectDir);%(AdditionalIncludeDirectories);$(SolutionDir)3rdParty\FBX SDK\2020.0.1\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions> /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
@@ -65,7 +65,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
       <Profile>
       </Profile>
@@ -78,7 +78,7 @@
 xcopy "$(GP2_LIBS)\FMOD\bin\$(Configuration)\*" "$(OutDir)" /y /D 
 xcopy "$(GP2_LIBS)\vld\bin\$(Configuration)\*" "$(OutDir)" /y /D
 xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s 
-xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(ConfigurationName)" /y /D </Command>
+</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -93,7 +93,7 @@ xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configur
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\FBX SDK\2020.0.1\include;$(SolutionDir)OverlordEngine;$(ProjectDir);%(AdditionalIncludeDirectories);$(SolutionDir)3rdParty\FBX SDK\2020.0.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)OverlordEngine;$(ProjectDir);%(AdditionalIncludeDirectories);$(SolutionDir)3rdParty\FBX SDK\2020.0.1\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions> /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
@@ -105,7 +105,7 @@ xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configur
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <IgnoreSpecificDefaultLibraries>libcpmt.lib;libcmt.lib</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent />
@@ -114,7 +114,7 @@ xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configur
 xcopy "$(GP2_LIBS)\FMOD\bin\$(Configuration)\*" "$(OutDir)" /y /D 
 xcopy "$(GP2_LIBS)\vld\bin\$(Configuration)\*" "$(OutDir)" /y /D
 xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s 
-xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(ConfigurationName)" /y /D </Command>
+</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -135,23 +135,13 @@ xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configur
     <ClCompile Include="Prefabs\Character.cpp" />
     <ClCompile Include="Scenes\Week 10\PostProcessingScene.cpp" />
     <ClCompile Include="Scenes\Week 11\DeferredRenderingScene.cpp" />
-    <ClCompile Include="Scenes\Week 4\ModelTestScene.cpp" />
     <ClCompile Include="Prefabs\PongGameSettings.cpp" />
     <ClCompile Include="Prefabs\Player.cpp" />
-    <ClCompile Include="Scenes\Week 3\PongScene.cpp" />
-    <ClCompile Include="Scenes\Week 3\ComponentTestScene.cpp" />
     <ClCompile Include="Prefabs\CubePrefab.cpp" />
     <ClCompile Include="Prefabs\SpherePrefab.cpp" />
     <ClCompile Include="Prefabs\TorusPrefab.cpp" />
     <ClCompile Include="Materials\ColorMaterial.cpp" />
-    <ClCompile Include="Scenes\Week 3\MinionScene.cpp" />
     <ClCompile Include="Materials\SpikyMaterial.cpp" />
-    <ClCompile Include="Scenes\Week 4\SpikyScene.cpp" />
-    <ClCompile Include="Scenes\Week 5\SoftwareSkinningScene_1.cpp" />
-    <ClCompile Include="Scenes\Week 5\SoftwareSkinningScene_2.cpp" />
-    <ClCompile Include="Scenes\Week 5\SoftwareSkinningScene_3.cpp" />
-    <ClCompile Include="Scenes\Week 4\SpriteTestScene.cpp" />
-    <ClCompile Include="Scenes\Week 6\HardwareSkinningScene.cpp" />
     <ClCompile Include="Scenes\Week 7\CharacterScene.cpp" />
     <ClCompile Include="Scenes\Week 7\FontTestScene.cpp" />
     <ClCompile Include="Scenes\Week 7\PickingScene.cpp" />
@@ -172,7 +162,6 @@ xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configur
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Scenes\Week 4\UberMaterialScene.cpp" />
     <ClCompile Include="Materials\UberMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -195,23 +184,13 @@ xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configur
     <ClInclude Include="Prefabs\Character.h" />
     <ClInclude Include="Scenes\Week 10\PostProcessingScene.h" />
     <ClInclude Include="Scenes\Week 11\DeferredRenderingScene.h" />
-    <ClInclude Include="Scenes\Week 4\ModelTestScene.h" />
     <ClInclude Include="Prefabs\PongGameSettings.h" />
     <ClInclude Include="Prefabs\Player.h" />
-    <ClInclude Include="Scenes\Week 3\PongScene.h" />
-    <ClInclude Include="Scenes\Week 3\ComponentTestScene.h" />
     <ClInclude Include="Prefabs\CubePrefab.h" />
     <ClInclude Include="Prefabs\SpherePrefab.h" />
     <ClInclude Include="Prefabs\TorusPrefab.h" />
     <ClInclude Include="Materials\ColorMaterial.h" />
-    <ClInclude Include="Scenes\Week 3\MinionScene.h" />
     <ClInclude Include="Materials\SpikyMaterial.h" />
-    <ClInclude Include="Scenes\Week 4\SpikyScene.h" />
-    <ClInclude Include="Scenes\Week 5\SoftwareSkinningScene_1.h" />
-    <ClInclude Include="Scenes\Week 5\SoftwareSkinningScene_2.h" />
-    <ClInclude Include="Scenes\Week 5\SoftwareSkinningScene_3.h" />
-    <ClInclude Include="Scenes\Week 4\SpriteTestScene.h" />
-    <ClInclude Include="Scenes\Week 6\HardwareSkinningScene.h" />
     <ClInclude Include="Scenes\Week 7\CharacterScene.h" />
     <ClInclude Include="Scenes\Week 7\FontTestScene.h" />
     <ClInclude Include="Scenes\Week 7\PickingScene.h" />
@@ -219,7 +198,6 @@ xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configur
     <ClInclude Include="Scenes\Week 9\ParticleScene.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="MainGame.h" />
-    <ClInclude Include="Scenes\Week 4\UberMaterialScene.h" />
     <ClInclude Include="Materials\UberMaterial.h" />
   </ItemGroup>
   <ItemGroup>
