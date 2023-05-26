@@ -22,8 +22,17 @@ void CharacterScene::Initialize()
 	characterDesc.actionId_Jump = CharacterJump;
 
 	m_pCharacter = AddChild(new Character(characterDesc));
-	m_pCharacter->GetTransform()->Translate(0.f, 35.f, 0.f);
+	m_pCharacter->GetTransform()->Translate(0.f, 5.f, 0.f);
 
+	//Simple Level
+	const auto pLevelObject = AddChild(new GameObject());
+	const auto pLevelMesh = pLevelObject->AddComponent(new ModelComponent(L"Meshes/SimpleLevel.ovm"));
+	pLevelMesh->SetMaterial(MaterialManager::Get()->CreateMaterial<ColorMaterial>());
+
+	const auto pLevelActor = pLevelObject->AddComponent(new RigidBodyComponent(true));
+	const auto pPxTriangleMesh = ContentManager::Load<PxTriangleMesh>(L"Meshes/SimpleLevel.ovpt");
+	pLevelActor->AddCollider(PxTriangleMeshGeometry(pPxTriangleMesh, PxMeshScale({ .5f,.5f,.5f })), *pDefaultMaterial);
+	pLevelObject->GetTransform()->Scale(.5f, .5f, .5f);
 
 	//Input
 	auto inputAction = InputAction(CharacterMoveLeft, InputState::down, 'A');

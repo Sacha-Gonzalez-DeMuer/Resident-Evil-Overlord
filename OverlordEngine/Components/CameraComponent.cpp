@@ -104,48 +104,38 @@ void CameraComponent::SetActive(bool active)
 
 GameObject* CameraComponent::Pick(CollisionGroup ignoreGroups) const
 {
-	//convert mouse coordinates to NDC
-	const auto& mousePos = InputManager::GetMousePosition();
-	const float windowWidth = m_pScene->GetSceneContext().windowWidth;
-	const float windowHeight = m_pScene->GetSceneContext().windowHeight;
-	const float halfWidth = windowWidth / 2.0f;
-	const float halfHeight = windowHeight / 2.0f;
+	// CONVERT MOUSE POS TO NDC
+	const auto halfWidth = m_pScene->GetSceneContext().windowWidth / 2.0f;
+	const auto halfHeight = m_pScene->GetSceneContext().windowHeight / 2.0f;
 
-	const float x = (mousePos.x - halfWidth) / halfWidth;
-	const float y = (halfHeight - mousePos.y) / halfWidth;
+	const auto mousePos = m_pScene->GetSceneContext().pInput->GetMousePosition();
+	const auto ndc = DirectX::XMFLOAT2{ (mousePos.x - halfWidth) / halfWidth, (halfHeight - mousePos.y) / halfHeight };
 
-	// calculate nearpoint and farpoint
-	XMFLOAT4X4 viewProjectionInv{};
-	XMStoreFloat4x4(&viewProjectionInv, XMMatrixInverse(nullptr, XMLoadFloat4x4(&GetViewProjection())));
+	// CALCULATE NEAR AND FAR POINT
+	const auto ndcn = DirectX::XMFLOAT4{ ndc.x, ndc.y, 0.0f, 0.0f };
+	const auto ndcf = DirectX::XMFLOAT4{ ndc.x, ndc.y, 1.0f, 0.0f };
 
-	XMFLOAT4 nearPoint{ x, y, 0.0f, 0.0f };
-	XMFLOAT4 farPoint{ x, y, 1.0f, 0.0f };
+	XMFLOAT4 nearPoint;
+	DirectX::XMStoreFloat4(&nearPoint, DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat4(&ndcn), DirectX::XMLoadFloat4x4(&m_ViewProjectionInverse)));
+	XMFLOAT4 farPoint;
+	DirectX::XMStoreFloat4(&farPoint, DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat4(&ndcf), DirectX::XMLoadFloat4x4(&m_ViewProjectionInverse)));
 
-	XMVECTOR nearPointV = XMLoadFloat4(&nearPoint);
-	XMVECTOR farPointV = XMLoadFloat4(&farPoint);
-
-	XMVECTOR nearPointWorld = XMVector3TransformCoord(nearPointV, XMLoadFloat4x4(&viewProjectionInv));
-	XMVECTOR farPointWorld = XMVector3TransformCoord(farPointV, XMLoadFloat4x4(&viewProjectionInv));
-
+	// RAYCAST
 	PxQueryFilterData filterData{};
 	filterData.data.word0 = ~UINT(ignoreGroups);
 
+	const PxVec3 rayStart = PxVec3(nearPoint.x, nearPoint.y, nearPoint.z);
+	const PxVec3 rayDir = PxVec3(farPoint.x - nearPoint.x, farPoint.y - nearPoint.y, farPoint.z - nearPoint.z).getNormalized();
+
 	PxRaycastBuffer hit{};
-	// cast nearpointworld to pxvec3
-	PxVec3 origin = PxVec3(XMVectorGetX(nearPointWorld), XMVectorGetY(nearPointWorld), XMVectorGetZ(nearPointWorld));
-	PxVec3 direction = PxVec3(XMVectorGetX(farPointWorld - nearPointWorld), XMVectorGetY(farPointWorld - nearPointWorld), XMVectorGetZ(farPointWorld - nearPointWorld));
-	float distance = PX_MAX_F32;
-
-	direction.normalize();
-
-	if (m_pScene->GetPhysxProxy()->Raycast(origin, direction, distance, hit, PxHitFlag::eDEFAULT, filterData))
+	if (m_pScene->GetPhysxProxy()->Raycast(rayStart, rayDir, PX_MAX_F32, hit, PxHitFlag::eDEFAULT, filterData))
 	{
-		if (hit.hasBlock)
+		if (hit.hasBlock && hit.block.actor->userData)
 		{
-			return static_cast<BaseComponent*>(hit.block.actor->userData)->GetGameObject();
+			Logger::LogDebug(L"Hit something!");
+			return reinterpret_cast<BaseComponent*>(hit.block.actor->userData)->GetGameObject();
 		}
 	}
-
 	return nullptr;
 }
 

@@ -1,16 +1,6 @@
-﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
-  FontTestScene.cpp
-     Creating library D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.lib and object D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.exp
-  Generating code
-  6 of 7550 functions (<0.1%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    7 functions had inline decision re-evaluated but remain unchanged
-  Finished generating code
-  OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.exe
+﻿  OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.exe
   0 File(s) copied
   0 File(s) copied
   0 File(s) copied
-  D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\OverlordProject\Resources\Fonts\Consolas_32.fnt
-  D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\OverlordProject\Resources\Fonts\Consolas_32_0.dds
-  2 File(s) copied
+  0 File(s) copied
   0 File(s) copied

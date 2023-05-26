@@ -100,10 +100,10 @@ void MainGame::OnGamePreparing(GameContext& gameContext)
 	//gameContext.windowHeight=... (default is 720)
 
 	//gameContext.windowTitle = L"GP2 - Milestone 1 (2023) | (2DAE13) Doe John";
-	//gameContext.windowTitle = L"GP2 - Milestone 2 (2023) | (2DAE13) Doe John";
+	gameContext.windowTitle = L"GP2 - Milestone 2 (2023) | (2DAE15) Gonzalez De Muer Sacha";
 	//gameContext.windowTitle = L"GP2 - Exam Project (2023) | (2DAE13) Doe John";
 
-	gameContext.windowTitle = L"GP2 - Deferred Rendering";
+	//gameContext.windowTitle = L"GP2 - Deferred Rendering";
 }
 
 void MainGame::Initialize()
@@ -134,8 +134,8 @@ void MainGame::Initialize()
 
 #ifdef W7
 	SceneManager::Get()->AddGameScene(new FontTestScene());
-	//SceneManager::Get()->AddGameScene(new PickingScene());
-	//SceneManager::Get()->AddGameScene(new CharacterScene());
+	SceneManager::Get()->AddGameScene(new PickingScene());
+	SceneManager::Get()->AddGameScene(new CharacterScene());
 #endif
 
 #ifdef W8

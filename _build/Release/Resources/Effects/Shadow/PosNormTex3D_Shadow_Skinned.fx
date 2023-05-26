@@ -2,7 +2,7 @@ float4x4 gWorld : WORLD;
 float4x4 gWorldViewProj : WORLDVIEWPROJECTION; 
 float4x4 gWorldViewProj_Light;
 float3 gLightDirection = float3(-0.577f, -0.577f, 0.577f);
-float gShadowMapBias = 0.3f;
+float gShadowMapBias = 0.005f;
 float4x4 gBones[70];
 
 Texture2D gDiffuseMap;
@@ -117,22 +117,17 @@ float EvaluateShadowMap(float4 lpos)
 	//PCF sampling for shadow map
 	float sum = 0;
 	float x, y;
-
 	
-	//perform PCF filtering on a 4 x 4 texel neighborhood
-	for (y = -1.5; y <= 1.5; y += 1.0)
-		for (x = -1.5; x <= 1.5; x += 1.0)
-			sum += gShadowMap.SampleCmpLevelZero(cmpSampler, lpos.xy + texOffset(x, y), lpos.z);
+	//perform PCF filtering 
+    for (y = -3.5; y <= 3.5; y += 1.0)
+        for (x = -3.5; x <= 3.5; x += 1.0)
+            sum += gShadowMap.SampleCmpLevelZero(cmpSampler, lpos.xy + texOffset(x, y), lpos.z);
+
 
 	//average the samples
-	float shadowFactor = sum / 16.0f;
-
-
-	//if clip space z value greater than shadow map value then pixel is in shadow
-	//float shadowFactor = lpos.z > shadowMapDepth ? 1.0f : 0.0f;
- 
-	if (shadowFactor < lpos.z) return 0;
-	return shadowFactor;
+	float shadowFactor = sum / 64.0f;
+    float ambient = .3f;
+    return shadowFactor + ambient;
 }
 
 //--------------------------------------------------------------------------------------
