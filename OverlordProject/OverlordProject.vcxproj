@@ -133,6 +133,14 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClCompile Include="Prefabs\BoneObject.cpp" />
     <ClCompile Include="Materials\DiffuseMaterial.cpp" />
     <ClCompile Include="Prefabs\Character.cpp" />
+    <ClCompile Include="ResidentEvil\Camera\CameraSwitch.cpp" />
+    <ClCompile Include="ResidentEvil\Camera\ReCamera.cpp" />
+    <ClCompile Include="ResidentEvil\Camera\ReCameraManager.cpp" />
+    <ClCompile Include="ResidentEvil\Player\RePlayerAnimController.cpp" />
+    <ClCompile Include="ResidentEvil\Player\RePlayerController.cpp" />
+    <ClCompile Include="ResidentEvil\World\IInteractable.cpp" />
+    <ClCompile Include="ResidentEvil\World\InteractableComponent.cpp" />
+    <ClCompile Include="ResidentEvil\World\ReDoor.cpp" />
     <ClCompile Include="Scenes\ResidentEvil\DiningHallScene.cpp" />
     <ClCompile Include="Scenes\ResidentEvil\MainHallScene.cpp" />
     <ClCompile Include="Scenes\Week 10\PostProcessingScene.cpp" />
@@ -165,6 +173,8 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Materials\UberMaterial.cpp" />
+    <ClCompile Include="Utils\FbxLoader.cpp" />
+    <ClCompile Include="Utils\StaticMeshFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OverlordEngine\OverlordEngine.vcxproj">
@@ -184,6 +194,14 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClInclude Include="Materials\DiffuseMaterial.h" />
     <ClInclude Include="FilePaths.h" />
     <ClInclude Include="Prefabs\Character.h" />
+    <ClInclude Include="ResidentEvil\Camera\CameraSwitch.h" />
+    <ClInclude Include="ResidentEvil\Camera\ReCamera.h" />
+    <ClInclude Include="ResidentEvil\Camera\ReCameraManager.h" />
+    <ClInclude Include="ResidentEvil\Player\RePlayerAnimController.h" />
+    <ClInclude Include="ResidentEvil\Player\RePlayerController.h" />
+    <ClInclude Include="ResidentEvil\World\IInteractable.h" />
+    <ClInclude Include="ResidentEvil\World\InteractableComponent.h" />
+    <ClInclude Include="ResidentEvil\World\ReDoor.h" />
     <ClInclude Include="Scenes\ResidentEvil\DiningHallScene.h" />
     <ClInclude Include="Scenes\ResidentEvil\MainHallScene.h" />
     <ClInclude Include="Scenes\Week 10\PostProcessingScene.h" />
@@ -203,6 +221,8 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Materials\UberMaterial.h" />
+    <ClInclude Include="Utils\FbxLoader.h" />
+    <ClInclude Include="Utils\StaticMeshFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Textures\TestSprite.jpg" />

@@ -54,7 +54,7 @@ namespace dae
 	FbxLoader::~FbxLoader()
 	{
 		m_pFbxManager->Destroy();
-		m_pFbxScene->Destroy();
+		//m_pFbxScene->Destroy();
 	}
 
 	// converts loaded fbx scene to overlord scene (scene loaded in constructor)

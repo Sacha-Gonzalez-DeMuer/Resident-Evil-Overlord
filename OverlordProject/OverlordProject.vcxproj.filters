@@ -32,6 +32,16 @@
     <ClCompile Include="Materials\Post\PostAmbientOcclusion.cpp" />
     <ClCompile Include="Scenes\ResidentEvil\DiningHallScene.cpp" />
     <ClCompile Include="Scenes\ResidentEvil\MainHallScene.cpp" />
+    <ClCompile Include="ResidentEvil\Camera\CameraSwitch.cpp" />
+    <ClCompile Include="ResidentEvil\Camera\ReCamera.cpp" />
+    <ClCompile Include="ResidentEvil\Camera\ReCameraManager.cpp" />
+    <ClCompile Include="ResidentEvil\World\IInteractable.cpp" />
+    <ClCompile Include="ResidentEvil\World\InteractableComponent.cpp" />
+    <ClCompile Include="ResidentEvil\World\ReDoor.cpp" />
+    <ClCompile Include="ResidentEvil\Player\RePlayerAnimController.cpp" />
+    <ClCompile Include="ResidentEvil\Player\RePlayerController.cpp" />
+    <ClCompile Include="Utils\FbxLoader.cpp" />
+    <ClCompile Include="Utils\StaticMeshFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -65,6 +75,16 @@
     <ClInclude Include="Materials\Post\PostAmbientOcclusion.h" />
     <ClInclude Include="Scenes\ResidentEvil\DiningHallScene.h" />
     <ClInclude Include="Scenes\ResidentEvil\MainHallScene.h" />
+    <ClInclude Include="ResidentEvil\Camera\CameraSwitch.h" />
+    <ClInclude Include="ResidentEvil\Camera\ReCamera.h" />
+    <ClInclude Include="ResidentEvil\Camera\ReCameraManager.h" />
+    <ClInclude Include="ResidentEvil\World\IInteractable.h" />
+    <ClInclude Include="ResidentEvil\World\InteractableComponent.h" />
+    <ClInclude Include="ResidentEvil\World\ReDoor.h" />
+    <ClInclude Include="ResidentEvil\Player\RePlayerAnimController.h" />
+    <ClInclude Include="ResidentEvil\Player\RePlayerController.h" />
+    <ClInclude Include="Utils\FbxLoader.h" />
+    <ClInclude Include="Utils\StaticMeshFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scenes">
