@@ -42,7 +42,7 @@ void DiffuseMaterial_Shadow_Skinned::OnUpdateModelVariables(const SceneContext& 
 	const auto pLightVP = pShadowMapRenderer->GetLightVP();
 	const auto modelWorld = pModel->GetTransform()->GetWorld();
 	XMFLOAT4X4 lightWVP;
-	XMStoreFloat4x4(&lightWVP, XMMatrixMultiply(XMLoadFloat4x4(&pLightVP), XMLoadFloat4x4(&modelWorld)));
+	XMStoreFloat4x4(&lightWVP, XMMatrixMultiply( XMLoadFloat4x4(&modelWorld), XMLoadFloat4x4(&pLightVP)));
 	SetVariable_Matrix(L"gWorldViewProj_Light", lightWVP);
 
 	// 2.

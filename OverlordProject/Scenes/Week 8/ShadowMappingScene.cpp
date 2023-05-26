@@ -31,15 +31,15 @@ void ShadowMappingScene::Initialize()
 
 	AddChild(pGroundObj);
 
-	// Static Mesh shadow test
-	const auto pStaticMeshObj = new GameObject();
-	const auto pStaticMeshModel = new ModelComponent(FilePath::SPHERE_MESH);
-	pStaticMeshModel->SetMaterial(pGroundMaterial);
+	//// Static Mesh shadow test
+	//const auto pStaticMeshObj = new GameObject();
+	//const auto pStaticMeshModel = new ModelComponent(FilePath::SPHERE_MESH);
+	//pStaticMeshModel->SetMaterial(pGroundMaterial);
 
-	pStaticMeshObj->AddComponent(pStaticMeshModel);
-	pStaticMeshObj->GetTransform()->Translate(5.0f,10.0f,2.0f);
-	pStaticMeshObj->GetTransform()->Scale(5.0f, 5.0f, 5.0f);
-	AddChild(pStaticMeshObj);
+	//pStaticMeshObj->AddComponent(pStaticMeshModel);
+	//pStaticMeshObj->GetTransform()->Translate(5.0f,10.0f,2.0f);
+	//pStaticMeshObj->GetTransform()->Scale(5.0f, 5.0f, 5.0f);
+	//AddChild(pStaticMeshObj);
 
 	//Character Mesh
 	//**************

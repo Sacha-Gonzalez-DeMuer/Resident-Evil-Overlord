@@ -36,29 +36,17 @@
     <ClCompile Include="Scenes\Week 7\PickingScene.cpp" />
     <ClCompile Include="Prefabs\Character.cpp" />
     <ClCompile Include="Scenes\Week 7\CharacterScene.cpp" />
-    <ClCompile Include="Scenes\ResidentEvil\DiningHallScene.cpp" />
     <ClCompile Include="Materials\Shadow\DiffuseMaterial_Shadow.cpp" />
     <ClCompile Include="Materials\Shadow\DiffuseMaterial_Shadow_Skinned.cpp" />
     <ClCompile Include="Scenes\Week 8\ShadowMappingScene.cpp" />
     <ClCompile Include="Scenes\Week 9\ParticleScene.cpp" />
-    <ClCompile Include="Utils\StaticMeshFactory.cpp" />
     <ClCompile Include="Scenes\Week 11\DeferredRenderingScene.cpp" />
     <ClCompile Include="Materials\Deferred\BasicMaterial.cpp" />
     <ClCompile Include="Materials\Deferred\BasicMaterial_Deferred.cpp" />
-    <ClCompile Include="ResidentEvil\Camera\ReCamera.cpp" />
-    <ClCompile Include="ResidentEvil\Camera\ReCameraManager.cpp" />
-    <ClCompile Include="ResidentEvil\Player\RePlayerController.cpp" />
-    <ClCompile Include="ResidentEvil\Camera\CameraSwitch.cpp" />
     <ClCompile Include="Materials\Post\PostGrayscale.cpp" />
     <ClCompile Include="Scenes\Week 10\PostProcessingScene.cpp" />
     <ClCompile Include="Materials\Post\PostBlur.cpp" />
     <ClCompile Include="Materials\Post\PostAmbientOcclusion.cpp" />
-    <ClCompile Include="ResidentEvil\World\ReDoor.cpp" />
-    <ClCompile Include="ResidentEvil\World\IInteractable.cpp" />
-    <ClCompile Include="ResidentEvil\World\InteractableComponent.cpp" />
-    <ClCompile Include="Scenes\ResidentEvil\MainHallScene.cpp" />
-    <ClCompile Include="ResidentEvil\Player\RePlayerAnimController.cpp" />
-    <ClCompile Include="Utils\FbxLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -96,29 +84,17 @@
     <ClInclude Include="Scenes\Week 7\FontTestScene.h" />
     <ClInclude Include="Scenes\Week 7\PickingScene.h" />
     <ClInclude Include="Prefabs\Character.h" />
-    <ClInclude Include="Scenes\ResidentEvil\DiningHallScene.h" />
     <ClInclude Include="Materials\Shadow\DiffuseMaterial_Shadow.h" />
     <ClInclude Include="Materials\Shadow\DiffuseMaterial_Shadow_Skinned.h" />
     <ClInclude Include="Scenes\Week 8\ShadowMappingScene.h" />
     <ClInclude Include="Scenes\Week 9\ParticleScene.h" />
-    <ClInclude Include="Utils\StaticMeshFactory.h" />
     <ClInclude Include="Scenes\Week 11\DeferredRenderingScene.h" />
     <ClInclude Include="Materials\Deferred\BasicMaterial.h" />
     <ClInclude Include="Materials\Deferred\BasicMaterial_Deferred.h" />
-    <ClInclude Include="ResidentEvil\Camera\ReCamera.h" />
-    <ClInclude Include="ResidentEvil\Camera\ReCameraManager.h" />
-    <ClInclude Include="ResidentEvil\Player\RePlayerController.h" />
-    <ClInclude Include="ResidentEvil\Camera\CameraSwitch.h" />
     <ClInclude Include="Materials\Post\PostGrayscale.h" />
     <ClInclude Include="Scenes\Week 10\PostProcessingScene.h" />
     <ClInclude Include="Materials\Post\PostBlur.h" />
     <ClInclude Include="Materials\Post\PostAmbientOcclusion.h" />
-    <ClInclude Include="ResidentEvil\World\ReDoor.h" />
-    <ClInclude Include="ResidentEvil\World\IInteractable.h" />
-    <ClInclude Include="ResidentEvil\World\InteractableComponent.h" />
-    <ClInclude Include="Scenes\ResidentEvil\MainHallScene.h" />
-    <ClInclude Include="ResidentEvil\Player\RePlayerAnimController.h" />
-    <ClInclude Include="Utils\FbxLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scenes">

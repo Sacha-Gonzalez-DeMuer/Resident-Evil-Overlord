@@ -55,7 +55,7 @@ void ShadowMapRenderer::UpdateMeshFilter(const SceneContext& sceneContext, MeshF
 	ShadowGeneratorType type{pMeshFilter->HasAnimations() ? ShadowGeneratorType::Skinned : ShadowGeneratorType::Static};
 
 	//2.
-	auto techniqueContext = m_GeneratorTechniqueContexts[UINT(type)];
+	auto techniqueContext = m_GeneratorTechniqueContexts[static_cast<int>(type)];
 
 	//3.
 	pMeshFilter->BuildVertexBuffer(sceneContext,
@@ -124,7 +124,7 @@ void ShadowMapRenderer::Begin(const SceneContext& sceneContext)
 	m_pShadowRenderTarget->Clear();
 }
 
-void ShadowMapRenderer::DrawMesh(const SceneContext& sceneContext, MeshFilter* pMeshFilter, const XMFLOAT4X4& meshWorld, const std::vector<XMFLOAT4X4>& /*meshBones*/)
+void ShadowMapRenderer::DrawMesh(const SceneContext& sceneContext, MeshFilter* pMeshFilter, const XMFLOAT4X4& meshWorld, const std::vector<XMFLOAT4X4>& meshBones)
 {
 	//This function is called for every mesh that needs to be rendered on the shadowmap (= cast shadows)
 
@@ -143,9 +143,9 @@ void ShadowMapRenderer::DrawMesh(const SceneContext& sceneContext, MeshFilter* p
 	// 3.
 	m_pShadowMapGenerator->SetVariable_Matrix(L"gWorld", reinterpret_cast<const float*>(&meshWorld));
 
-	//if (pMeshFilter->HasAnimations())
-	//	m_pShadowMapGenerator->SetVariable_MatrixArray(L"gBones", &meshBones[0]._11, static_cast<UINT>(meshBones.size()));
-	//
+	if (pMeshFilter->HasAnimations() && !meshBones.empty())
+		m_pShadowMapGenerator->SetVariable_MatrixArray(L"gBones", &meshBones[0]._11, static_cast<UINT>(meshBones.size()));
+	
 
 	//4. Setup Pipeline for Drawing (Similar to ModelComponent::Draw, but for our ShadowMapMaterial)
 	//	- Set InputLayout (see TechniqueContext)

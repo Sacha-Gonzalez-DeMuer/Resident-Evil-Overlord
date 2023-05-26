@@ -122,15 +122,9 @@ xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configur
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ResidentEvil\Player\RePlayerAnimController.cpp" />
-    <ClCompile Include="Scenes\ResidentEvil\MainHallScene.cpp" />
-    <ClCompile Include="ResidentEvil\World\InteractableComponent.cpp" />
-    <ClCompile Include="ResidentEvil\World\IInteractable.cpp" />
     <ClCompile Include="Materials\Post\PostGrayscale.cpp" />
     <ClCompile Include="Materials\Post\PostBlur.cpp" />
     <ClCompile Include="Materials\Post\PostAmbientOcclusion.cpp" />
-    <ClCompile Include="ResidentEvil\World\ReDoor.cpp" />
-    <ClCompile Include="ResidentEvil\Camera\CameraSwitch.cpp" />
     <ClCompile Include="Materials\Deferred\BasicMaterial.cpp" />
     <ClCompile Include="Materials\Deferred\BasicMaterial_Deferred.cpp" />
     <ClCompile Include="Materials\DiffuseMaterial_Skinned.cpp" />
@@ -139,10 +133,6 @@ xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configur
     <ClCompile Include="Prefabs\BoneObject.cpp" />
     <ClCompile Include="Materials\DiffuseMaterial.cpp" />
     <ClCompile Include="Prefabs\Character.cpp" />
-    <ClCompile Include="ResidentEvil\Camera\ReCamera.cpp" />
-    <ClCompile Include="ResidentEvil\Camera\ReCameraManager.cpp" />
-    <ClCompile Include="ResidentEvil\Player\RePlayerController.cpp" />
-    <ClCompile Include="Scenes\ResidentEvil\DiningHallScene.cpp" />
     <ClCompile Include="Scenes\Week 10\PostProcessingScene.cpp" />
     <ClCompile Include="Scenes\Week 11\DeferredRenderingScene.cpp" />
     <ClCompile Include="Scenes\Week 4\ModelTestScene.cpp" />
@@ -167,8 +157,6 @@ xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configur
     <ClCompile Include="Scenes\Week 7\PickingScene.cpp" />
     <ClCompile Include="Scenes\Week 8\ShadowMappingScene.cpp" />
     <ClCompile Include="Scenes\Week 9\ParticleScene.cpp" />
-    <ClCompile Include="Utils\FbxLoader.cpp" />
-    <ClCompile Include="Utils\StaticMeshFactory.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdafx.h</PrecompiledHeaderFile>
@@ -193,15 +181,9 @@ xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configur
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ResidentEvil\Player\RePlayerAnimController.h" />
-    <ClInclude Include="Scenes\ResidentEvil\MainHallScene.h" />
-    <ClInclude Include="ResidentEvil\World\InteractableComponent.h" />
-    <ClInclude Include="ResidentEvil\World\IInteractable.h" />
     <ClInclude Include="Materials\Post\PostGrayscale.h" />
     <ClInclude Include="Materials\Post\PostBlur.h" />
     <ClInclude Include="Materials\Post\PostAmbientOcclusion.h" />
-    <ClInclude Include="ResidentEvil\World\ReDoor.h" />
-    <ClInclude Include="ResidentEvil\Camera\CameraSwitch.h" />
     <ClInclude Include="Materials\Deferred\BasicMaterial.h" />
     <ClInclude Include="Materials\Deferred\BasicMaterial_Deferred.h" />
     <ClInclude Include="Materials\DiffuseMaterial_Skinned.h" />
@@ -211,10 +193,6 @@ xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configur
     <ClInclude Include="Materials\DiffuseMaterial.h" />
     <ClInclude Include="FilePaths.h" />
     <ClInclude Include="Prefabs\Character.h" />
-    <ClInclude Include="ResidentEvil\Camera\ReCamera.h" />
-    <ClInclude Include="ResidentEvil\Camera\ReCameraManager.h" />
-    <ClInclude Include="ResidentEvil\Player\RePlayerController.h" />
-    <ClInclude Include="Scenes\ResidentEvil\DiningHallScene.h" />
     <ClInclude Include="Scenes\Week 10\PostProcessingScene.h" />
     <ClInclude Include="Scenes\Week 11\DeferredRenderingScene.h" />
     <ClInclude Include="Scenes\Week 4\ModelTestScene.h" />
@@ -239,8 +217,6 @@ xcopy "$(SolutionDir)3rdParty\FBX SDK\2020.0.1\lib\vs2017\$(Platform)\$(Configur
     <ClInclude Include="Scenes\Week 7\PickingScene.h" />
     <ClInclude Include="Scenes\Week 8\ShadowMappingScene.h" />
     <ClInclude Include="Scenes\Week 9\ParticleScene.h" />
-    <ClInclude Include="Utils\FbxLoader.h" />
-    <ClInclude Include="Utils\StaticMeshFactory.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Scenes\Week 4\UberMaterialScene.h" />

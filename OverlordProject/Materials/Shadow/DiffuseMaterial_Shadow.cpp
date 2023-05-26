@@ -29,7 +29,6 @@ void DiffuseMaterial_Shadow::OnUpdateModelVariables(const SceneContext& sceneCon
 	 *
 	 * 3. Update the Light Direction (retrieve the direction from the LightManager > sceneContext)
 	*/
-
 	const auto pShadowMapRenderer = ShadowMapRenderer::Get();
 
 	//Update LightWVP Matrix
@@ -47,7 +46,6 @@ void DiffuseMaterial_Shadow::OnUpdateModelVariables(const SceneContext& sceneCon
 	const auto pLightManager{ sceneContext.pLights };
 	const auto lightDirection{ pLightManager->GetDirectionalLight().direction };
 	SetVariable_Vector(L"gLightDirection", lightDirection);
-	
 	SetVariable_Matrix(L"gWorld", pModel->GetTransform()->GetWorld());
 
 	// get world view projection matrix
@@ -55,5 +53,4 @@ void DiffuseMaterial_Shadow::OnUpdateModelVariables(const SceneContext& sceneCon
 	XMFLOAT4X4 worldViewProjection;
 	XMStoreFloat4x4(&worldViewProjection, XMMatrixMultiply(XMLoadFloat4x4(&pModel->GetTransform()->GetWorld()), XMLoadFloat4x4(&viewProjection)));
 	SetVariable_Matrix(L"gWorldViewProj", worldViewProjection);
-
 }

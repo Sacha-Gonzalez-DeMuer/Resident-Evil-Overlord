@@ -68,35 +68,23 @@ void ParticleEmitterComponent::Update(const SceneContext& sceneContext)
 	auto hr = sceneContext.d3dContext.pDeviceContext->Map(m_pVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	HANDLE_ERROR(hr, L"Failed to map vertex buffer");
 
-	//auto* pVertexParticle = static_cast<VertexParticle*>(mappedResource.pData);
+	auto* pVertexParticles = static_cast<VertexParticle*>(mappedResource.pData);
 
 	float deltaTime = sceneContext.pGameTime->GetElapsed();
 	for (UINT i = 0; i < m_ParticleCount; ++i)
 	{
-
 		auto& p = m_ParticlesArray[i];
 		if (p.isActive)
-		{
 			UpdateParticle(p, deltaTime);
-		}
-		else
+
+		if (!p.isActive && m_LastParticleSpawn >= particleInterval)
 		{
-			if (m_LastParticleSpawn >= particleInterval)
-			{
-				SpawnParticle(p);
-				m_LastParticleSpawn -= particleInterval;
-			}
+			SpawnParticle(p);
+			m_LastParticleSpawn -= particleInterval;
 		}
 
 		if (p.isActive)
-		{
-			// Calculate the offset of the next available particle in the buffer
-			//int nextParticleOffset = m_ActiveParticles * sizeof(VertexParticle);
-
-			// Increment the particle count
-			m_ActiveParticles++;
-
-		}
+			pVertexParticles[m_ActiveParticles++] = p.vertexInfo;
 	}
 
 	sceneContext.d3dContext.pDeviceContext->Unmap(m_pVertexBuffer, 0);
@@ -114,16 +102,13 @@ void ParticleEmitterComponent::UpdateParticle(Particle& p, float elapsedTime) co
 	}
 
 	auto velocity = XMLoadFloat3(&m_EmitterSettings.velocity);
-	XMVectorAdd(XMLoadFloat3(&p.vertexInfo.Position), XMVectorScale(velocity, elapsedTime));
+	auto newpos = XMVectorAdd(XMLoadFloat3(&p.vertexInfo.Position), XMVectorScale(velocity, elapsedTime));
+	XMStoreFloat3(&p.vertexInfo.Position, newpos);
 
 	float lifePercentage = p.currentEnergy / p.totalEnergy;
-
-	float size = m_EmitterSettings.minSize + (m_EmitterSettings.maxSize - m_EmitterSettings.minSize) * lifePercentage;
-	p.vertexInfo.Size = size;
-
-	float alpha = m_EmitterSettings.color.w * lifePercentage;
-	p.vertexInfo.Color = XMFLOAT4(m_EmitterSettings.color.x, m_EmitterSettings.color.y, m_EmitterSettings.color.z, alpha);
-
+	p.vertexInfo.Size = p.initialSize * (1.f + (p.sizeChange - 1.f) * (1.f - lifePercentage));
+	p.vertexInfo.Color = m_EmitterSettings.color;
+	p.vertexInfo.Color.w *= lifePercentage;
 }
 
 void ParticleEmitterComponent::SpawnParticle(Particle& p)
@@ -184,7 +169,7 @@ void ParticleEmitterComponent::PostDraw(const SceneContext& sceneContext)
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 
 	// 5.
-	UINT stride = sizeof(VertexParticle) * m_ActiveParticles;
+	UINT stride = sizeof(VertexParticle);
 	UINT offset = 0;
 	pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 

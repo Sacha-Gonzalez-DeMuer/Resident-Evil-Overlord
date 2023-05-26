@@ -49,6 +49,7 @@ void DiffuseMaterial_Skinned::OnUpdateModelVariables(const SceneContext& sceneCo
     // set the 'gWorldViewProj' variable of the effect (Matrix)
     SetVariable_Matrix(L"gWorldViewProj", worldViewProjection);
 
+
     // set the 'gWorld' variable of the effect (Matrix)
     SetVariable_Matrix(L"gWorld", pModel->GetTransform()->GetWorld());
 
