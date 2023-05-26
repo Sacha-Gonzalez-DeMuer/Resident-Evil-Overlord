@@ -1,7 +1,7 @@
 #pragma once
-#include "ResidentEvil/World/IInteractable.h"
+#include "ResidentEvil/World/ReInteractableObject.h"
 
-class ReDoor final : public GameObject
+class ReDoor final : public ReInteractableObject
 {
 public:
 	ReDoor(const XMFLOAT3& pos, const XMFLOAT3& size);
@@ -11,11 +11,9 @@ public:
 	ReDoor& operator=(const ReDoor& other) = delete;
 	ReDoor& operator=(ReDoor&& other) noexcept = delete;
 
-	void Initialize(const SceneContext& sceneContext) override;
-	void Interact();
+	void Interact() override;
 	void SetSceneToLoad(int idx){ m_sceneToLoadIdx = idx; }
 
 private:
-	void InitializeCollisionBox(const XMFLOAT3& pos, const XMFLOAT3& size);
 	int m_sceneToLoadIdx{};
 };

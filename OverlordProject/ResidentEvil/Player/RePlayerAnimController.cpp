@@ -15,6 +15,7 @@ namespace AnimNames {
 RePlayerAnimController::RePlayerAnimController(ModelAnimator* modelAnimator, RePlayerController* player)
 	: m_pAnimator{ modelAnimator }, m_pPlayerController{ player }
 {
+
 }
 
 void RePlayerAnimController::Initialize(const SceneContext& /*sceneContext*/)
@@ -30,12 +31,13 @@ void RePlayerAnimController::Update(const SceneContext& sceneContext)
 	const auto& currentAnim = m_pAnimator->GetClipName();
 
 	bool isSprinting = pInput->IsActionTriggered(playerDesc.actionId_Sprint);
-	bool isMoving = XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_pPlayerController->GetTotalVelocity()))) > .1f;
+	bool isMoving = m_pPlayerController->IsMoving();
 	bool isMovingBackward = pInput->IsActionTriggered(playerDesc.actionId_MoveBackward);
+	bool isAiming = m_pPlayerController->IsAiming();
 	m_pAnimator->SetPlayReversed(false);
 
 	// inb4 yandere dev - no time to make a state machine :(
-	if (isSprinting)
+	if (isSprinting && isMoving)
 	{
 		if (currentAnim != AnimNames::Sprint)
 			m_pAnimator->SetAnimation(AnimNames::Sprint);
@@ -45,6 +47,11 @@ void RePlayerAnimController::Update(const SceneContext& sceneContext)
 		m_pAnimator->SetPlayReversed(isMovingBackward);
 		if (currentAnim != AnimNames::Walk)
 			m_pAnimator->SetAnimation(AnimNames::Walk);
+	}
+	else if (isAiming)
+	{
+		if (currentAnim != AnimNames::PistolIdle)
+			m_pAnimator->SetAnimation(AnimNames::PistolIdle);
 	}
 	else
 	{

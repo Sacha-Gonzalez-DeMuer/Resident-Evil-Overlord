@@ -1,7 +1,6 @@
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\overlordengine.pch
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\overlordengine\_build\release\overlordengine.pdb
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\stdafx.obj
-d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\meshfilter.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\materialmanager.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\basematerial.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\material.obj
@@ -16,12 +15,12 @@ d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\modelanimator.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\lightmanager.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\shadowmaprenderer.obj
+d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\delegate.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\quadrenderer.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\deferredrenderer.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\deferredlightrenderer.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\particleemittercomponent.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\controllercomponent.obj
-d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\spriterenderer.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\spritefont.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\spritecomponent.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\physxhelper.obj
@@ -41,6 +40,7 @@ d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\pxmeshloader.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\modelcomponent.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\meshfilterloader.obj
+d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\meshfilter.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\transformcomponent.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\scenemanager.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\rendertarget.obj
@@ -56,6 +56,7 @@ d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\utils.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\texturedataloader.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\texturedata.obj
+d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\spriterenderer.obj
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\overlordengine\_build\release\overlordengine.lib
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\overlordengine.vcxproj.filelistabsolute.txt
 d:\dae_sem4\graphics prog 2\resident-evil-overlord\_intermediate\overlordengine\release\overlordengine.tlog\cl.command.1.tlog

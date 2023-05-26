@@ -40,5 +40,16 @@ namespace FilePath
 
 	// Main Hall
 	const std::wstring FOLDER_ENV_MAINHALL{ L"ResidentEvil/Environments/MainHall/" };
-	const std::wstring ENV_MAIN_FBX{ L"ResidentEvil/Environments/MainHall/MainHall.fbx" };
+
+	// Stairs
+	const std::wstring FOLDER_ENV_STAIRS{ L"ResidentEvil/Environments/Stairs/FBX/" };
+	const std::wstring ENV_STAIRS_FBX{ L"ResidentEvil/Environments/Stairs/FBX/Stairs.fbx" };
+	const std::wstring ENV_STAIRS_OVM{ L"ResidentEvil/Environments/Stairs/FBX/Stairs.ovm" };
+
+	// Zombie
+	const std::wstring ZOMBIE_ANIMS_OVM{ L"ResidentEvil/Characters/Zombie/Zombie.ovm" };
+
+
+	// HUD
+	const std::wstring SUBTITLE_FONT{ L"Fonts/ReFont_subtitles.fnt" };
 }

@@ -17,7 +17,6 @@ public:
 		Specular = 2,
 		Normal = 3,
 		Depth = 4,
-		Shadow = 5
 	};
 
 	void Begin(const SceneContext& sceneContext) const;

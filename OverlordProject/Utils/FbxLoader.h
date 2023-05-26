@@ -11,7 +11,7 @@ namespace dae
 
 		constexpr bool isValid() const { return m_pFbxManager && m_pFbxScene; }
 
-		FBXSceneData GetScene(FbxNode* root = nullptr) ;
+		void GetScene(FbxNode* root, FBXSceneData& data) ;
 		
 		std::vector<FbxSurfaceMaterial*> ExtractAllMaterials(FbxNode* root) const;
 		std::vector<FbxSurfaceMaterial*> ExtractMaterials(FbxMesh* mesh) const;

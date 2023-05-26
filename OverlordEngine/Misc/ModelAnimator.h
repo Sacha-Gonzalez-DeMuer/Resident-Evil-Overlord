@@ -19,6 +19,8 @@ public:
 	void SetPlayReversed(bool reverse) { m_Reversed = reverse; }
 	void SetAnimationSpeed(float speedPercentage) { m_AnimationSpeed = speedPercentage; }
 
+	void PlayOnce(const std::wstring& clipName);
+
 	bool IsPlaying() const { return m_IsPlaying; }
 	bool IsReversed() const { return m_Reversed; }
 	float GetAnimationSpeed() const { return m_AnimationSpeed; }
@@ -29,10 +31,12 @@ public:
 
 private:
 	AnimationClip m_CurrentClip{};
+	AnimationClip m_LastClip{};
+
 	std::vector<AnimationClip> m_AnimationClips{};
 	MeshFilter* m_pMeshFilter{};
 	std::vector<XMFLOAT4X4> m_Transforms{};
-	bool m_IsPlaying{}, m_Reversed{}, m_ClipSet{};
+	bool m_SinglePlay{}, m_IsPlaying{}, m_Reversed{}, m_ClipSet{};
 	float m_TickCount{}, m_AnimationSpeed{1.f};
 };
 

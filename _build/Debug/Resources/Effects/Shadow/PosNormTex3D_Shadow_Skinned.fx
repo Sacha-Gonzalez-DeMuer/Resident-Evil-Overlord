@@ -8,6 +8,10 @@ float4x4 gBones[70];
 Texture2D gDiffuseMap;
 Texture2D gShadowMap;
 
+bool gUseNormalMap;
+bool gUseSpecularMap;
+
+
 SamplerComparisonState cmpSampler
 {
 	// sampler state

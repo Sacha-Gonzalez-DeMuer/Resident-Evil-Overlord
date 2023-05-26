@@ -4,6 +4,7 @@
 #include "Materials/DiffuseMaterial.h"
 #include "Materials/Deferred/BasicMaterial_Deferred.h"
 #include "Materials/Deferred/BasicMaterial.h"
+#include "Materials/Shadow/DiffuseMaterial_Shadow.h"
 #include <iostream>
 #include "ResidentEvil/Camera/ReCamera.h"
 #include "ResidentEvil/Camera/ReCameraManager.h"
@@ -53,7 +54,8 @@ namespace dae
 
 	FbxLoader::~FbxLoader()
 	{
-		m_pFbxManager->Destroy();
+		m_pFbxManager->Destroy(); //TODO: fbxmanager leaks anyway? 
+		
 		//m_pFbxScene->Destroy();
 	}
 
@@ -78,9 +80,10 @@ namespace dae
 		auto ovmModel = root.AddComponent(new ModelComponent(ovmFilePath));
 
 		// load fbx scene data
-		FBXSceneData scene = GetScene(m_pFbxScene->GetRootNode());
+		FBXSceneData scene;
+		GetScene(m_pFbxScene->GetRootNode(), scene);
 
-		// failed to support cameras :
+		// failed to support cameras :(
 		//for (const auto& cam : scene.cameras)
 		//	ConvertToOverlord(*cam, root.GetScene());
 
@@ -92,7 +95,8 @@ namespace dae
 
 	void FbxLoader::LoadLightsToOverlord(SceneContext& sceneContext)
 	{
-		FBXSceneData scene = GetScene(m_pFbxScene->GetRootNode());
+		FBXSceneData scene;
+		GetScene(m_pFbxScene->GetRootNode(), scene);
 		AddLightsToOverlord(scene.lights, sceneContext);
 	}
 
@@ -192,6 +196,8 @@ what is the rotation matrix to convert from vector V1 to V2*/
 		const auto& prop = fbxLight.FindProperty("Range");
 		overlordLight.range = static_cast<float>(prop.Get<FbxDouble>());
 
+		pLightNode->Destroy();
+
 		return overlordLight;
 	}
 
@@ -219,13 +225,15 @@ what is the rotation matrix to convert from vector V1 to V2*/
 	void FbxLoader::MaterialToOverlord_Forward(const std::vector<FbxSurfaceMaterial*>& materials, ModelComponent& toModel, const std::wstring& fbxFolderPath)
 	{
 		// build materials
-		std::vector<BasicMaterial*> diffuseMaterials{};
+		std::vector<DiffuseMaterial_Shadow*> diffuseMaterials{};
 		for (const auto& mat : materials)
 		{
 			const auto& diffuseMap = ExtractDiffuseMap(mat);
-			auto pDiffuseMat = MaterialManager::Get()->CreateMaterial<BasicMaterial>();
+			if (diffuseMap == L"") continue;
 
-			pDiffuseMat->SetDiffuseMap(fbxFolderPath + diffuseMap);
+			auto pDiffuseMat = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
+
+			pDiffuseMat->SetDiffuseTexture(fbxFolderPath + diffuseMap);
 			diffuseMaterials.push_back(pDiffuseMat);
 		}
 
@@ -239,7 +247,9 @@ what is the rotation matrix to convert from vector V1 to V2*/
 		std::vector<BasicMaterial_Deferred*> basicMaterials{};
 		for (const auto& mat : materials)
 		{
-			const auto& diffuseMap = ExtractDiffuseMap(mat);
+			std::wstring diffuseMap = ExtractDiffuseMap(mat);
+			if (diffuseMap == L"") continue;
+
 			auto pBasicMat = MaterialManager::Get()->CreateMaterial<BasicMaterial_Deferred>();
 			pBasicMat->UseTransparency(false);
 
@@ -393,7 +403,7 @@ what is the rotation matrix to convert from vector V1 to V2*/
 		pIOsettings->SetBoolProp(IMP_CAMERA, true);
 		pIOsettings->SetBoolProp(IMP_LIGHT, true);
 		m_pFbxManager->SetIOSettings(pIOsettings);
-		pIOsettings->Destroy();
+			
 
 		return true;
 	}
@@ -416,7 +426,7 @@ what is the rotation matrix to convert from vector V1 to V2*/
 	}
 
 
-	FBXSceneData FbxLoader::GetScene(FbxNode* root)
+	void FbxLoader::GetScene(FbxNode* root, FBXSceneData& data)
 	{
 		if (!root)
 		{
@@ -424,7 +434,6 @@ what is the rotation matrix to convert from vector V1 to V2*/
 			if (!root) throw std::runtime_error("No root node found in scene.");
 		}
 
-		FBXSceneData data;
 		// 5. Traverse the scene and extract the necessary data.
 		const auto childCount = root->GetChildCount();
 		for (int i = 0; i < childCount; ++i)
@@ -463,7 +472,5 @@ what is the rotation matrix to convert from vector V1 to V2*/
 				}
 			}
 		}
-
-		return data;
 	}
 }

@@ -15,7 +15,13 @@ void ModelAnimator::Update(const SceneContext& sceneContext)
 	{
 		// Calculate the passedTicks
 		auto passedTicks = sceneContext.pGameTime->GetElapsed() * m_CurrentClip.ticksPerSecond * m_AnimationSpeed;
-		passedTicks = fmod(passedTicks, m_CurrentClip.duration);
+		
+		if(!m_SinglePlay) passedTicks = fmod(passedTicks, m_CurrentClip.duration);
+		else if (passedTicks >= m_CurrentClip.duration)
+		{
+			m_SinglePlay = false;
+			SetAnimation(m_LastClip);
+		}
 
 		// Add the passedTicks to tick count
 		if (m_Reversed)
@@ -112,7 +118,7 @@ void ModelAnimator::SetAnimation(UINT clipNumber)
 		}
 
 		//	Retrieve the AnimationClip from the m_AnimationClips vector based on the given clipNumber
-		auto clip = m_AnimationClips[clipNumber];
+		const auto& clip = m_AnimationClips[clipNumber];
 
 		//	Call SetAnimation(AnimationClip clip)
 		SetAnimation(clip);
@@ -148,10 +154,10 @@ void ModelAnimator::Reset(bool pause)
 	if (m_ClipSet)
 	{
 		//	Retrieve the BoneTransform from the first Key from the current clip (m_CurrentClip)
-		auto boneTransform = m_CurrentClip.keys[0];
+		const auto& boneTransforms = m_CurrentClip.keys[0].boneTransforms;
 
 		//	Refill the m_Transforms vector with the new BoneTransforms (have a look at vector::assign)
-		m_Transforms.assign(m_CurrentClip.keys[0].boneTransforms.begin(), m_CurrentClip.keys[0].boneTransforms.end());
+		m_Transforms.assign(boneTransforms.begin(), boneTransforms.end());
 	}
 	else
 	{
@@ -161,5 +167,20 @@ void ModelAnimator::Reset(bool pause)
 
 		// refilll m_transforms with this identitymatrix
 		m_Transforms.assign(m_pMeshFilter->m_BoneCount, matrix);
+	}
+}
+
+void ModelAnimator::PlayOnce(const std::wstring& clipName)
+{
+	m_Reversed = false;
+	m_IsPlaying = true;
+	m_SinglePlay = true;
+	m_LastClip = m_CurrentClip;
+
+	//Check if clipName is different than the current clip m_CurrentClip.name
+	if (clipName != m_CurrentClip.name)
+	{
+		//	Call SetAnimation(clipName)
+		SetAnimation(clipName);
 	}
 }

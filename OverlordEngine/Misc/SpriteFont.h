@@ -35,7 +35,7 @@ public:
 	~SpriteFont() = default;
 	SpriteFont(const SpriteFont& other) = delete;
 	SpriteFont(SpriteFont&& other) noexcept = delete;
-	SpriteFont& operator=(const SpriteFont& other) = delete;
+	SpriteFont& operator=(const SpriteFont& other) = default;
 	SpriteFont& operator=(SpriteFont&& other) noexcept = delete;
 
 	TextureData* GetTexture() const { return m_FontDesc.pTexture; }
@@ -44,7 +44,7 @@ public:
 	short GetSize() const { return m_FontDesc.fontSize; }
 	bool HasMetric(const wchar_t& character) const { return m_FontDesc.metrics.contains(character); };
 	const FontMetric& GetMetric(const wchar_t& character) const { return m_FontDesc.metrics.at(character); };
-
+	const SpriteFontDesc& GetDescription() const { return m_FontDesc; }
 private:
 	SpriteFontDesc m_FontDesc;
 };

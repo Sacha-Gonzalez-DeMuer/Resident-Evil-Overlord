@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ #include "stdafx.h"
 #include "DiningHallScene.h"
 #include "Materials/DiffuseMaterial_Skinned.h"
 #include "Materials/DiffuseMaterial.h"
@@ -15,6 +15,9 @@
 #include "ResidentEvil/Camera/CameraSwitch.h"
 #include "ResidentEvil/Player/RePlayerController.h"
 #include "ResidentEvil/World/ReDoor.h"
+#include "ResidentEvil/World/ReClock.h"
+#include "ResidentEvil/HUD/SubtitleManager.h"
+#include "ResidentEvil/ReData.h"
 
 DiningHallScene::DiningHallScene(void) : GameScene(L"DiningHallScene")
 {
@@ -24,13 +27,13 @@ DiningHallScene::~DiningHallScene(void)
 {
 }
 
-ModelComponent* g_pModel;
 void DiningHallScene::Initialize()
 {
 	m_SceneContext.settings.enableOnGUI = true;
 	m_SceneContext.settings.drawGrid = false;
 	m_SceneContext.useDeferredRendering = true;
-	m_SceneContext.pLights->GetDirectionalLight().isEnabled = false;
+	m_SceneContext.pLights->GetDirectionalLight().isEnabled = !m_SceneContext.useDeferredRendering;
+	m_SceneContext.pLights->SetDirectionalLight({ 0, 56, 0 }, { 4, -2.43f, .040f });
 
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -50,8 +53,10 @@ void DiningHallScene::Initialize()
 	characterDesc.actionId_Jump = CharacterJump;
 	characterDesc.actionId_Interact = Interact;
 	characterDesc.actionId_Sprint = CharacterSprint;
-
+	characterDesc.actionId_Aim = CharacterAim;
+	characterDesc.actionId_Attack = CharacterAttack;
 	characterDesc.controller.height = 17.5f;
+	characterDesc.rotationSpeed = 120.f;
 	characterDesc.maxMoveSpeed = 15.f;
 	characterDesc.moveAccelerationTime = 0.01f;
 
@@ -80,33 +85,43 @@ void DiningHallScene::Initialize()
 	inputAction = InputAction(CharacterJump, InputState::pressed, VK_SPACE, -1, XINPUT_GAMEPAD_A);
 	m_SceneContext.pInput->AddInputAction(inputAction);
 
+	inputAction = InputAction(CharacterAim, InputState::down, VK_RBUTTON);
+	m_SceneContext.pInput->AddInputAction(inputAction);
+
+
+
 
 	auto pDiningHall = AddChild(new GameObject());
 	std::wstring dining_fbx_path = ContentManager::GetFullAssetPath(FilePath::ENV_DINING_FBX);
-	dae::FbxLoader loader{ StringUtil::ConvertWStringToChar(dining_fbx_path) };
+	const auto& dining_fbx_path_c = StringUtil::ConvertWStringToChar(dining_fbx_path);
+	dae::FbxLoader loader{ dining_fbx_path_c };
+	delete[] dining_fbx_path_c;
+	
 	loader.LoadToOverlord(*pDiningHall, m_SceneContext, FilePath::FOLDER_ENV_DINING);
 	
 	auto& pCamVolumeManager = ReCameraManager::Get();
 	AddCameras();
-
 	AddCameraSwitches();
 	AddDoors();
 	pCamVolumeManager.SetActiveCamera(UINT(0));
 
-	//pDiningHall->AddComponent(new ModelComponent(FilePath::ENV_MAINHALL_OVM));
-
+	// Clock
+	m_pClock = AddChild(new ReClock({37,14,-28}, {15,29,5}));
+	Subtitle clockSub;
+	clockSub.font = ContentManager::Load<SpriteFont>(L"Fonts/Consolas_32.fnt");
+	clockSub.text = "blablabla look at game to see \nwhat the text is";
+	m_pClock->SetSubtitle(clockSub);
 
 }
 
 void DiningHallScene::Update()
 {
-
 }
 
 void DiningHallScene::PostDraw()
 {
 	//Draw ShadowMap (Debug Visualization)
-		ShadowMapRenderer::Get()->Debug_DrawDepthSRV({ m_SceneContext.windowWidth - 10.f, 10.f }, { .3f, .3f }, { 1.f,0.f });
+		//ShadowMapRenderer::Get()->Debug_DrawDepthSRV({ m_SceneContext.windowWidth - 10.f, 10.f }, { .3f, .3f }, { 1.f,0.f });
 }
 
 void DiningHallScene::AddCameras()
@@ -216,10 +231,10 @@ void DiningHallScene::OnGUI()
 	{
 		if (!camunlocked)
 		{
-			auto activeVolume = ReCameraManager::Get().GetActiveCamera();
-			auto volumeCam = activeVolume->GetCamera();
+			const auto& activeVolume = ReCameraManager::Get().GetActiveCamera();
+			const auto& volumeCam = activeVolume->GetCamera();
 
-			auto position = volumeCam->GetTransform()->GetPosition();
+			const auto& position = volumeCam->GetTransform()->GetPosition();
 			int camIdx = activeVolume->GetIdx();
 
 			ImGui::InputInt("Cam Volume Idx", &camIdx);
@@ -250,12 +265,12 @@ void DiningHallScene::OnGUI()
 		ImGui::InputInt("Switch Idx", &selectedSwitch);
 		auto pSwitch = m_pSwitches[selectedSwitch];
 
-		auto position = pSwitch->GetTransform()->GetPosition();
+		const auto& position = pSwitch->GetTransform()->GetPosition();
 		float positionArray[3] = { position.x, position.y, position.z };
 		ImGui::DragFloat3("Position", positionArray);
 		pSwitch->GetTransform()->Translate(positionArray[0], positionArray[1], positionArray[2]);
 
-		auto size = pSwitch->GetTransform()->GetScale();
+		const auto& size = pSwitch->GetTransform()->GetScale();
 		float sizeArray[3] = { size.x, size.y, size.z };
 		ImGui::DragFloat3("Size", sizeArray);
 		pSwitch->GetTransform()->Scale(sizeArray[0], sizeArray[1], sizeArray[2]);
@@ -263,17 +278,17 @@ void DiningHallScene::OnGUI()
 
 
 	// im gui control for g_pModel position and scale
-	if (ImGui::CollapsingHeader("Model"))
-	{
-		if (!g_pModel) return;
-		auto position = g_pModel->GetTransform()->GetPosition();
-		float positionArray[3] = { position.x, position.y, position.z };
-		ImGui::DragFloat3("Position", positionArray);
-		g_pModel->GetTransform()->Translate(positionArray[0], positionArray[1], positionArray[2]);
-		float size = g_pModel->GetTransform()->GetScale().x;
-		ImGui::DragFloat("Size", &size, .001f, 0, 1);
-		g_pModel->GetTransform()->Scale(size, size, size);
-	}
+	//if (ImGui::CollapsingHeader("Model"))
+	//{
+	//	if (!g_pModel) return;
+	//	auto position = g_pModel->GetTransform()->GetPosition();
+	//	float positionArray[3] = { position.x, position.y, position.z };
+	//	ImGui::DragFloat3("Position", positionArray);
+	//	g_pModel->GetTransform()->Translate(positionArray[0], positionArray[1], positionArray[2]);
+	//	float size = g_pModel->GetTransform()->GetScale().x;
+	//	ImGui::DragFloat("Size", &size, .001f, 0, 1);
+	//	g_pModel->GetTransform()->Scale(size, size, size);
+	//}
 
 	if (ImGui::CollapsingHeader("Doors"))
 	{
@@ -281,15 +296,43 @@ void DiningHallScene::OnGUI()
 		ImGui::InputInt("Door Idx", &selectedDoor);
 		auto pDoor = m_pDoors[selectedDoor];
 
-		auto position = pDoor->GetTransform()->GetPosition();
+		const auto& position = pDoor->GetTransform()->GetPosition();
 		float positionArray[3] = { position.x, position.y, position.z };
 		ImGui::DragFloat3("Position", positionArray);
 
-		auto size = pDoor->GetTransform()->GetScale();
+		const auto& size = pDoor->GetTransform()->GetScale();
 		float sizeArray[3] = { size.x, size.y, size.z };
 		ImGui::DragFloat3("Size", sizeArray);
 
 		pDoor->GetTransform()->Translate(positionArray[0], positionArray[1], positionArray[2]);
 		pDoor->GetTransform()->Scale(sizeArray[0], sizeArray[1], sizeArray[2]);
+	}
+
+	if (ImGui::CollapsingHeader("DirectionalLight"))
+	{
+		static float positionArray[3] = { 0, 0, 0 };
+		static float directionArray[3] = { 0, 0, 0 };
+
+		ImGui::DragFloat3("Position", positionArray, .05f, 0, 100);
+		ImGui::DragFloat3("Direction", directionArray, .01f, -4, 4);
+
+		m_SceneContext.pLights->SetDirectionalLight(
+			{ positionArray[0], positionArray[1], positionArray[2] },
+			{ directionArray[0], directionArray[1], directionArray[2] }
+		);
+	}
+
+	if (ImGui::CollapsingHeader("Clock"))
+	{
+		const auto& pos = m_pClock->GetTransform()->GetPosition();
+		float positionArray[3] = { pos.x, pos.y, pos.z };
+		ImGui::DragFloat3("Position", positionArray);
+
+		const auto& size = m_pClock->GetTransform()->GetScale();
+		float sizeArray[3] = { size.x, size.y, size.z };
+		ImGui::DragFloat3("Size", sizeArray);
+
+		m_pClock->GetTransform()->Translate(positionArray[0], positionArray[1], positionArray[2]);
+		m_pClock->GetTransform()->Scale(sizeArray[0], sizeArray[1], sizeArray[2]);
 	}
 }

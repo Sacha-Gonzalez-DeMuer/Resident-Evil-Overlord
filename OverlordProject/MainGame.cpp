@@ -6,11 +6,11 @@
 //#define W4
 //#define W5
 //#define W6
-#define W7
-#define W8
-#define W9
-#define W10
-#define W11 //Deferred Rendering
+//#define W7
+//#define W8
+//#define W9
+//#define W10
+//#define W11 //Deferred Rendering
 #define EXAM
 
 /*MILESTONE Content*/
@@ -67,6 +67,7 @@
 #ifdef EXAM
 #include "Scenes/ResidentEvil/DiningHallScene.h"
 #include "Scenes/ResidentEvil/MainHallScene.h"
+#include "Scenes/ResidentEvil/StairsScene.h"
 #endif
 
 #ifdef MILESTONE_1
@@ -157,7 +158,8 @@ void MainGame::Initialize()
 
 #ifdef EXAM
 	SceneManager::Get()->AddGameScene(new DiningHallScene());
-	SceneManager::Get()->AddGameScene(new MainHallScene());
+	//SceneManager::Get()->AddGameScene(new MainHallScene());
+	//SceneManager::Get()->AddGameScene(new StairsScene());
 #endif
 
 #ifdef MILESTONE_1

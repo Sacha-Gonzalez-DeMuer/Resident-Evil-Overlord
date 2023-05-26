@@ -4,8 +4,10 @@
 #include "ResidentEvil/Camera/ReCameraManager.h"
 #include "FilePaths.h"
 #include "Materials/DiffuseMaterial_Skinned.h"
+#include "Materials/Shadow/DiffuseMaterial_Shadow_Skinned.h"
 #include "ResidentEvil/World/InteractableComponent.h"
 #include "ResidentEvil/Player/RePlayerAnimController.h"
+#include "ResidentEvil/Items/ReInventory.h"
 
 RePlayerController::RePlayerController(const ReCharacterDesc& characterDesc) 
 	: m_CharacterDesc(characterDesc),
@@ -13,7 +15,7 @@ RePlayerController::RePlayerController(const ReCharacterDesc& characterDesc)
 	m_FallAcceleration(characterDesc.maxFallSpeed / characterDesc.fallAccelerationTime)
 { }
 
-void RePlayerController::Initialize(const SceneContext&)
+void RePlayerController::Initialize(const SceneContext& sceneContext)
 {
 	//Controller
 	m_pControllerComponent = AddComponent(new ControllerComponent(m_CharacterDesc.controller));
@@ -23,17 +25,35 @@ void RePlayerController::Initialize(const SceneContext&)
 		OnCamSwitch();
 		});
 
-	// Player Model
-	const auto pSkinnedMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Skinned>();
-	pSkinnedMaterial->SetDiffuseTexture(FilePath::SOLDIER_BODY_DIFFUSE);
-
+	ModelComponent* modelComponent;
 	m_pModelObject = AddChild(new GameObject());
-	auto modelComponent = m_pModelObject->AddComponent(new ModelComponent(FilePath::SOLDIER_ANIMS_OVM));
-	modelComponent->SetMaterial(pSkinnedMaterial);
+	// Player Model
+	if (sceneContext.useDeferredRendering)
+	{
+		const auto pSkinnedMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Skinned>();
+		pSkinnedMaterial->SetDiffuseTexture(FilePath::SOLDIER_BODY_DIFFUSE);
+		modelComponent = m_pModelObject->AddComponent(new ModelComponent(FilePath::SOLDIER_ANIMS_OVM));
+		modelComponent->SetMaterial(pSkinnedMaterial);
+
+	}
+	else
+	{
+		const auto pSkinnedMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow_Skinned>();
+		pSkinnedMaterial->SetDiffuseTexture(FilePath::SOLDIER_BODY_DIFFUSE);
+		modelComponent = m_pModelObject->AddComponent(new ModelComponent(FilePath::SOLDIER_ANIMS_OVM));
+		modelComponent->SetMaterial(pSkinnedMaterial);
+	}
+
 	m_pModelObject->GetTransform()->Scale(0.11f, 0.11f, 0.11f);
 	m_pModelObject->GetTransform()->Translate(0.f, -m_CharacterDesc.controller.height / 2, 0.f);
 
+
+	// Animation
 	m_pAnimController = AddComponent(new RePlayerAnimController(modelComponent->GetAnimator(), this));
+
+
+	// Inventory
+	m_pInventory = AddComponent(new ReInventory());
 }
 
 void RePlayerController::Update(const SceneContext& sceneContext)
@@ -46,7 +66,7 @@ void RePlayerController::Update(const SceneContext& sceneContext)
 		const auto pInput = sceneContext.pInput;
 		HandleInputActions(pInput);
 
-		XMFLOAT2 move;
+		XMFLOAT2 move{};
 
 		int moveForward = pInput->IsActionTriggered(m_CharacterDesc.actionId_MoveForward);
 		int moveBackward = pInput->IsActionTriggered(m_CharacterDesc.actionId_MoveBackward);
@@ -61,6 +81,7 @@ void RePlayerController::Update(const SceneContext& sceneContext)
 
 		if (abs(move.x) < epsilon)
 			move.x = InputManager::GetThumbstickPosition(true).x;
+
 
 
 		//************************
@@ -81,7 +102,8 @@ void RePlayerController::Update(const SceneContext& sceneContext)
 		////********
 		////MOVEMENT
 		const auto acceleration = m_MoveAcceleration * deltaTime;
-		if (move.y != 0.f)
+		m_IsMoving = abs(move.y) > epsilon;
+		if (m_IsMoving)
 		{
 			XMVECTOR forwardScaled = XMVectorScale(XMLoadFloat3(&forward), -move.y);
 			XMStoreFloat3(&m_CurrentDirection, forwardScaled);
@@ -112,7 +134,11 @@ void RePlayerController::Update(const SceneContext& sceneContext)
 
 		//************
 		//DISPLACEMENT
-		auto displacement = XMVectorScale(XMLoadFloat3(&m_TotalVelocity), deltaTime);
+		float scale = deltaTime;
+		if (pInput->IsActionTriggered(m_CharacterDesc.actionId_Sprint))
+			scale *= 2;
+
+		auto displacement = XMVectorScale(XMLoadFloat3(&m_TotalVelocity), scale);
 
 		XMFLOAT3 displacementFloat3;
 		XMStoreFloat3(&displacementFloat3, displacement);
@@ -136,6 +162,13 @@ void RePlayerController::HandleInputActions(InputManager* input)
 {
 	if(input->IsActionTriggered(m_CharacterDesc.actionId_Interact))
 		Interact();
+
+	if (m_pInventory->HasGun() && input->IsActionTriggered(m_CharacterDesc.actionId_Aim))
+	{
+		m_pInventory->EquipItem(ReItem::GUN);
+		m_IsAiming = true;
+	}
+	else m_IsAiming = false;
 }
 
 void RePlayerController::Interact()

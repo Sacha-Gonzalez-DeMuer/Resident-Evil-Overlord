@@ -24,6 +24,10 @@ private:
 		Idle,
 		Walk,
 		Run,
+		Aim,
+		Attack,
+		Bitten,
+		Dead
 	};
 };
 

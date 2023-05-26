@@ -3,6 +3,7 @@
 class RePlayerController;
 class CameraSwitch;
 class ReDoor;
+class ReClock;
 class DiningHallScene final : public GameScene
 {
 	public:
@@ -24,6 +25,8 @@ private:
 		CharacterJump,
 		Interact,
 		CharacterSprint,
+		CharacterAim,
+		CharacterAttack
 	};
 
 	RePlayerController* m_pCharacter{};
@@ -31,6 +34,7 @@ private:
 
 	std::vector<CameraSwitch*> m_pSwitches{};
 	std::vector<ReDoor*> m_pDoors{};
+	ReClock* m_pClock{};
 
 	void AddCameras();
 	void AddCameraSwitches();

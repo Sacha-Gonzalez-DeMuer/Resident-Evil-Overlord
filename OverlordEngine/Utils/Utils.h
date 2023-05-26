@@ -59,12 +59,6 @@ namespace StringUtil
 		// Return the converted string
 		return buffer;
 	}
-
-
-	//inline std::wstring utf8_decode(LPCSTR str)
-	//{
-	//	return utf8_decode(std::string(str));
-	//}
 }
 
 namespace ConvertUtil

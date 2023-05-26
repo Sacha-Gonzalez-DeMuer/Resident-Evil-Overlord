@@ -122,6 +122,7 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="Materials\Post\PostGrayscale.cpp" />
     <ClCompile Include="Materials\Post\PostBlur.cpp" />
     <ClCompile Include="Materials\Post\PostAmbientOcclusion.cpp" />
@@ -133,14 +134,21 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClCompile Include="Prefabs\BoneObject.cpp" />
     <ClCompile Include="Materials\DiffuseMaterial.cpp" />
     <ClCompile Include="Prefabs\Character.cpp" />
+    <ClCompile Include="ResidentEvil\Items\ReGun.cpp" />
+    <ClCompile Include="ResidentEvil\Items\ReInventory.cpp" />
     <ClCompile Include="ResidentEvil\Camera\CameraSwitch.cpp" />
     <ClCompile Include="ResidentEvil\Camera\ReCamera.cpp" />
     <ClCompile Include="ResidentEvil\Camera\ReCameraManager.cpp" />
+    <ClCompile Include="ResidentEvil\HUD\SubtitleManager.cpp" />
     <ClCompile Include="ResidentEvil\Player\RePlayerAnimController.cpp" />
     <ClCompile Include="ResidentEvil\Player\RePlayerController.cpp" />
     <ClCompile Include="ResidentEvil\World\IInteractable.cpp" />
     <ClCompile Include="ResidentEvil\World\InteractableComponent.cpp" />
+    <ClCompile Include="ResidentEvil\World\ReClock.cpp" />
     <ClCompile Include="ResidentEvil\World\ReDoor.cpp" />
+    <ClCompile Include="ResidentEvil\World\ReInteractableObject.cpp" />
+    <ClCompile Include="ResidentEvil\NPC\ReZombie.cpp" />
+    <ClCompile Include="ResidentEvil\NPC\ReZombieAnimController.cpp" />
     <ClCompile Include="Scenes\ResidentEvil\DiningHallScene.cpp" />
     <ClCompile Include="Scenes\ResidentEvil\MainHallScene.cpp" />
     <ClCompile Include="Scenes\Week 10\PostProcessingScene.cpp" />
@@ -182,6 +190,7 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="Materials\Post\PostGrayscale.h" />
     <ClInclude Include="Materials\Post\PostBlur.h" />
     <ClInclude Include="Materials\Post\PostAmbientOcclusion.h" />
@@ -194,14 +203,22 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClInclude Include="Materials\DiffuseMaterial.h" />
     <ClInclude Include="FilePaths.h" />
     <ClInclude Include="Prefabs\Character.h" />
+    <ClInclude Include="ResidentEvil\Items\ReGun.h" />
+    <ClInclude Include="ResidentEvil\Items\ReInventory.h" />
     <ClInclude Include="ResidentEvil\Camera\CameraSwitch.h" />
     <ClInclude Include="ResidentEvil\Camera\ReCamera.h" />
     <ClInclude Include="ResidentEvil\Camera\ReCameraManager.h" />
+    <ClInclude Include="ResidentEvil\HUD\SubtitleManager.h" />
     <ClInclude Include="ResidentEvil\Player\RePlayerAnimController.h" />
     <ClInclude Include="ResidentEvil\Player\RePlayerController.h" />
+    <ClInclude Include="ResidentEvil\ReData.h" />
     <ClInclude Include="ResidentEvil\World\IInteractable.h" />
     <ClInclude Include="ResidentEvil\World\InteractableComponent.h" />
+    <ClInclude Include="ResidentEvil\World\ReClock.h" />
     <ClInclude Include="ResidentEvil\World\ReDoor.h" />
+    <ClInclude Include="ResidentEvil\World\ReInteractableObject.h" />
+    <ClInclude Include="ResidentEvil\NPC\ReZombie.h" />
+    <ClInclude Include="ResidentEvil\NPC\ReZombieAnimController.h" />
     <ClInclude Include="Scenes\ResidentEvil\DiningHallScene.h" />
     <ClInclude Include="Scenes\ResidentEvil\MainHallScene.h" />
     <ClInclude Include="Scenes\Week 10\PostProcessingScene.h" />

@@ -1,38 +1,8 @@
 #pragma once
-#include "RePlayerController.h"
-struct ReCharacterDesc
-{
-	PxCapsuleControllerDesc controller{};
-
-	XMFLOAT3 cameraOffset{ 0.f, controller.height * .5f, .0f };
-
-	float maxMoveSpeed{ 15.f };
-	float maxFallSpeed{ 15.f };
-	float JumpSpeed{ 15.f };
-	float moveAccelerationTime{ .3f };
-	float fallAccelerationTime{ .3f };
-	float rotationSpeed{ 60.f };
-	int actionId_MoveLeft{ -1 };
-	int actionId_MoveRight{ -1 };
-	int actionId_MoveForward{ -1 };
-	int actionId_MoveBackward{ -1 };
-	int actionId_Jump{ -1 };
-	int actionId_Interact{ -1 };
-	int actionId_Sprint{ -1 };
-
-	ReCharacterDesc(
-		PxMaterial* pMaterial,
-		float radius = .5f,
-		float height = 2.f)
-	{
-		controller.setToDefault();
-		controller.radius = radius;
-		controller.height = height;
-		controller.material = pMaterial;
-	}
-};
+#include "ResidentEvil/ReData.h"
 
 class RePlayerAnimController;
+class ReInventory;
 class RePlayerController : public GameObject
 {
 #pragma warning(disable : 4324) // https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4324?view=msvc-170 I couldn't find why this is happening 
@@ -50,11 +20,14 @@ public:
 	const XMFLOAT3& GetTotalVelocity() const { return m_TotalVelocity; }
 	const ReCharacterDesc& GetDesc() const { return m_CharacterDesc; }
 
+	bool IsMoving() const { return m_IsMoving; }
+	bool IsAiming() const { return m_IsAiming; }
 protected:
 	void Initialize(const SceneContext&) override;
 	void Update(const SceneContext&) override;
 
 private:
+	ReInventory* m_pInventory{};
 	RePlayerAnimController* m_pAnimController{};
 	ControllerComponent* m_pControllerComponent{};
 	GameObject* m_pModelObject{};
@@ -74,6 +47,9 @@ private:
 	float m_CamCleanTimer{ .1f };
 	float m_CamCleanDelay{ .3f }; // amount of time before new camera transform is used for movement
 
+	bool m_IsMoving{ false };
+	bool m_IsAiming{ false };
+	//bool m_IsGettingBit{ false };
 
 	void OnCamSwitch();
 	void HandleInputActions(InputManager* input);
