@@ -1,42 +1,5 @@
 ﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
-  stdafx.cpp
-cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
-  PostGrayscale.cpp
-  PostBlur.cpp
-  PostAmbientOcclusion.cpp
-  BasicMaterial.cpp
-  BasicMaterial_Deferred.cpp
-  DiffuseMaterial_Skinned.cpp
-  DiffuseMaterial_Shadow.cpp
-  DiffuseMaterial_Shadow_Skinned.cpp
-  BoneObject.cpp
-  DiffuseMaterial.cpp
-  Character.cpp
-  PostProcessingScene.cpp
-  DeferredRenderingScene.cpp
-  PongGameSettings.cpp
-  Player.cpp
-  CubePrefab.cpp
-  SpherePrefab.cpp
-  TorusPrefab.cpp
-  ColorMaterial.cpp
-  SpikyMaterial.cpp
-  Compiling...
-  CharacterScene.cpp
-  FontTestScene.cpp
-  PickingScene.cpp
-  ShadowMappingScene.cpp
-  ParticleScene.cpp
-  Main.cpp
-  MainGame.cpp
-  UberMaterial.cpp
-     Creating library D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.lib and object D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.exp
-  Generating code
-  Previous IPDB not found, fall back to full compilation.
-  All 6858 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Finished generating code
-  OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.exe
-  0 File(s) copied
-  0 File(s) copied
-  0 File(s) copied
-  0 File(s) copied
+  DiningHallScene.cpp
+D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\OverlordProject\Scenes\ResidentEvil\DiningHallScene.cpp(13,10): fatal  error C1083: Cannot open include file: 'ResidentEvil/Camera/ReCameraManager.h': No such file or directory
+  MainHallScene.cpp
+D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\OverlordProject\Scenes\ResidentEvil\MainHallScene.cpp(6,10): fatal  error C1083: Cannot open include file: 'ResidentEvil/Camera/ReCameraManager.h': No such file or directory

@@ -30,6 +30,8 @@
     <ClCompile Include="Scenes\Week 10\PostProcessingScene.cpp" />
     <ClCompile Include="Materials\Post\PostBlur.cpp" />
     <ClCompile Include="Materials\Post\PostAmbientOcclusion.cpp" />
+    <ClCompile Include="Scenes\ResidentEvil\DiningHallScene.cpp" />
+    <ClCompile Include="Scenes\ResidentEvil\MainHallScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -61,6 +63,8 @@
     <ClInclude Include="Scenes\Week 10\PostProcessingScene.h" />
     <ClInclude Include="Materials\Post\PostBlur.h" />
     <ClInclude Include="Materials\Post\PostAmbientOcclusion.h" />
+    <ClInclude Include="Scenes\ResidentEvil\DiningHallScene.h" />
+    <ClInclude Include="Scenes\ResidentEvil\MainHallScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scenes">

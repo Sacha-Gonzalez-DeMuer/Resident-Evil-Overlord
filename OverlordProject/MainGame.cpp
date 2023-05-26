@@ -11,6 +11,7 @@
 #define W9
 #define W10
 #define W11 //Deferred Rendering
+#define EXAM
 
 /*MILESTONE Content*/
 //#define MILESTONE_1
