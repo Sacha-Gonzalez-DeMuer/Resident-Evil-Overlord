@@ -135,6 +135,7 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClCompile Include="Prefabs\BoneObject.cpp" />
     <ClCompile Include="Materials\DiffuseMaterial.cpp" />
     <ClCompile Include="Prefabs\Character.cpp" />
+    <ClCompile Include="ReMenuManager.cpp" />
     <ClCompile Include="ResidentEvil\HUD\SubtitleManager.cpp" />
     <ClCompile Include="ResidentEvil\Items\ReGun.cpp" />
     <ClCompile Include="ResidentEvil\Items\ReInventory.cpp" />
@@ -207,6 +208,7 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClInclude Include="Materials\DiffuseMaterial.h" />
     <ClInclude Include="FilePaths.h" />
     <ClInclude Include="Prefabs\Character.h" />
+    <ClInclude Include="ReMenuManager.h" />
     <ClInclude Include="ResidentEvil\HUD\SubtitleManager.h" />
     <ClInclude Include="ResidentEvil\Items\ReGun.h" />
     <ClInclude Include="ResidentEvil\Items\ReInventory.h" />

@@ -195,7 +195,7 @@ what is the rotation matrix to convert from vector V1 to V2*/
 		overlordLight.intensity = static_cast<float>(fbxLight.Intensity) * .000001f;
 
 		const auto& prop = fbxLight.FindProperty("Range");
-		overlordLight.range = static_cast<float>(prop.Get<FbxDouble>());
+		overlordLight.range = static_cast<float>(prop.Get<FbxDouble>()) * 2;
 
 		pLightNode->Destroy();
 

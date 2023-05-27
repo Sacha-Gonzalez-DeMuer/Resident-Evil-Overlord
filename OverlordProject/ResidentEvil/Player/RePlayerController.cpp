@@ -36,22 +36,11 @@ void RePlayerController::Initialize(const SceneContext& sceneContext)
 
 	ModelComponent* modelComponent;
 	m_pModelObject = AddChild(new GameObject());
-	// Player Model
-	if (sceneContext.useDeferredRendering)
-	{
-		const auto pSkinnedMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Skinned>();
-		pSkinnedMaterial->SetDiffuseTexture(FilePath::SOLDIER_BODY_DIFFUSE);
-		modelComponent = m_pModelObject->AddComponent(new ModelComponent(FilePath::SOLDIER_ANIMS_OVM));
-		modelComponent->SetMaterial(pSkinnedMaterial);
-
-	}
-	else
-	{
-		const auto pSkinnedMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow_Skinned>();
-		pSkinnedMaterial->SetDiffuseTexture(FilePath::SOLDIER_BODY_DIFFUSE);
-		modelComponent = m_pModelObject->AddComponent(new ModelComponent(FilePath::SOLDIER_ANIMS_OVM));
-		modelComponent->SetMaterial(pSkinnedMaterial);
-	}
+	const auto pSkinnedMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow_Skinned>();
+	pSkinnedMaterial->SetDiffuseTexture(FilePath::SOLDIER_BODY_DIFFUSE);
+	modelComponent = m_pModelObject->AddComponent(new ModelComponent(FilePath::SOLDIER_ANIMS_OVM));
+	modelComponent->SetMaterial(pSkinnedMaterial);
+	
 
 	m_pModelObject->GetTransform()->Scale(0.11f, 0.11f, 0.11f);
 	m_pModelObject->GetTransform()->Translate(0.f, -m_CharacterDesc.controller.height / 2, 0.f);

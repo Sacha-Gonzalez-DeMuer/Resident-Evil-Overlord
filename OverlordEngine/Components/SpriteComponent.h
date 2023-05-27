@@ -18,6 +18,7 @@ public:
 	void SetPivot(const XMFLOAT2& pivot) { m_Pivot = pivot; }
 	void SetColor(const XMFLOAT4& color) { m_Color = color; }
 	void SetTexture(const std::wstring& spriteAsset);
+	void SetActive(const bool active) { m_IsActive = active; }
 
 protected:
 	void Initialize(const SceneContext& sceneContext) override;
@@ -28,4 +29,5 @@ private:
 	std::wstring m_SpriteAsset{};
 	XMFLOAT2 m_Pivot{};
 	XMFLOAT4 m_Color{};
+	bool m_IsActive{true};
 };

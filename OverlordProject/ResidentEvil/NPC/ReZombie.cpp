@@ -4,6 +4,7 @@
 
 #include "Materials/Shadow/DiffuseMaterial_Shadow_Skinned.h"
 #include "Materials/Deferred/BasicMaterial_Deferred.h"
+#include "Materials/Deferred/BasicMaterial_Deferred_Shadow.h"
 
 #include "ResidentEvil/NPC/ReZombieAnimController.h"
 #include "ResidentEvil/ReData.h"
@@ -19,27 +20,14 @@ void ReZombie::Initialize(const SceneContext& sceneContext)
 	m_pControllerComponent = AddComponent(new ControllerComponent(m_CharacterDesc.controller));
 	SetTag(L"Zombie");
 
-
 	// Zombie Model
 	ModelComponent* modelComponent{};
 	m_pModelObject = AddChild(new GameObject());
-	if (sceneContext.useDeferredRendering)
-	{
-		const auto pSkinnedMaterial = MaterialManager::Get()->CreateMaterial<BasicMaterial_Deferred>();
-		pSkinnedMaterial->SetDiffuseMap(FilePath::ZOMBIE_DIFFUSE);
+	const auto pSkinnedMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow_Skinned>();
+	pSkinnedMaterial->SetDiffuseTexture(FilePath::ZOMBIE_DIFFUSE);
 
-		modelComponent = m_pModelObject->AddComponent(new ModelComponent(FilePath::ZOMBIE_ANIMS_OVM));
-		modelComponent->SetMaterial(pSkinnedMaterial);
-
-	}
-	else
-	{
-		const auto pSkinnedMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow_Skinned>();
-		pSkinnedMaterial->SetDiffuseTexture(FilePath::ZOMBIE_DIFFUSE);
-
-		modelComponent = m_pModelObject->AddComponent(new ModelComponent(FilePath::ZOMBIE_ANIMS_OVM));
-		modelComponent->SetMaterial(pSkinnedMaterial);
-	}
+	modelComponent = m_pModelObject->AddComponent(new ModelComponent(FilePath::ZOMBIE_ANIMS_OVM));
+	modelComponent->SetMaterial(pSkinnedMaterial);
 
 	auto pModelTransform = m_pModelObject->GetTransform();
 	pModelTransform->Scale(0.11f, 0.11f, 0.11f);
@@ -54,7 +42,6 @@ void ReZombie::Update(const SceneContext& sceneContext)
 	if (sceneContext.pCamera->IsActive())
 	{
 		if (m_CurrentHealth <= 0) return;
-		//constexpr float epsilon{ 0.01f };
 		const float deltaTime{ sceneContext.pGameTime->GetElapsed() };
 		if (m_CooldownTimer > 0)
 		{
