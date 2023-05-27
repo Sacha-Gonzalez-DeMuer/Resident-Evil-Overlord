@@ -53,7 +53,10 @@
     <ClCompile Include="ResidentEvil\HUD\SubtitleController.cpp" />
     <ClCompile Include="ResidentEvil\World\ThunderController.cpp" />
     <ClCompile Include="Materials\Deferred\BasicMaterial_Deferred_Shadow.cpp" />
-    <ClCompile Include="ReMenuManager.cpp" />
+    <ClCompile Include="ResidentEvil\HUD\ReMenuManager.cpp" />
+    <ClCompile Include="ResidentEvil\HUD\ReButton.cpp" />
+    <ClCompile Include="ResidentEvil\HUD\Menus\ReMenu.cpp" />
+    <ClCompile Include="Scenes\Week 4\SpriteTestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -109,7 +112,10 @@
     <ClInclude Include="ResidentEvil\HUD\SubtitleController.h" />
     <ClInclude Include="ResidentEvil\World\ThunderController.h" />
     <ClInclude Include="Materials\Deferred\BasicMaterial_Deferred_Shadow.h" />
-    <ClInclude Include="ReMenuManager.h" />
+    <ClInclude Include="ResidentEvil\HUD\ReMenuManager.h" />
+    <ClInclude Include="ResidentEvil\HUD\ReButton.h" />
+    <ClInclude Include="ResidentEvil\HUD\Menus\ReMenu.h" />
+    <ClInclude Include="Scenes\Week 4\SpriteTestScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scenes">

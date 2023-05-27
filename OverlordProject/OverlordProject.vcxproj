@@ -135,7 +135,9 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClCompile Include="Prefabs\BoneObject.cpp" />
     <ClCompile Include="Materials\DiffuseMaterial.cpp" />
     <ClCompile Include="Prefabs\Character.cpp" />
-    <ClCompile Include="ReMenuManager.cpp" />
+    <ClCompile Include="ResidentEvil\HUD\ReButton.cpp" />
+    <ClCompile Include="ResidentEvil\HUD\Menus\ReMenu.cpp" />
+    <ClCompile Include="ResidentEvil\HUD\ReMenuManager.cpp" />
     <ClCompile Include="ResidentEvil\HUD\SubtitleManager.cpp" />
     <ClCompile Include="ResidentEvil\Items\ReGun.cpp" />
     <ClCompile Include="ResidentEvil\Items\ReInventory.cpp" />
@@ -162,6 +164,7 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClCompile Include="Prefabs\TorusPrefab.cpp" />
     <ClCompile Include="Materials\ColorMaterial.cpp" />
     <ClCompile Include="Materials\SpikyMaterial.cpp" />
+    <ClCompile Include="Scenes\Week 4\SpriteTestScene.cpp" />
     <ClCompile Include="Scenes\Week 7\CharacterScene.cpp" />
     <ClCompile Include="Scenes\Week 7\FontTestScene.cpp" />
     <ClCompile Include="Scenes\Week 7\PickingScene.cpp" />
@@ -208,7 +211,9 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClInclude Include="Materials\DiffuseMaterial.h" />
     <ClInclude Include="FilePaths.h" />
     <ClInclude Include="Prefabs\Character.h" />
-    <ClInclude Include="ReMenuManager.h" />
+    <ClInclude Include="ResidentEvil\HUD\ReButton.h" />
+    <ClInclude Include="ResidentEvil\HUD\Menus\ReMenu.h" />
+    <ClInclude Include="ResidentEvil\HUD\ReMenuManager.h" />
     <ClInclude Include="ResidentEvil\HUD\SubtitleManager.h" />
     <ClInclude Include="ResidentEvil\Items\ReGun.h" />
     <ClInclude Include="ResidentEvil\Items\ReInventory.h" />
@@ -236,6 +241,7 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClInclude Include="Prefabs\TorusPrefab.h" />
     <ClInclude Include="Materials\ColorMaterial.h" />
     <ClInclude Include="Materials\SpikyMaterial.h" />
+    <ClInclude Include="Scenes\Week 4\SpriteTestScene.h" />
     <ClInclude Include="Scenes\Week 7\CharacterScene.h" />
     <ClInclude Include="Scenes\Week 7\FontTestScene.h" />
     <ClInclude Include="Scenes\Week 7\PickingScene.h" />

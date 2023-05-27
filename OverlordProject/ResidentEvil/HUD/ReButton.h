@@ -1,5 +1,5 @@
 #pragma once
-class ReButton final : GameObject
+class ReButton final : public GameObject
 {
 public:
 	ReButton(const std::wstring& backgroundImg);
@@ -12,8 +12,9 @@ public:
 
 	void SetText(const std::wstring& text);
 	void SetOnClick(std::function<void()> onClick) { m_OnClick = onClick; }
-
+	void SetActive(const bool active);
 private:
+	SpriteComponent* m_pBackgroundImg;
 	std::function<void()> m_OnClick{};
 	std::wstring m_Text{};
 	bool m_IsClicked{ false };

@@ -17,6 +17,7 @@ protected:
 
 private:
 	GameObject* m_pSprite{};
+	GameObject* m_pSecondSprite{};
 	float m_TotalRotation{};
 	bool m_AutoRotate{};
 };

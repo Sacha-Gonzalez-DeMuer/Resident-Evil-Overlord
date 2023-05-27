@@ -54,6 +54,7 @@ namespace FilePath
 
 	// HUD
 	const std::wstring SUBTITLE_FONT{ L"Fonts/Consolas_32.fnt" };
+	const std::wstring TEST_SPRITE{ L"Textures/TestSprite.jpg" };
 
 
 	// PARTICLES

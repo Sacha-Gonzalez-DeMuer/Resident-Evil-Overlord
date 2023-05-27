@@ -7,6 +7,8 @@ class ReClock;
 class ReGun;
 class ReZombie;
 class ParticleEmitterComponent;
+class ReButton;
+class ReMenu;
 class DiningHallScene final : public GameScene
 {
 	public:
@@ -43,8 +45,12 @@ private:
 	ReGun* m_pGun{};
 	GameObject* m_pParticleEmitter{};
 
+	std::vector<ReButton*> m_pButtons{};
+	std::vector<ReMenu*> m_pMenus{};
+
 	void AddCameras();
 	void AddCameraSwitches();
 	void AddDoors();
+	void AddMenus();
 };
 

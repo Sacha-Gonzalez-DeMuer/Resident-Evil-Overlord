@@ -24,7 +24,7 @@ void RePlayerController::GetAttacked()
 	m_pAnimController->TriggerAnim(PAnimNames::Bitten);
 }
 
-void RePlayerController::Initialize(const SceneContext& sceneContext)
+void RePlayerController::Initialize(const SceneContext&)
 {
 	//Controller
 	m_pControllerComponent = AddComponent(new ControllerComponent(m_CharacterDesc.controller));
@@ -40,11 +40,10 @@ void RePlayerController::Initialize(const SceneContext& sceneContext)
 	pSkinnedMaterial->SetDiffuseTexture(FilePath::SOLDIER_BODY_DIFFUSE);
 	modelComponent = m_pModelObject->AddComponent(new ModelComponent(FilePath::SOLDIER_ANIMS_OVM));
 	modelComponent->SetMaterial(pSkinnedMaterial);
-	
 
 	m_pModelObject->GetTransform()->Scale(0.11f, 0.11f, 0.11f);
 	m_pModelObject->GetTransform()->Translate(0.f, -m_CharacterDesc.controller.height / 2, 0.f);
-	  
+	 
 	
 	// Animation
 	m_pAnimController = AddComponent(new RePlayerAnimController(modelComponent->GetAnimator(), this));

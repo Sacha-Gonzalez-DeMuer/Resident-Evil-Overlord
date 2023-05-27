@@ -15,7 +15,7 @@ ReZombie::ReZombie(const ReCharacterDesc& characterDesc)
 {
 }
 
-void ReZombie::Initialize(const SceneContext& sceneContext)
+void ReZombie::Initialize(const SceneContext&)
 {
 	m_pControllerComponent = AddComponent(new ControllerComponent(m_CharacterDesc.controller));
 	SetTag(L"Zombie");

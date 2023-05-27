@@ -12,7 +12,7 @@ public:
 	ReMenu& operator=(const ReMenu& other) = delete;
 	ReMenu& operator=(ReMenu&& other) noexcept = delete;
 
-	void Initialize(const SceneContext& sceneContext) override {};
+	void Initialize(const SceneContext&) override {};
 	void SetActive(bool isActive);
 	bool IsActive() const { return m_IsActive; }
 	ReMenuType GetType() const { return m_Type; }

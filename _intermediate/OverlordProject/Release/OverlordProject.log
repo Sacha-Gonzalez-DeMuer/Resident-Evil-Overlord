@@ -1,11 +1,8 @@
-﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
-  ReZombie.cpp
-  RePlayerController.cpp
-     Creating library D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.lib and object D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.exp
+﻿     Creating library D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.lib and object D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.exp
   Generating code
-  4 of 7764 functions (<0.1%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    6 functions had inline decision re-evaluated but remain unchanged
+  14 of 8074 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+    3 functions were new in current compilation
+    39 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.exe
   0 File(s) copied

@@ -61,3 +61,10 @@ enum class ZState
 	ATTACKING,
 	DEAD
 };
+
+enum class ReMenuType
+{
+	MAIN,
+	INGAME,
+	CONTROLS
+};

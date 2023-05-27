@@ -2,10 +2,6 @@
 #include "ReMenuManager.h"
 #include "ResidentEvil/HUD/Menus/ReMenu.h"
 
-void ReMenuManager::Initialize(const SceneContext& sceneContext)
-{
-	m_pMenus = GetComponents<ReMenu>();
-}
 
 void ReMenuManager::SwitchMenu(ReMenuType type)
 {
