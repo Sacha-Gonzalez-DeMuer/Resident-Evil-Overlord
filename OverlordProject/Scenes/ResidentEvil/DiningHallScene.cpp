@@ -18,6 +18,8 @@
 #include "ResidentEvil/World/ReClock.h"
 #include "ResidentEvil/HUD/SubtitleManager.h"
 #include "ResidentEvil/ReData.h"
+#include "ResidentEvil/NPC/ReZombie.h"
+#include "ResidentEvil/Items/ReGun.h"
 
 DiningHallScene::DiningHallScene(void) : GameScene(L"DiningHallScene")
 {
@@ -31,9 +33,10 @@ void DiningHallScene::Initialize()
 {
 	m_SceneContext.settings.enableOnGUI = true;
 	m_SceneContext.settings.drawGrid = false;
-	m_SceneContext.useDeferredRendering = true;
+	m_SceneContext.useDeferredRendering = false;
 	m_SceneContext.pLights->GetDirectionalLight().isEnabled = !m_SceneContext.useDeferredRendering;
 	m_SceneContext.pLights->SetDirectionalLight({ 0, 56, 0 }, { 4, -2.43f, .040f });
+
 
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -112,10 +115,26 @@ void DiningHallScene::Initialize()
 	clockSub.text = "blablabla look at game to see \nwhat the text is";
 	m_pClock->SetSubtitle(clockSub);
 
+
+	// Zombie
+	ReCharacterDesc zombieDesc{ pDefaultMaterial };
+	zombieDesc.controller.height = 17.5f;
+	zombieDesc.rotationSpeed = 60.f;
+	zombieDesc.maxMoveSpeed = 10.f;
+	zombieDesc.moveAccelerationTime = 0.3f;
+	zombieDesc.attackDistance = 5.f;
+
+	auto zombie = AddChild(new ReZombie(zombieDesc));
+	zombie->GetTransform()->Translate(-2.f, 15.f, -80.f); // spawn pos
+	zombie->SetTarget(m_pCharacter->GetTransform());
+	
+	m_pGun = AddChild(new ReGun({ 0,0,0 }, { 1,1,1 }));
+	m_pGun->SetDestInventory(m_pCharacter->GetInventory());
 }
 
 void DiningHallScene::Update()
 {
+	SubtitleManager::Get().Update(m_SceneContext);
 }
 
 void DiningHallScene::PostDraw()
@@ -334,5 +353,19 @@ void DiningHallScene::OnGUI()
 
 		m_pClock->GetTransform()->Translate(positionArray[0], positionArray[1], positionArray[2]);
 		m_pClock->GetTransform()->Scale(sizeArray[0], sizeArray[1], sizeArray[2]);
+	}
+
+	if (ImGui::CollapsingHeader("Gun"))
+	{
+		const auto& pos = m_pGun->GetTransform()->GetPosition();
+		float positionArray[3] = { pos.x, pos.y, pos.z };
+		ImGui::DragFloat3("Position", positionArray);
+
+		const auto& size = m_pGun->GetTransform()->GetScale();
+		float sizeArray[3] = { size.x, size.y, size.z };
+		ImGui::DragFloat3("Size", sizeArray);
+
+		m_pGun->GetTransform()->Translate(positionArray[0], positionArray[1], positionArray[2]);
+		m_pGun->GetTransform()->Scale(sizeArray[0], sizeArray[1], sizeArray[2]);
 	}
 }

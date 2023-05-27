@@ -134,12 +134,12 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClCompile Include="Prefabs\BoneObject.cpp" />
     <ClCompile Include="Materials\DiffuseMaterial.cpp" />
     <ClCompile Include="Prefabs\Character.cpp" />
+    <ClCompile Include="ResidentEvil\HUD\SubtitleManager.cpp" />
     <ClCompile Include="ResidentEvil\Items\ReGun.cpp" />
     <ClCompile Include="ResidentEvil\Items\ReInventory.cpp" />
     <ClCompile Include="ResidentEvil\Camera\CameraSwitch.cpp" />
     <ClCompile Include="ResidentEvil\Camera\ReCamera.cpp" />
     <ClCompile Include="ResidentEvil\Camera\ReCameraManager.cpp" />
-    <ClCompile Include="ResidentEvil\HUD\SubtitleManager.cpp" />
     <ClCompile Include="ResidentEvil\Player\RePlayerAnimController.cpp" />
     <ClCompile Include="ResidentEvil\Player\RePlayerController.cpp" />
     <ClCompile Include="ResidentEvil\World\IInteractable.cpp" />
@@ -203,12 +203,12 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClInclude Include="Materials\DiffuseMaterial.h" />
     <ClInclude Include="FilePaths.h" />
     <ClInclude Include="Prefabs\Character.h" />
+    <ClInclude Include="ResidentEvil\HUD\SubtitleManager.h" />
     <ClInclude Include="ResidentEvil\Items\ReGun.h" />
     <ClInclude Include="ResidentEvil\Items\ReInventory.h" />
     <ClInclude Include="ResidentEvil\Camera\CameraSwitch.h" />
     <ClInclude Include="ResidentEvil\Camera\ReCamera.h" />
     <ClInclude Include="ResidentEvil\Camera\ReCameraManager.h" />
-    <ClInclude Include="ResidentEvil\HUD\SubtitleManager.h" />
     <ClInclude Include="ResidentEvil\Player\RePlayerAnimController.h" />
     <ClInclude Include="ResidentEvil\Player\RePlayerController.h" />
     <ClInclude Include="ResidentEvil\ReData.h" />

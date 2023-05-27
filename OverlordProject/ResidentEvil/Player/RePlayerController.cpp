@@ -8,6 +8,7 @@
 #include "ResidentEvil/World/InteractableComponent.h"
 #include "ResidentEvil/Player/RePlayerAnimController.h"
 #include "ResidentEvil/Items/ReInventory.h"
+#include "ResidentEvil/HUD/SubtitleManager.h"
 
 RePlayerController::RePlayerController(const ReCharacterDesc& characterDesc) 
 	: m_CharacterDesc(characterDesc),
@@ -173,6 +174,12 @@ void RePlayerController::HandleInputActions(InputManager* input)
 
 void RePlayerController::Interact()
 {
+	// Subtitles
+	auto& pSubtitles = SubtitleManager::Get();
+	if (pSubtitles.IsDisplaying())
+		pSubtitles.CloseSubtitle();
+
+	// Interactables
 	const auto& origin = m_pControllerComponent->GetPosition();
 	PxVec3 pxOrigin = { origin.x, origin.y, origin.z };
 

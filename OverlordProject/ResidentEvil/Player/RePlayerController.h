@@ -18,7 +18,8 @@ public:
 	//void DrawImGui();
 	const XMFLOAT3& GetPosition() const { return m_pControllerComponent->GetPosition(); }
 	const XMFLOAT3& GetTotalVelocity() const { return m_TotalVelocity; }
-	const ReCharacterDesc& GetDesc() const { return m_CharacterDesc; }
+	ReCharacterDesc* GetDesc() { return &m_CharacterDesc; }
+	ReInventory* GetInventory() const { return m_pInventory; }
 
 	bool IsMoving() const { return m_IsMoving; }
 	bool IsAiming() const { return m_IsAiming; }

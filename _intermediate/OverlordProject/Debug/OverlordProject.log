@@ -1,9 +1,5 @@
 ﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
-  SubtitleManager.cpp
-  ReClock.cpp
   DiningHallScene.cpp
-  Generating Code...
-     Creating library D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.lib and object D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.exp
   OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.exe
   0 File(s) copied
   0 File(s) copied

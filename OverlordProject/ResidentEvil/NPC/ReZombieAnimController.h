@@ -1,5 +1,6 @@
 #pragma once
 #include "Components/BaseComponent.h"
+#include "ResidentEvil/ReData.h"
 
 // class that links player events to animations
 class ReZombie;
@@ -14,7 +15,7 @@ public:
 	ReZombieAnimController& operator=(ReZombieAnimController&& other) noexcept = delete;
 	void Initialize(const SceneContext& sceneContext) override;
 	void Update(const SceneContext& sceneContext) override;
-
+	void TriggerState(const ZState& state);
 private:
 	ModelAnimator* m_pAnimator{};
 	ReZombie* m_pZombie{};

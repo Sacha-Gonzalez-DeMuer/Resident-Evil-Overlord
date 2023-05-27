@@ -42,7 +42,6 @@
     <ClCompile Include="ResidentEvil\Player\RePlayerController.cpp" />
     <ClCompile Include="Utils\FbxLoader.cpp" />
     <ClCompile Include="Utils\StaticMeshFactory.cpp" />
-    <ClCompile Include="ResidentEvil\HUD\SubtitleManager.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="ResidentEvil\NPC\ReZombie.cpp" />
     <ClCompile Include="ResidentEvil\World\ReInteractableObject.cpp" />
@@ -50,6 +49,7 @@
     <ClCompile Include="ResidentEvil\NPC\ReZombieAnimController.cpp" />
     <ClCompile Include="ResidentEvil\Items\ReGun.cpp" />
     <ClCompile Include="ResidentEvil\Items\ReInventory.cpp" />
+    <ClCompile Include="ResidentEvil\HUD\SubtitleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -93,7 +93,6 @@
     <ClInclude Include="ResidentEvil\Player\RePlayerController.h" />
     <ClInclude Include="Utils\FbxLoader.h" />
     <ClInclude Include="Utils\StaticMeshFactory.h" />
-    <ClInclude Include="ResidentEvil\HUD\SubtitleManager.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="ResidentEvil\NPC\ReZombie.h" />
     <ClInclude Include="ResidentEvil\ReData.h" />
@@ -102,6 +101,7 @@
     <ClInclude Include="ResidentEvil\NPC\ReZombieAnimController.h" />
     <ClInclude Include="ResidentEvil\Items\ReGun.h" />
     <ClInclude Include="ResidentEvil\Items\ReInventory.h" />
+    <ClInclude Include="ResidentEvil\HUD\SubtitleManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scenes">

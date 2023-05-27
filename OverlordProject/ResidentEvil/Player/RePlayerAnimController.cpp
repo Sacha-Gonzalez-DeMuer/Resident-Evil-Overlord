@@ -30,9 +30,9 @@ void RePlayerAnimController::Update(const SceneContext& sceneContext)
 	const auto& playerDesc = m_pPlayerController->GetDesc();
 	const auto& currentAnim = m_pAnimator->GetClipName();
 
-	bool isSprinting = pInput->IsActionTriggered(playerDesc.actionId_Sprint);
+	bool isSprinting = pInput->IsActionTriggered(playerDesc->actionId_Sprint);
 	bool isMoving = m_pPlayerController->IsMoving();
-	bool isMovingBackward = pInput->IsActionTriggered(playerDesc.actionId_MoveBackward);
+	bool isMovingBackward = pInput->IsActionTriggered(playerDesc->actionId_MoveBackward);
 	bool isAiming = m_pPlayerController->IsAiming();
 	m_pAnimator->SetPlayReversed(false);
 

@@ -48,7 +48,9 @@ namespace FilePath
 
 	// Zombie
 	const std::wstring ZOMBIE_ANIMS_OVM{ L"ResidentEvil/Characters/Zombie/Zombie.ovm" };
-
+	const std::wstring ZOMBIE_DIFFUSE{ L"ResidentEvil/Characters/Zombie/Zombie_diffuse.png" };
+	const std::wstring ZOMBIE_SPEC{ L"ResidentEvil/Characters/Zombie/Zombie_specular.png" };
+	const std::wstring ZOMBIE_NORMAL{ L"ResidentEvil/Characters/Zombie/Zombie_normal.png" };
 
 	// HUD
 	const std::wstring SUBTITLE_FONT{ L"Fonts/ReFont_subtitles.fnt" };

@@ -3,6 +3,7 @@
 #include "FilePaths.h"
 #include "Materials/DiffuseMaterial_Skinned.h"
 #include "ResidentEvil/NPC/ReZombieAnimController.h"
+#include "ResidentEvil/ReData.h"
 
 ReZombie::ReZombie(const ReCharacterDesc& characterDesc)
 	: m_CharacterDesc(characterDesc)
@@ -66,6 +67,22 @@ void ReZombie::Update(const SceneContext& sceneContext)
 
 
 	}
+}
+
+void ReZombie::Attack()
+{
+	m_pAnimController->TriggerState(ZState::ATTACKING);
+
+	// lock target into position relative to zombie
+	const auto& zPos = GetTransform()->GetPosition();
+	const auto& tPos = m_pTarget->GetTransform()->GetPosition();
+	const auto& difference = XMVectorSubtract(XMLoadFloat3(&tPos), XMLoadFloat3(&zPos));
+	const auto& dispacement = XMVectorScale(XMVector3Normalize(difference), m_CharacterDesc.attackDistance);
+	XMFLOAT3 fdisplacement;
+	XMStoreFloat3(&fdisplacement, dispacement);
+	m_pTarget->GetTransform()->Translate(fdisplacement.x, fdisplacement.y, fdisplacement.z);
+
+
 }
 
 void ReZombie::UpdateBehavior(const SceneContext& /*sceneContext*/)

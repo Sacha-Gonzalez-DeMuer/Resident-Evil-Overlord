@@ -12,15 +12,6 @@ public:
 	ReZombie& operator=(const ReZombie& other) = delete;
 	ReZombie& operator=(ReZombie&& other) noexcept = delete;
 
-
-	enum class ZState
-	{
-		IDLE,
-		WALKING,
-		ATTACKING,
-		DEAD
-	};
-
 	void Initialize(const SceneContext& sceneContext) override;
 	void Update(const SceneContext& sceneContext) override;
 	void SetTarget(TransformComponent* pTarget) { m_pTarget = pTarget; }
@@ -44,6 +35,7 @@ private:
 
 	ZState m_State{ ZState::IDLE };
 	void UpdateBehavior(const SceneContext& sceneContext);
+	void Attack();
 	
 };
 

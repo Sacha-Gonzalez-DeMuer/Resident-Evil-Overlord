@@ -53,3 +53,11 @@ enum class ReItem
 	EMPTY,
 	COUNT
 };
+
+enum class ZState
+{
+	IDLE,
+	WALKING,
+	ATTACKING,
+	DEAD
+};

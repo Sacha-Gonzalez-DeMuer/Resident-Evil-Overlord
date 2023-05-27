@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "SubtitleManager.h"
-#include "ResidentEvil/ReData.h"
 
 void SubtitleManager::Initialize(const SceneContext& /*sceneContext*/)
 {
@@ -13,11 +12,6 @@ void SubtitleManager::Update(const SceneContext& /*sceneContext*/)
 	if (m_Displaying)
 	{
 		TextRenderer::Get()->DrawText(m_CurrentSubtitle.font, StringUtil::utf8_decode(m_CurrentSubtitle.text), m_SubtitlePos, m_SubtitleColor);
-
-		//if (sceneContext.pInput->IsActionTriggered(m_pCharacterDesc->actionId_Interact))
-		//{
-		//	m_Displaying = false;
-		//}
 	}
 }
 

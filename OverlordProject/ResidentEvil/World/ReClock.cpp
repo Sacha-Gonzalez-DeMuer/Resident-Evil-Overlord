@@ -10,5 +10,5 @@ ReClock::ReClock(const XMFLOAT3& pos, const XMFLOAT3& size)
 void ReClock::Interact()
 {
 	Logger::LogWarning(L"ReClock::Interact()");
-	SubtitleManager::Get()->SetSubtitle(m_Subtitle);
+	SubtitleManager::Get().SetSubtitle(m_Subtitle);
 }
