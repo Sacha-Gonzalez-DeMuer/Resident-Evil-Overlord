@@ -14,7 +14,15 @@ RePlayerController::RePlayerController(const ReCharacterDesc& characterDesc)
 	: m_CharacterDesc(characterDesc),
 	m_MoveAcceleration(characterDesc.maxMoveSpeed / characterDesc.moveAccelerationTime),
 	m_FallAcceleration(characterDesc.maxFallSpeed / characterDesc.fallAccelerationTime)
-{ }
+{
+
+}
+
+void RePlayerController::GetAttacked()
+{
+	SetAnimLocked(true);
+	m_pAnimController->TriggerAnim(PAnimNames::Bitten);
+}
 
 void RePlayerController::Initialize(const SceneContext& sceneContext)
 {
@@ -48,10 +56,22 @@ void RePlayerController::Initialize(const SceneContext& sceneContext)
 	m_pModelObject->GetTransform()->Scale(0.11f, 0.11f, 0.11f);
 	m_pModelObject->GetTransform()->Translate(0.f, -m_CharacterDesc.controller.height / 2, 0.f);
 
-
+	
 	// Animation
 	m_pAnimController = AddComponent(new RePlayerAnimController(modelComponent->GetAnimator(), this));
 
+
+	m_pBloodEmitterObj = AddChild(new GameObject());
+	ParticleEmitterSettings particleSettings{};
+	particleSettings.maxSize = 1.f;
+	particleSettings.maxEnergy = 3.f;
+	particleSettings.minEnergy = 1.f;
+	particleSettings.maxScale = 5.5f;
+	particleSettings.maxEmitterRadius = 0.1f;
+	particleSettings.minEmitterRadius = 0.05f;
+	auto bloodEmitter = m_pBloodEmitterObj->AddComponent(new ParticleEmitterComponent(FilePath::BLOOD_PARTICLE, particleSettings, 200));
+	m_pAnimController->SetBloodEmitter(bloodEmitter);
+	//m_pBloodEmitterObj->GetTransform()->Translate(0.f, m_CharacterDesc.controller.height, 0.f);
 
 	// Inventory
 	m_pInventory = AddComponent(new ReInventory());
@@ -59,7 +79,7 @@ void RePlayerController::Initialize(const SceneContext& sceneContext)
 
 void RePlayerController::Update(const SceneContext& sceneContext)
 {
-	if (sceneContext.pCamera->IsActive())
+	if (sceneContext.pCamera->IsActive() && !m_AnimationLocked)
 	{
 		constexpr float epsilon{ 0.01f };
 		const float deltaTime{ sceneContext.pGameTime->GetElapsed() };

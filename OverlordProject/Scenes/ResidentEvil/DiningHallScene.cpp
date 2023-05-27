@@ -20,6 +20,8 @@
 #include "ResidentEvil/ReData.h"
 #include "ResidentEvil/NPC/ReZombie.h"
 #include "ResidentEvil/Items/ReGun.h"
+#include "ResidentEvil/HUD/SubtitleController.h"
+#include "ResidentEvil/World/ThunderController.h"
 
 DiningHallScene::DiningHallScene(void) : GameScene(L"DiningHallScene")
 {
@@ -37,6 +39,8 @@ void DiningHallScene::Initialize()
 	m_SceneContext.pLights->GetDirectionalLight().isEnabled = !m_SceneContext.useDeferredRendering;
 	m_SceneContext.pLights->SetDirectionalLight({ 0, 56, 0 }, { 4, -2.43f, .040f });
 
+	auto pSubController = AddChild(new SubtitleController());
+	SubtitleManager::Get().SetController(pSubController);
 
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -109,12 +113,11 @@ void DiningHallScene::Initialize()
 	pCamVolumeManager.SetActiveCamera(UINT(0));
 
 	// Clock
-	m_pClock = AddChild(new ReClock({37,14,-28}, {15,29,5}));
+	m_pClock = AddChild(new ReClock({37,14,-28}, {15,30,10}));
 	Subtitle clockSub;
-	clockSub.font = ContentManager::Load<SpriteFont>(L"Fonts/Consolas_32.fnt");
+	clockSub.font = ContentManager::Load<SpriteFont>(FilePath::SUBTITLE_FONT);
 	clockSub.text = "blablabla look at game to see \nwhat the text is";
 	m_pClock->SetSubtitle(clockSub);
-
 
 	// Zombie
 	ReCharacterDesc zombieDesc{ pDefaultMaterial };
@@ -122,19 +125,25 @@ void DiningHallScene::Initialize()
 	zombieDesc.rotationSpeed = 60.f;
 	zombieDesc.maxMoveSpeed = 10.f;
 	zombieDesc.moveAccelerationTime = 0.3f;
-	zombieDesc.attackDistance = 5.f;
+	zombieDesc.attackDistance = 20.f;
 
-	auto zombie = AddChild(new ReZombie(zombieDesc));
-	zombie->GetTransform()->Translate(-2.f, 15.f, -80.f); // spawn pos
-	zombie->SetTarget(m_pCharacter->GetTransform());
+	m_pZombie = AddChild(new ReZombie(zombieDesc));
+	m_pZombie->GetTransform()->Translate(26.f, 10.f, 63.f); // spawn pos
+	m_pZombie->SetTarget(m_pCharacter);
 	
-	m_pGun = AddChild(new ReGun({ 0,0,0 }, { 1,1,1 }));
-	m_pGun->SetDestInventory(m_pCharacter->GetInventory());
+	//m_pGun = AddChild(new ReGun({ 8,10,-63 }, { -15,29,8 }));
+	//m_pGun->SetDestInventory(m_pCharacter->GetInventory());
+
+	AddChild(new ThunderController());
+
 }
 
 void DiningHallScene::Update()
 {
-	SubtitleManager::Get().Update(m_SceneContext);
+}
+
+void DiningHallScene::Draw()
+{
 }
 
 void DiningHallScene::PostDraw()
@@ -329,11 +338,18 @@ void DiningHallScene::OnGUI()
 
 	if (ImGui::CollapsingHeader("DirectionalLight"))
 	{
-		static float positionArray[3] = { 0, 0, 0 };
-		static float directionArray[3] = { 0, 0, 0 };
+		// get light pos
+		const auto& pLight = m_SceneContext.pLights->GetDirectionalLight();
+		const auto& pos =  pLight.position;
+		const auto& dir = pLight.direction;
+
+		static float positionArray[3] = { pos.x, pos.y, pos.z };
+		static float directionArray[3] = { dir.x, dir.y, dir.z };
 
 		ImGui::DragFloat3("Position", positionArray, .05f, 0, 100);
 		ImGui::DragFloat3("Direction", directionArray, .01f, -4, 4);
+		ImGui::Checkbox("Enable", &m_SceneContext.pLights->GetDirectionalLight().isEnabled);
+		ImGui::InputFloat("Intensity", &m_SceneContext.pLights->GetDirectionalLight().intensity, .1f, 1.f);
 
 		m_SceneContext.pLights->SetDirectionalLight(
 			{ positionArray[0], positionArray[1], positionArray[2] },
@@ -367,5 +383,19 @@ void DiningHallScene::OnGUI()
 
 		m_pGun->GetTransform()->Translate(positionArray[0], positionArray[1], positionArray[2]);
 		m_pGun->GetTransform()->Scale(sizeArray[0], sizeArray[1], sizeArray[2]);
+	}
+
+	if (ImGui::CollapsingHeader("Zombie"))
+	{
+		const auto& pos = m_pZombie->GetTransform()->GetPosition();
+		float positionArray[3] = { pos.x, pos.y, pos.z };
+		ImGui::DragFloat3("Position", positionArray);
+
+		const auto& size = m_pZombie->GetTransform()->GetScale();
+		float sizeArray[3] = { size.x, size.y, size.z };
+		ImGui::DragFloat3("Size", sizeArray);
+
+		m_pZombie->GetTransform()->Translate(positionArray[0], positionArray[1], positionArray[2]);
+		m_pZombie->GetTransform()->Scale(sizeArray[0], sizeArray[1], sizeArray[2]);
 	}
 }

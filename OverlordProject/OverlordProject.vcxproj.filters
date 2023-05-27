@@ -50,6 +50,8 @@
     <ClCompile Include="ResidentEvil\Items\ReGun.cpp" />
     <ClCompile Include="ResidentEvil\Items\ReInventory.cpp" />
     <ClCompile Include="ResidentEvil\HUD\SubtitleManager.cpp" />
+    <ClCompile Include="ResidentEvil\HUD\SubtitleController.cpp" />
+    <ClCompile Include="ResidentEvil\World\ThunderController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -102,6 +104,8 @@
     <ClInclude Include="ResidentEvil\Items\ReGun.h" />
     <ClInclude Include="ResidentEvil\Items\ReInventory.h" />
     <ClInclude Include="ResidentEvil\HUD\SubtitleManager.h" />
+    <ClInclude Include="ResidentEvil\HUD\SubtitleController.h" />
+    <ClInclude Include="ResidentEvil\World\ThunderController.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scenes">

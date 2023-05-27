@@ -23,6 +23,11 @@ public:
 
 	bool IsMoving() const { return m_IsMoving; }
 	bool IsAiming() const { return m_IsAiming; }
+	bool IsAnimLocked() const { return m_AnimationLocked; }
+	void SetAnimLocked(bool locked) { m_AnimationLocked = locked; }
+
+	void GetAttacked();
+
 protected:
 	void Initialize(const SceneContext&) override;
 	void Update(const SceneContext&) override;
@@ -32,6 +37,7 @@ private:
 	RePlayerAnimController* m_pAnimController{};
 	ControllerComponent* m_pControllerComponent{};
 	GameObject* m_pModelObject{};
+	GameObject* m_pBloodEmitterObj{};
 
 	ReCharacterDesc m_CharacterDesc;
 	XMFLOAT3 m_TotalVelocity{};						//TotalVelocity with X/Z for Horizontal Movement AND Y for Vertical Movement (fall/jump)
@@ -50,6 +56,7 @@ private:
 
 	bool m_IsMoving{ false };
 	bool m_IsAiming{ false };
+	bool m_AnimationLocked{ false };
 	//bool m_IsGettingBit{ false };
 
 	void OnCamSwitch();

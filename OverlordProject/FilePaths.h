@@ -53,5 +53,9 @@ namespace FilePath
 	const std::wstring ZOMBIE_NORMAL{ L"ResidentEvil/Characters/Zombie/Zombie_normal.png" };
 
 	// HUD
-	const std::wstring SUBTITLE_FONT{ L"Fonts/ReFont_subtitles.fnt" };
+	const std::wstring SUBTITLE_FONT{ L"Fonts/Consolas_32.fnt" };
+
+
+	// PARTICLES
+	const std::wstring BLOOD_PARTICLE{ L"ResidentEvil/Particles/Blood.png" };
 }

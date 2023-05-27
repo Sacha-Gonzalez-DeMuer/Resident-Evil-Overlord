@@ -4,7 +4,7 @@
 
 ParticleMaterial* ParticleEmitterComponent::m_pParticleMaterial{};
 
-ParticleEmitterComponent::ParticleEmitterComponent(const std::wstring& assetFile, const ParticleEmitterSettings& emitterSettings, UINT particleCount):
+ParticleEmitterComponent::ParticleEmitterComponent(const std::wstring& assetFile, const ParticleEmitterSettings& emitterSettings, UINT particleCount) :
 	m_ParticlesArray(new Particle[particleCount]),
 	m_ParticleCount(particleCount), //How big is our particle buffer?
 	m_MaxParticles(particleCount), //How many particles to draw (max == particleCount)
@@ -115,7 +115,7 @@ void ParticleEmitterComponent::SpawnParticle(Particle& p)
 {
 	p.isActive = true;
 
-	p.currentEnergy = p.totalEnergy 
+	p.currentEnergy = p.totalEnergy
 		= MathHelper::randF(m_EmitterSettings.minEnergy, m_EmitterSettings.maxEnergy);
 
 
@@ -187,7 +187,7 @@ void ParticleEmitterComponent::PostDraw(const SceneContext& sceneContext)
 
 void ParticleEmitterComponent::DrawImGui()
 {
-	if(ImGui::CollapsingHeader("Particle System"))
+	if (ImGui::CollapsingHeader("Particle System"))
 	{
 		ImGui::SliderUInt("Count", &m_ParticleCount, 0, m_MaxParticles);
 		ImGui::InputFloatRange("Energy Bounds", &m_EmitterSettings.minEnergy, &m_EmitterSettings.maxEnergy);

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ParticleScene.h"
-
+#include "FilePaths.h"
 #include "Materials/ColorMaterial.h"
 
 void ParticleScene::Initialize()
@@ -23,6 +23,7 @@ void ParticleScene::Initialize()
 
 	const auto pObject = AddChild(new GameObject);
 	m_pEmitter = pObject->AddComponent(new ParticleEmitterComponent(L"Textures/Smoke.png", settings, 200));
+	m_pEmitter->Play();
 
 	//Teapot
 	m_pTeapot = AddChild(new GameObject());

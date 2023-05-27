@@ -5,6 +5,7 @@ class CameraSwitch;
 class ReDoor;
 class ReClock;
 class ReGun;
+class ReZombie;
 class DiningHallScene final : public GameScene
 {
 	public:
@@ -13,6 +14,7 @@ class DiningHallScene final : public GameScene
 
 	void Initialize() override;
 	void Update() override;
+	void Draw() override;
 	void OnGUI() override;
 	void PostDraw() override;
 
@@ -35,6 +37,7 @@ private:
 
 	std::vector<CameraSwitch*> m_pSwitches{};
 	std::vector<ReDoor*> m_pDoors{};
+	ReZombie* m_pZombie{};
 	ReClock* m_pClock{};
 	ReGun* m_pGun{};
 

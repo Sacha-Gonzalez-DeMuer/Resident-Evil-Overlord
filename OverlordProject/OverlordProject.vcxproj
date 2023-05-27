@@ -181,6 +181,8 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Materials\UberMaterial.cpp" />
+    <ClCompile Include="ResidentEvil\HUD\SubtitleController.cpp" />
+    <ClCompile Include="ResidentEvil\World\ThunderController.cpp" />
     <ClCompile Include="Utils\FbxLoader.cpp" />
     <ClCompile Include="Utils\StaticMeshFactory.cpp" />
   </ItemGroup>
@@ -238,6 +240,8 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Materials\UberMaterial.h" />
+    <ClInclude Include="ResidentEvil\HUD\SubtitleController.h" />
+    <ClInclude Include="ResidentEvil\World\ThunderController.h" />
     <ClInclude Include="Utils\FbxLoader.h" />
     <ClInclude Include="Utils\StaticMeshFactory.h" />
   </ItemGroup>

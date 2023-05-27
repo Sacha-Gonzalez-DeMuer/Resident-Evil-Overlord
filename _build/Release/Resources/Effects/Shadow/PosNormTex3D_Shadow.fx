@@ -3,6 +3,7 @@ float4x4 gWorldViewProj : WORLDVIEWPROJECTION;
 float4x4 gWorldViewProj_Light;
 float3 gLightDirection = float3(-0.577f, -0.577f, 0.577f);
 float gShadowMapBias = 0.005f;
+float gLightIntensity = 1.0f;
 
 Texture2D gDiffuseMap;
 Texture2D gShadowMap;
@@ -116,7 +117,7 @@ float EvaluateShadowMap(float4 lpos)
 
 	//average the samples
     float shadowFactor = sum / 64.0f;
-    float ambient = .3f;
+    float ambient = .1f;
     return shadowFactor + ambient;
 }
 
@@ -137,7 +138,7 @@ float4 PS(VS_OUTPUT input) : SV_TARGET
 	diffuseStrength = saturate(diffuseStrength);
 	color_rgb = color_rgb * diffuseStrength;
 
-	return float4( color_rgb * shadowValue , color_a );
+    return float4(color_rgb * shadowValue * gLightIntensity, color_a);
 }
 
 //--------------------------------------------------------------------------------------

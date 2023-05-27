@@ -2,6 +2,13 @@
 #include "Components/BaseComponent.h"
 #include "ResidentEvil/ReData.h"
 
+namespace ZAnimNames {
+	const std::wstring Idle{ L"Idle" };
+	const std::wstring Walk{ L"Walk" };
+	const std::wstring Dying{ L"Dying" };
+	const std::wstring Attack{ L"Bite" };
+}
+
 // class that links player events to animations
 class ReZombie;
 class ReZombieAnimController final : public BaseComponent
@@ -16,6 +23,9 @@ public:
 	void Initialize(const SceneContext& sceneContext) override;
 	void Update(const SceneContext& sceneContext) override;
 	void TriggerState(const ZState& state);
+
+	const std::wstring& GetAnimName() const { return m_pAnimator->GetClipName(); }
+
 private:
 	ModelAnimator* m_pAnimator{};
 	ReZombie* m_pZombie{};

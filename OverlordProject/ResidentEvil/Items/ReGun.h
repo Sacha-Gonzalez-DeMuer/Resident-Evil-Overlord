@@ -16,6 +16,7 @@ public:
 	void Interact() override;
 
 private:
+	bool m_IsInteracted{};
 	ReInventory* m_pDestInventory{};
 };
 

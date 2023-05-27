@@ -16,12 +16,7 @@ void ModelAnimator::Update(const SceneContext& sceneContext)
 		// Calculate the passedTicks
 		auto passedTicks = sceneContext.pGameTime->GetElapsed() * m_CurrentClip.ticksPerSecond * m_AnimationSpeed;
 		
-		if(!m_SinglePlay) passedTicks = fmod(passedTicks, m_CurrentClip.duration);
-		else if (passedTicks >= m_CurrentClip.duration)
-		{
-			m_SinglePlay = false;
-			SetAnimation(m_LastClip);
-		}
+		passedTicks = fmod(passedTicks, m_CurrentClip.duration);
 
 		// Add the passedTicks to tick count
 		if (m_Reversed)
@@ -33,8 +28,15 @@ void ModelAnimator::Update(const SceneContext& sceneContext)
 		else
 		{
 			m_TickCount += passedTicks;
-			if (m_TickCount > m_CurrentClip.duration)
+			if (m_TickCount > m_CurrentClip.duration) {
+				if (m_SinglePlay)
+				{
+					m_SinglePlay = false;
+					SetAnimation(m_NextClip);
+				}
+
 				m_TickCount = 0;
+			}
 		}
 
 		// Determine affected Keys based on m_TickCount
@@ -170,12 +172,12 @@ void ModelAnimator::Reset(bool pause)
 	}
 }
 
-void ModelAnimator::PlayOnce(const std::wstring& clipName)
+void ModelAnimator::PlayOnce(const std::wstring& clipName, const std::wstring& nextClipName)
 {
 	m_Reversed = false;
 	m_IsPlaying = true;
 	m_SinglePlay = true;
-	m_LastClip = m_CurrentClip;
+	SetNextClip(nextClipName);
 
 	//Check if clipName is different than the current clip m_CurrentClip.name
 	if (clipName != m_CurrentClip.name)
@@ -183,4 +185,22 @@ void ModelAnimator::PlayOnce(const std::wstring& clipName)
 		//	Call SetAnimation(clipName)
 		SetAnimation(clipName);
 	}
+}
+
+void ModelAnimator::SetNextClip(const std::wstring& clipName)
+{
+	//Iterate the m_AnimationClips vector and search for an AnimationClip with the given name (clipName)
+	for (const auto& animClip : m_AnimationClips)
+	{
+		if (animClip.name == clipName)
+		{
+			m_NextClip = animClip;
+			return;
+		}
+	}
+
+	//	Call Reset
+	//	Log a warning with an appropriate message
+	Reset(false);
+	Logger::LogWarning(L"ModelAnimator::SetAnimation(const std::wstring& clipName) > clipName is not found in the m_AnimationClips vector");
 }

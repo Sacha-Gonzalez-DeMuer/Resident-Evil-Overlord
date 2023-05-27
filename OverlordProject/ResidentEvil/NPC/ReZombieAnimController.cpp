@@ -1,19 +1,14 @@
 #include "stdafx.h"
 #include "ReZombieAnimController.h"
-
 #include "ReZombie.h"
-namespace AnimNames {
-	const std::wstring Idle{ L"Idle" };
-	const std::wstring Walk{ L"Walk" };
-	const std::wstring Dying{ L"Dying" };
-	const std::wstring Attack{ L"Bite" };
-}
+
+using namespace ZAnimNames;
 
 ReZombieAnimController::ReZombieAnimController(ModelAnimator* modelAnimator, ReZombie* zombie)
 	: m_pAnimator(modelAnimator)
 	, m_pZombie(zombie)
 {
-	m_pAnimator->SetAnimation(AnimNames::Idle);
+	m_pAnimator->SetAnimation(Idle);
 }
 
 void ReZombieAnimController::Initialize(const SceneContext& /*sceneContext*/)
@@ -30,17 +25,17 @@ void ReZombieAnimController::Update(const SceneContext& /*sceneContext*/)
 	switch (state)
 	{
 	case ZState::IDLE:
-		if (currentAnim != AnimNames::Idle)
+		if (currentAnim != Idle)
 		{
-			m_pAnimator->SetAnimation(AnimNames::Idle);
+			m_pAnimator->SetAnimation(Idle);
 			m_pAnimator->Play();
 		}
 		break;
 
 	case ZState::WALKING:
-		if (currentAnim != AnimNames::Walk)
+		if (currentAnim != Walk)
 		{
-			m_pAnimator->SetAnimation(AnimNames::Walk);
+			m_pAnimator->SetAnimation(Walk);
 			m_pAnimator->Play();
 		}
 		break;
@@ -55,17 +50,16 @@ void ReZombieAnimController::TriggerState(const ZState& state)
 
 	switch (state)
 	{
-	case ZState::IDLE:
-		if (currentAnim != AnimNames::Attack)
+	case ZState::ATTACKING:
+		if (currentAnim != Attack)
 		{
-			m_pAnimator->PlayOnce(AnimNames::Attack);
+			m_pAnimator->PlayOnce(Attack, Idle);
 		}
 		break;
-
 	case ZState::DEAD:
-		if (currentAnim != AnimNames::Dying)
+		if (currentAnim != Dying)
 		{
-			m_pAnimator->PlayOnce(AnimNames::Dying);
+			m_pAnimator->PlayOnce(Dying, Idle);
 		}
 		break;
 

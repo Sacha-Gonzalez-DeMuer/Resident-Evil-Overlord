@@ -1,12 +1,63 @@
 ﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
+  stdafx.cpp
+cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
+  HealthComponent.cpp
+  Main.cpp
+  MainGame.cpp
+  ColorMaterial.cpp
+  BasicMaterial.cpp
+  BasicMaterial_Deferred.cpp
+  DiffuseMaterial.cpp
+  DiffuseMaterial_Skinned.cpp
+  PostAmbientOcclusion.cpp
+  PostBlur.cpp
+  PostGrayscale.cpp
+  DiffuseMaterial_Shadow.cpp
+  DiffuseMaterial_Shadow_Skinned.cpp
+  SpikyMaterial.cpp
+  UberMaterial.cpp
+  BoneObject.cpp
+  Character.cpp
+  CubePrefab.cpp
+  Player.cpp
+  PongGameSettings.cpp
+  Compiling...
+  SpherePrefab.cpp
+  TorusPrefab.cpp
+  CameraSwitch.cpp
+  ReCamera.cpp
+  ReCameraManager.cpp
+  SubtitleController.cpp
   SubtitleManager.cpp
+  ReGun.cpp
+  ReInventory.cpp
+  ReZombie.cpp
+  ReZombieAnimController.cpp
+  RePlayerAnimController.cpp
+  RePlayerController.cpp
+  IInteractable.cpp
+  InteractableComponent.cpp
   ReClock.cpp
+  ReDoor.cpp
+  ReInteractableObject.cpp
+  ThunderController.cpp
   DiningHallScene.cpp
+  Compiling...
+  MainHallScene.cpp
+  PostProcessingScene.cpp
+  DeferredRenderingScene.cpp
+  CharacterScene.cpp
+  FontTestScene.cpp
+  PickingScene.cpp
+  ShadowMappingScene.cpp
+  ParticleScene.cpp
+  FbxLoader.cpp
+  StaticMeshFactory.cpp
      Creating library D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.lib and object D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.exp
   Generating code
-  590 of 7538 functions ( 7.8%) were compiled, the rest were copied from previous compilation.
-    1 functions were new in current compilation
-    28 functions had inline decision re-evaluated but remain unchanged
+  7 of 7753 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    7 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.exe
   0 File(s) copied
