@@ -52,6 +52,7 @@
     <ClCompile Include="ResidentEvil\HUD\SubtitleManager.cpp" />
     <ClCompile Include="ResidentEvil\HUD\SubtitleController.cpp" />
     <ClCompile Include="ResidentEvil\World\ThunderController.cpp" />
+    <ClCompile Include="Materials\Deferred\BasicMaterial_Deferred_Shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -106,6 +107,7 @@
     <ClInclude Include="ResidentEvil\HUD\SubtitleManager.h" />
     <ClInclude Include="ResidentEvil\HUD\SubtitleController.h" />
     <ClInclude Include="ResidentEvil\World\ThunderController.h" />
+    <ClInclude Include="Materials\Deferred\BasicMaterial_Deferred_Shadow.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scenes">

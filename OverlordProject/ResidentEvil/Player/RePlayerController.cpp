@@ -55,23 +55,26 @@ void RePlayerController::Initialize(const SceneContext& sceneContext)
 
 	m_pModelObject->GetTransform()->Scale(0.11f, 0.11f, 0.11f);
 	m_pModelObject->GetTransform()->Translate(0.f, -m_CharacterDesc.controller.height / 2, 0.f);
-
+	  
 	
 	// Animation
 	m_pAnimController = AddComponent(new RePlayerAnimController(modelComponent->GetAnimator(), this));
 
 
-	m_pBloodEmitterObj = AddChild(new GameObject());
+	auto bloodemitterObj = AddChild(new GameObject());
 	ParticleEmitterSettings particleSettings{};
-	particleSettings.maxSize = 1.f;
-	particleSettings.maxEnergy = 3.f;
-	particleSettings.minEnergy = 1.f;
+	particleSettings.minSize = .1f;
+	particleSettings.maxSize = 2.f;
+	particleSettings.maxEnergy = .3f;
+	particleSettings.minEnergy = .1f;
 	particleSettings.maxScale = 5.5f;
 	particleSettings.maxEmitterRadius = 0.1f;
 	particleSettings.minEmitterRadius = 0.05f;
-	auto bloodEmitter = m_pBloodEmitterObj->AddComponent(new ParticleEmitterComponent(FilePath::BLOOD_PARTICLE, particleSettings, 200));
-	m_pAnimController->SetBloodEmitter(bloodEmitter);
-	//m_pBloodEmitterObj->GetTransform()->Translate(0.f, m_CharacterDesc.controller.height, 0.f);
+	particleSettings.velocity = XMFLOAT3(-10.f, 10.f, 0.f);
+	particleSettings.offset = XMFLOAT3(0.f, m_CharacterDesc.controller.height /2, 0.f);
+	m_pBloodEmitter = bloodemitterObj->AddComponent(new ParticleEmitterComponent(FilePath::BLOOD_PARTICLE, particleSettings, 200));
+	
+	m_pAnimController->SetBloodEmitter(m_pBloodEmitter);
 
 	// Inventory
 	m_pInventory = AddComponent(new ReInventory());
@@ -79,6 +82,8 @@ void RePlayerController::Initialize(const SceneContext& sceneContext)
 
 void RePlayerController::Update(const SceneContext& sceneContext)
 {
+	GetTransform()->Rotate(0.f, m_TotalYaw, 0.f);
+
 	if (sceneContext.pCamera->IsActive() && !m_AnimationLocked)
 	{
 		constexpr float epsilon{ 0.01f };
@@ -118,7 +123,6 @@ void RePlayerController::Update(const SceneContext& sceneContext)
 			m_TotalYaw += m_CharacterDesc.rotationSpeed * deltaTime;
 		else if (move.x < 0.f)
 			m_TotalYaw -= m_CharacterDesc.rotationSpeed * deltaTime;
-		GetTransform()->Rotate(0.f, m_TotalYaw, 0.f);
 
 		////********
 		////MOVEMENT

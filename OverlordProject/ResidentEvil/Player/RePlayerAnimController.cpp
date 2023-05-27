@@ -19,12 +19,16 @@ void RePlayerAnimController::Update(const SceneContext& sceneContext)
 
 	if (currentAnim == Bitten)
 	{
-		m_pBloodEmitter->Play();
-		m_pBloodEmitter->GetTransform()->Translate(m_pPlayerController->GetTransform()->GetWorldPosition());
+		m_BloodTimer += sceneContext.pGameTime->GetElapsed();
+		if (m_BloodTimer > m_BloodDelay)
+		{
+			m_pBloodEmitter->Play();
+		}
 	}
-	else if (m_pBloodEmitter->IsPlaying())
+	else
 	{
-	m_pBloodEmitter->Stop();
+		m_BloodTimer = 0;
+		m_pBloodEmitter->Stop();
 	}
 
 
@@ -39,7 +43,6 @@ void RePlayerAnimController::Update(const SceneContext& sceneContext)
 	bool isAiming = m_pPlayerController->IsAiming();
 	m_pAnimator->SetPlayReversed(false);
 
-	// inb4 yandere dev - no time to make a state machine :(
 	if (isSprinting && isMoving)
 	{
 		if (currentAnim != Sprint)

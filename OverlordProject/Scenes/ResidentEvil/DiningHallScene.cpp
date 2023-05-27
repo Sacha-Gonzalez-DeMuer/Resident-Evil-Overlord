@@ -22,6 +22,7 @@
 #include "ResidentEvil/Items/ReGun.h"
 #include "ResidentEvil/HUD/SubtitleController.h"
 #include "ResidentEvil/World/ThunderController.h"
+#include "Components/ParticleEmitterComponent.h"
 
 DiningHallScene::DiningHallScene(void) : GameScene(L"DiningHallScene")
 {
@@ -33,10 +34,11 @@ DiningHallScene::~DiningHallScene(void)
 
 void DiningHallScene::Initialize()
 {
-	m_SceneContext.settings.enableOnGUI = true;
+	m_SceneContext.settings.enableOnGUI = true;f
 	m_SceneContext.settings.drawGrid = false;
+	m_SceneContext.settings.drawPhysXDebug = false;
 	m_SceneContext.useDeferredRendering = false;
-	m_SceneContext.pLights->GetDirectionalLight().isEnabled = !m_SceneContext.useDeferredRendering;
+	m_SceneContext.pLights->GetDirectionalLight().isEnabled = true;
 	m_SceneContext.pLights->SetDirectionalLight({ 0, 56, 0 }, { 4, -2.43f, .040f });
 
 	auto pSubController = AddChild(new SubtitleController());
@@ -133,6 +135,16 @@ void DiningHallScene::Initialize()
 	
 	//m_pGun = AddChild(new ReGun({ 8,10,-63 }, { -15,29,8 }));
 	//m_pGun->SetDestInventory(m_pCharacter->GetInventory());
+	ParticleEmitterSettings particleSettings{};
+	particleSettings.maxSize = 5.f;
+	particleSettings.maxEnergy = 3.f;
+	particleSettings.minEnergy = 1.f;
+	particleSettings.maxScale = 5.5f;
+	particleSettings.maxEmitterRadius = 0.1f;
+	particleSettings.minEmitterRadius = 0.05f;
+	particleSettings.velocity = XMFLOAT3(0.f, 10.f, 0.f);
+
+
 
 	AddChild(new ThunderController());
 
@@ -336,26 +348,26 @@ void DiningHallScene::OnGUI()
 		pDoor->GetTransform()->Scale(sizeArray[0], sizeArray[1], sizeArray[2]);
 	}
 
-	if (ImGui::CollapsingHeader("DirectionalLight"))
-	{
-		// get light pos
-		const auto& pLight = m_SceneContext.pLights->GetDirectionalLight();
-		const auto& pos =  pLight.position;
-		const auto& dir = pLight.direction;
+	//if (ImGui::CollapsingHeader("DirectionalLight"))
+	//{
+	//	// get light pos
+	//	const auto& pLight = m_SceneContext.pLights->GetDirectionalLight();
+	//	const auto& pos =  pLight.position;
+	//	const auto& dir = pLight.direction;
 
-		static float positionArray[3] = { pos.x, pos.y, pos.z };
-		static float directionArray[3] = { dir.x, dir.y, dir.z };
+	//	static float positionArray[3] = { pos.x, pos.y, pos.z };
+	//	static float directionArray[3] = { dir.x, dir.y, dir.z };
 
-		ImGui::DragFloat3("Position", positionArray, .05f, 0, 100);
-		ImGui::DragFloat3("Direction", directionArray, .01f, -4, 4);
-		ImGui::Checkbox("Enable", &m_SceneContext.pLights->GetDirectionalLight().isEnabled);
-		ImGui::InputFloat("Intensity", &m_SceneContext.pLights->GetDirectionalLight().intensity, .1f, 1.f);
+	//	ImGui::DragFloat3("Position", positionArray, .05f, 0, 100);
+	//	ImGui::DragFloat3("Direction", directionArray, .01f, -4, 4);
+	//	ImGui::Checkbox("Enable", &m_SceneContext.pLights->GetDirectionalLight().isEnabled);
+	//	ImGui::InputFloat("Intensity", &m_SceneContext.pLights->GetDirectionalLight().intensity, .1f, 1.f);
 
-		m_SceneContext.pLights->SetDirectionalLight(
-			{ positionArray[0], positionArray[1], positionArray[2] },
-			{ directionArray[0], directionArray[1], directionArray[2] }
-		);
-	}
+	//	m_SceneContext.pLights->SetDirectionalLight(
+	//		{ positionArray[0], positionArray[1], positionArray[2] },
+	//		{ directionArray[0], directionArray[1], directionArray[2] }
+	//	);
+	//}
 
 	if (ImGui::CollapsingHeader("Clock"))
 	{
@@ -397,5 +409,13 @@ void DiningHallScene::OnGUI()
 
 		m_pZombie->GetTransform()->Translate(positionArray[0], positionArray[1], positionArray[2]);
 		m_pZombie->GetTransform()->Scale(sizeArray[0], sizeArray[1], sizeArray[2]);
+	}
+
+	if (ImGui::CollapsingHeader("Particle"))
+	{
+		const auto& pos = m_pCharacter->GetEmitter()->GetTransform()->GetPosition();
+		float positionArray[3] = { pos.x, pos.y, pos.z };
+		ImGui::DragFloat3("Position", positionArray);
+		m_pCharacter->GetEmitter()->GetTransform()->Translate(positionArray[0], positionArray[1], positionArray[2]);
 	}
 }

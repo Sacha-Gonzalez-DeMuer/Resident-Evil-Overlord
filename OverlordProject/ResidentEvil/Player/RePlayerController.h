@@ -25,9 +25,9 @@ public:
 	bool IsAiming() const { return m_IsAiming; }
 	bool IsAnimLocked() const { return m_AnimationLocked; }
 	void SetAnimLocked(bool locked) { m_AnimationLocked = locked; }
-
 	void GetAttacked();
-
+	ParticleEmitterComponent* GetEmitter() { return m_pBloodEmitter; };
+	void SetYaw(const float yaw) { m_TotalYaw = yaw; }
 protected:
 	void Initialize(const SceneContext&) override;
 	void Update(const SceneContext&) override;
@@ -37,7 +37,7 @@ private:
 	RePlayerAnimController* m_pAnimController{};
 	ControllerComponent* m_pControllerComponent{};
 	GameObject* m_pModelObject{};
-	GameObject* m_pBloodEmitterObj{};
+	ParticleEmitterComponent* m_pBloodEmitter{};
 
 	ReCharacterDesc m_CharacterDesc;
 	XMFLOAT3 m_TotalVelocity{};						//TotalVelocity with X/Z for Horizontal Movement AND Y for Vertical Movement (fall/jump)

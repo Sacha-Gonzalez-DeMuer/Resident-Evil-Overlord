@@ -12,11 +12,23 @@ public:
 	void Initialize(const SceneContext&) override {};
 	void Update(const SceneContext&) override;
 
+
+
 private:
-	// times in in milliseconds
-	float m_FlashDuration{ 300 };
-	float m_MinDelay{ 100 };
-	float m_MaxDelay{ 5000 };
-	float m_CurrentFlashDuration{ 0 };
-	float m_CurrentDelay{ 0 };
+	float m_FlashDuration{ 0.1f };
+
+	float m_MinFlashDuration{ 0.01f };
+	float m_MaxFlashDuration{ 0.4f };
+
+	float m_MinDelay{ .1f };
+	float m_MaxDelay{ 3.f };
+
+	float m_MinIntensity{ .25f };
+	float m_MaxIntensity{ 1.f };
+
+	float m_CurrentFlashDuration{ .1f };
+	float m_CurrentDelay{ .1f };
+	float m_DelayTimer{ 0 };
+
+	bool m_isLightOn{ true };
 };

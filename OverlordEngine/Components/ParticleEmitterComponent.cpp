@@ -4,7 +4,7 @@
 
 ParticleMaterial* ParticleEmitterComponent::m_pParticleMaterial{};
 
-ParticleEmitterComponent::ParticleEmitterComponent(const std::wstring& assetFile, const ParticleEmitterSettings& emitterSettings, UINT particleCount) :
+ParticleEmitterComponent::ParticleEmitterComponent(const std::wstring& assetFile, const ParticleEmitterSettings& emitterSettings, UINT particleCount):
 	m_ParticlesArray(new Particle[particleCount]),
 	m_ParticleCount(particleCount), //How big is our particle buffer?
 	m_MaxParticles(particleCount), //How many particles to draw (max == particleCount)
@@ -113,9 +113,11 @@ void ParticleEmitterComponent::UpdateParticle(Particle& p, float elapsedTime) co
 
 void ParticleEmitterComponent::SpawnParticle(Particle& p)
 {
+	if(!m_IsPlaying) return;
+
 	p.isActive = true;
 
-	p.currentEnergy = p.totalEnergy
+	p.currentEnergy = p.totalEnergy 
 		= MathHelper::randF(m_EmitterSettings.minEnergy, m_EmitterSettings.maxEnergy);
 
 
@@ -131,7 +133,10 @@ void ParticleEmitterComponent::SpawnParticle(Particle& p)
 
 	randomVecV = XMVector3TransformNormal(randomVecV, randomRot);
 	float distance = MathHelper::randF(m_EmitterSettings.minEmitterRadius, m_EmitterSettings.maxEmitterRadius);
-	XMStoreFloat3(&p.vertexInfo.Position, XMVectorScale(randomVecV, distance));
+
+	const auto& rndOffset {XMVectorScale(randomVecV, distance)};
+	const auto& worldOffset{ XMVectorAdd(XMLoadFloat3(&GetTransform()->GetWorldPosition()), XMLoadFloat3(&m_EmitterSettings.offset)) };
+	XMStoreFloat3(&p.vertexInfo.Position, XMVectorAdd(rndOffset, worldOffset));
 
 	// size initialization
 	p.vertexInfo.Size = MathHelper::randF(m_EmitterSettings.minSize, m_EmitterSettings.maxSize);
@@ -149,17 +154,12 @@ void ParticleEmitterComponent::SpawnParticle(Particle& p)
 void ParticleEmitterComponent::PostDraw(const SceneContext& sceneContext)
 {
 	// 1.
-	auto VP = sceneContext.pCamera->GetViewProjection();
-	m_pParticleMaterial->SetVariable_Matrix(L"gWorldViewProj", reinterpret_cast<float*>(&VP));
-
-	auto VI = sceneContext.pCamera->GetViewInverse();
-	m_pParticleMaterial->SetVariable_Matrix(L"gViewInverse", reinterpret_cast<float*>(&VI));
-
-	m_pParticleMaterial->SetVariable_Texture(L"gParticleTexture", m_pParticleTexture);
+	m_pParticleMaterial->SetVariable_Matrix(L"gWorldViewProj", sceneContext.pCamera->GetViewProjection());
+	m_pParticleMaterial->SetVariable_Matrix(L"gViewInverse", sceneContext.pCamera->GetViewInverse());
+	m_pParticleMaterial->SetVariable_Texture(L"gParticleTexture", m_pParticleTexture->GetShaderResourceView());
 
 
 	auto pDeviceContext = sceneContext.d3dContext.pDeviceContext;
-	// 2.
 	auto& pTechniqueContext = m_pParticleMaterial->GetTechniqueContext();
 
 	// 3.
@@ -187,7 +187,7 @@ void ParticleEmitterComponent::PostDraw(const SceneContext& sceneContext)
 
 void ParticleEmitterComponent::DrawImGui()
 {
-	if (ImGui::CollapsingHeader("Particle System"))
+	if(ImGui::CollapsingHeader("Particle System"))
 	{
 		ImGui::SliderUInt("Count", &m_ParticleCount, 0, m_MaxParticles);
 		ImGui::InputFloatRange("Energy Bounds", &m_EmitterSettings.minEnergy, &m_EmitterSettings.maxEnergy);
@@ -196,5 +196,6 @@ void ParticleEmitterComponent::DrawImGui()
 		ImGui::InputFloatRange("Radius Bounds", &m_EmitterSettings.minEmitterRadius, &m_EmitterSettings.maxEmitterRadius);
 		ImGui::InputFloat3("Velocity", &m_EmitterSettings.velocity.x);
 		ImGui::ColorEdit4("Color", &m_EmitterSettings.color.x, ImGuiColorEditFlags_NoInputs);
+
 	}
 }

@@ -29,11 +29,12 @@ public:
 	void Update(const SceneContext& sceneContext) override;
 	void TriggerAnim(const std::wstring& clipName);
 	void SetBloodEmitter(ParticleEmitterComponent* emitter) { m_pBloodEmitter = emitter; }
-
 private:
 	ModelAnimator* m_pAnimator{};
 	RePlayerController* m_pPlayerController{};
 	ParticleEmitterComponent* m_pBloodEmitter{};
+	float m_BloodDelay{ 1.f };
+	float m_BloodTimer{};
 
 	enum class AnimState
 	{

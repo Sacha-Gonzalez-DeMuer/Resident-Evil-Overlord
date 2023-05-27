@@ -122,6 +122,7 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Materials\Deferred\BasicMaterial_Deferred_Shadow.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="Materials\Post\PostGrayscale.cpp" />
     <ClCompile Include="Materials\Post\PostBlur.cpp" />
@@ -192,6 +193,7 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Materials\Deferred\BasicMaterial_Deferred_Shadow.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="Materials\Post\PostGrayscale.h" />
     <ClInclude Include="Materials\Post\PostBlur.h" />

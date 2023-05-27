@@ -3,6 +3,7 @@
 #include "Materials/Shadow/DiffuseMaterial_Shadow.h"
 #include "Materials/DiffuseMaterial.h"
 #include "Materials/Deferred/BasicMaterial_Deferred.h"
+#include "Materials/Deferred/BasicMaterial_Deferred_Shadow.h"
 #include "Materials/Deferred/BasicMaterial.h"
 #include "Materials/Shadow/DiffuseMaterial_Shadow.h"
 #include <iostream>
@@ -244,13 +245,13 @@ what is the rotation matrix to convert from vector V1 to V2*/
 	void FbxLoader::MaterialToOverlord_Deferred(const std::vector<FbxSurfaceMaterial*>& materials, ModelComponent& toModel, const std::wstring& fbxFolderPath)
 	{
 		// build materials
-		std::vector<BasicMaterial_Deferred*> basicMaterials{};
+		std::vector<BasicMaterial_Deferred_Shadow*> basicMaterials{};
 		for (const auto& mat : materials)
 		{
 			std::wstring diffuseMap = ExtractDiffuseMap(mat);
 			if (diffuseMap == L"") continue;
 
-			auto pBasicMat = MaterialManager::Get()->CreateMaterial<BasicMaterial_Deferred>();
+			auto pBasicMat = MaterialManager::Get()->CreateMaterial<BasicMaterial_Deferred_Shadow>();
 			pBasicMat->UseTransparency(false);
 
 			pBasicMat->SetDiffuseMap(fbxFolderPath + diffuseMap);

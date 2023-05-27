@@ -21,7 +21,6 @@ public:
 	TransformComponent* GetTarget() const { return m_pTarget; }
 	const ReCharacterDesc& GetDesc() const { return m_CharacterDesc; }
 	ZState GetState() const { return m_State; }
-
 	void GetShot();
 private:
 	// Components

@@ -32,8 +32,8 @@ void DiffuseMaterial_Shadow::OnUpdateModelVariables(const SceneContext& sceneCon
 	const auto pShadowMapRenderer = ShadowMapRenderer::Get();
 
 	//Update LightWVP Matrix
-	const XMFLOAT4X4 lightVP = pShadowMapRenderer->GetLightVP();
-	const XMFLOAT4X4 modelWorld = pModel->GetTransform()->GetWorld();
+	const XMFLOAT4X4& lightVP = pShadowMapRenderer->GetLightVP();
+	const XMFLOAT4X4& modelWorld = pModel->GetTransform()->GetWorld();
 
 	XMFLOAT4X4 lightWorldViewProj;
 	XMStoreFloat4x4(&lightWorldViewProj, XMMatrixMultiply(XMLoadFloat4x4(&modelWorld), XMLoadFloat4x4(&lightVP)));

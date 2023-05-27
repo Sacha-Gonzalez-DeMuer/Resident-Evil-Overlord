@@ -78,7 +78,7 @@ void ReZombie::Update(const SceneContext& sceneContext)
 		{
 			m_State = ZState::ATTACKING;
 
-			const auto& lockedPos = XMVectorScale(XMVector3Normalize(difference), m_CharacterDesc.attackDistance);
+			const auto& lockedPos = XMVectorScale(XMVector3Normalize(difference), m_CharacterDesc.attackDistance * .7f);
 			XMFLOAT3 fdisplacement;
 			XMStoreFloat3(&fdisplacement, lockedPos);
 			m_pTarget->GetTransform()->Translate(myPos.x + fdisplacement.x, myPos.y + fdisplacement.y, myPos.z + fdisplacement.z);
@@ -86,7 +86,7 @@ void ReZombie::Update(const SceneContext& sceneContext)
 			float zombieYaw = XMConvertToDegrees(atan2(XMVectorGetX(direction), XMVectorGetZ(direction)));
 			float targetYaw = XMConvertToDegrees(atan2(XMVectorGetX(-direction), XMVectorGetZ(-direction)));
 
-			m_pTarget->Rotate(0.f, targetYaw, 0.f);
+			m_pPlayer->SetYaw(targetYaw);
 			GetTransform()->Rotate(0.f, zombieYaw, 0.f);
 			return;
 		}

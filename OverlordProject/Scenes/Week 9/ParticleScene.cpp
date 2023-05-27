@@ -45,4 +45,5 @@ void ParticleScene::OnGUI()
 {
 	ImGui::Checkbox("Auto Move", &m_AutoMove);
 	m_pEmitter->DrawImGui();
+
 }

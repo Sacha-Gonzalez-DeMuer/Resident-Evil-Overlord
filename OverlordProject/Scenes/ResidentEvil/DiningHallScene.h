@@ -6,6 +6,7 @@ class ReDoor;
 class ReClock;
 class ReGun;
 class ReZombie;
+class ParticleEmitterComponent;
 class DiningHallScene final : public GameScene
 {
 	public:
@@ -40,6 +41,7 @@ private:
 	ReZombie* m_pZombie{};
 	ReClock* m_pClock{};
 	ReGun* m_pGun{};
+	GameObject* m_pParticleEmitter{};
 
 	void AddCameras();
 	void AddCameraSwitches();
