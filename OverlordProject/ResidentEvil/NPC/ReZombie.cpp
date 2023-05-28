@@ -25,7 +25,6 @@ void ReZombie::Initialize(const SceneContext&)
 	m_pModelObject = AddChild(new GameObject());
 	const auto pSkinnedMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow_Skinned>();
 	pSkinnedMaterial->SetDiffuseTexture(FilePath::ZOMBIE_DIFFUSE);
-
 	modelComponent = m_pModelObject->AddComponent(new ModelComponent(FilePath::ZOMBIE_ANIMS_OVM));
 	modelComponent->SetMaterial(pSkinnedMaterial);
 
