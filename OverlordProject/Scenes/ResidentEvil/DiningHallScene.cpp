@@ -50,6 +50,15 @@ void DiningHallScene::Initialize()
 
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
 
+	
+
+	// Zombie
+	ReCharacterDesc zombieDesc{ pDefaultMaterial };
+	zombieDesc.controller.height = 17.5f;
+	zombieDesc.rotationSpeed = 60.f;
+	zombieDesc.maxMoveSpeed = 10.f;
+	zombieDesc.moveAccelerationTime = 0.3f;
+	zombieDesc.attackDistance = 20.f;
 	// navmesh
 	auto nav_go = AddChild(new GameObject());
 	auto pNavTriangleMesh = ContentManager::Load<PxTriangleMesh>(FilePath::ENV_DINING_NAVMESH);
@@ -75,6 +84,11 @@ void DiningHallScene::Initialize()
 
 	m_pCharacter = AddChild(new RePlayerController(characterDesc));
 	m_pCharacter->GetTransform()->Translate(0.f, 15.f, -90.f); // spawn pos
+
+
+	m_pZombie = AddChild(new ReZombie(zombieDesc));
+	m_pZombie->GetTransform()->Translate(26.f, 10.f, 63.f); // spawn pos
+	m_pZombie->SetTarget(m_pCharacter);
 
 	//Input
 	auto inputAction = InputAction(CharacterMoveLeft, InputState::down, 'A');
@@ -125,18 +139,6 @@ void DiningHallScene::Initialize()
 	clockSub.text = "blablabla look at game to see \nwhat the text is";
 	m_pClock->SetSubtitle(clockSub);
 
-	// Zombie
-	ReCharacterDesc zombieDesc{ pDefaultMaterial };
-	zombieDesc.controller.height = 17.5f;
-	zombieDesc.rotationSpeed = 60.f;
-	zombieDesc.maxMoveSpeed = 10.f;
-	zombieDesc.moveAccelerationTime = 0.3f;
-	zombieDesc.attackDistance = 20.f;
-
-	m_pZombie = AddChild(new ReZombie(zombieDesc));
-	m_pZombie->GetTransform()->Translate(26.f, 10.f, 63.f); // spawn pos
-	m_pZombie->SetTarget(m_pCharacter);
-	
 	//m_pGun = AddChild(new ReGun({ 8,10,-63 }, { -15,29,8 }));
 	//m_pGun->SetDestInventory(m_pCharacter->GetInventory());
 	ParticleEmitterSettings particleSettings{};
@@ -153,7 +155,7 @@ void DiningHallScene::Initialize()
 	AddChild(new ThunderController());
 
 	AddMenus();
-	//AddPostProcessing();
+	AddPostProcessing();
 }
 
 void DiningHallScene::Update()

@@ -1,8 +1,12 @@
 ﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   SpriteRenderer.cpp
   GameScene.cpp
   Generating Code...
+=======
+  GameScene.cpp
+>>>>>>> Stashed changes
 =======
   GameScene.cpp
 >>>>>>> Stashed changes
