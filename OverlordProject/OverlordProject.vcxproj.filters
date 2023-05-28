@@ -57,6 +57,7 @@
     <ClCompile Include="ResidentEvil\HUD\ReButton.cpp" />
     <ClCompile Include="ResidentEvil\HUD\Menus\ReMenu.cpp" />
     <ClCompile Include="Scenes\Week 4\SpriteTestScene.cpp" />
+    <ClCompile Include="Materials\Post\PostBloom.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -116,6 +117,7 @@
     <ClInclude Include="ResidentEvil\HUD\ReButton.h" />
     <ClInclude Include="ResidentEvil\HUD\Menus\ReMenu.h" />
     <ClInclude Include="Scenes\Week 4\SpriteTestScene.h" />
+    <ClInclude Include="Materials\Post\PostBloom.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scenes">

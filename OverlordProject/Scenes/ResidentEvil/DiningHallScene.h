@@ -52,5 +52,6 @@ private:
 	void AddCameraSwitches();
 	void AddDoors();
 	void AddMenus();
+	void AddPostProcessing();
 };
 

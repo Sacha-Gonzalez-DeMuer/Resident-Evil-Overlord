@@ -11,6 +11,7 @@
 #include "Materials/Post/PostGrayscale.h"
 #include "Materials/Post/PostBlur.h"
 #include "Materials/Post/PostAmbientOcclusion.h"
+#include "Materials/Post/PostBloom.h"
 
 
 void PostProcessingScene::Initialize()
@@ -60,18 +61,11 @@ void PostProcessingScene::Initialize()
 
 	auto pMatManager = MaterialManager::Get();
 
-	m_pPostGrayscale = pMatManager->CreateMaterial<PostGrayscale>();
-
-	AddPostProcessingEffect(m_pPostGrayscale);
-
-
-	//TODO_W10
-	//Create and add a PostBlur material class (using Blur.fx)
-	//Add the material to the PostProcessing Stack + Uncomment the corresponding ImGui code below
-	//If you already have shadow mapping working you can change the code above to use the shadow variant shaders
-
-	m_pPostBlur = pMatManager->CreateMaterial<PostBlur>();
-	AddPostProcessingEffect(m_pPostBlur);
+	m_pPostBloom = pMatManager->CreateMaterial<PostBloom>();
+	AddPostProcessingEffect(m_pPostBloom);
+   
+	//m_pPostBlur = pMatManager->CreateMaterial<PostBlur>();
+	//AddPostProcessingEffect(m_pPostBlur);
 
 	//m_pPostAmbientOcclusion = pMatManager->CreateMaterial<PostAmbientOcclusion>();
 	//AddPostProcessingEffect(m_pPostAmbientOcclusion);
@@ -79,11 +73,11 @@ void PostProcessingScene::Initialize()
 
 void PostProcessingScene::OnGUI()
 {
-	bool isEnabled = m_pPostGrayscale->IsEnabled();
-	ImGui::Checkbox("Grayscale PP", &isEnabled);
-	m_pPostGrayscale->SetIsEnabled(isEnabled);
+	// bool isEnabled = m_pPostBloom->IsEnabled();
+	//ImGui::Checkbox("Bloom PP", &isEnabled);
+	//m_pPostBloom->SetIsEnabled(isEnabled);
 
-	isEnabled = m_pPostBlur->IsEnabled();
+	bool isEnabled = m_pPostBlur->IsEnabled();
 	ImGui::Checkbox("Blur PP", &isEnabled);
 	m_pPostBlur->SetIsEnabled(isEnabled);
 }

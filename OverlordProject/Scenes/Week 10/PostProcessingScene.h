@@ -2,6 +2,7 @@
 class PostGrayscale;
 class PostBlur;
 class PostAmbientOcclusion;
+class PostBloom;
 class PostProcessingScene : public GameScene
 {
 public:
@@ -18,7 +19,7 @@ protected:
 
 private:
 	PostBlur* m_pPostBlur;
-	PostGrayscale* m_pPostGrayscale;
+	PostBloom* m_pPostBloom;
 	PostAmbientOcclusion* m_pPostAmbientOcclusion;
 };
 

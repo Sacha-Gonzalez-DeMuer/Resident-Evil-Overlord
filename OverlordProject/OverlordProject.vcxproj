@@ -132,6 +132,7 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClCompile Include="Materials\DiffuseMaterial_Skinned.cpp" />
     <ClCompile Include="Materials\Shadow\DiffuseMaterial_Shadow.cpp" />
     <ClCompile Include="Materials\Shadow\DiffuseMaterial_Shadow_Skinned.cpp" />
+    <ClCompile Include="Materials\Post\PostBloom.cpp" />
     <ClCompile Include="Prefabs\BoneObject.cpp" />
     <ClCompile Include="Materials\DiffuseMaterial.cpp" />
     <ClCompile Include="Prefabs\Character.cpp" />
@@ -207,6 +208,7 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClInclude Include="Materials\DiffuseMaterial_Skinned.h" />
     <ClInclude Include="Materials\Shadow\DiffuseMaterial_Shadow.h" />
     <ClInclude Include="Materials\Shadow\DiffuseMaterial_Shadow_Skinned.h" />
+    <ClInclude Include="Materials\Post\PostBloom.h" />
     <ClInclude Include="Prefabs\BoneObject.h" />
     <ClInclude Include="Materials\DiffuseMaterial.h" />
     <ClInclude Include="FilePaths.h" />

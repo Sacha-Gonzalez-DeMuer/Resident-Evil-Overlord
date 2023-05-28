@@ -191,11 +191,6 @@ void GameScene::RootDraw()
 	//DEFERRED END
 	DeferredRenderer::Get()->End(m_SceneContext);
 
-	//SpriteRenderer Draw
-	SpriteRenderer::Get()->Draw(m_SceneContext);
-
-	//TextRenderer Draw
-	TextRenderer::Get()->Draw(m_SceneContext);
 
 	//Object-Scene Post-Draw
 	PostDraw();
@@ -214,8 +209,6 @@ void GameScene::RootDraw()
 #pragma region POST-PROCESSING PASS
 	//POST-PROCESSING_PASS
 	//++++++++++++++++++++
-
-	TODO_W10(L"Add Post-Processing PASS logic")
 
 	//No need to swap RenderTargets is there aren't any PP Effects...
 	if (m_PostProcessingMaterials.size() > 0)
@@ -244,6 +237,14 @@ void GameScene::RootDraw()
 		m_pGame->SetRenderTarget(nullptr);
 		SpriteRenderer::Get()->DrawImmediate(m_SceneContext.d3dContext, prev_rt->GetColorShaderResourceView(), DirectX::XMFLOAT2(0, 0));
 	}
+
+
+
+	//SpriteRenderer Draw
+	SpriteRenderer::Get()->Draw(m_SceneContext);
+
+	//TextRenderer Draw
+	TextRenderer::Get()->Draw(m_SceneContext);
 #pragma endregion
 }
 

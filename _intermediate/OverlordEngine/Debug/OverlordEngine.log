@@ -1,5 +1,9 @@
 ﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
+<<<<<<< Updated upstream
   SpriteRenderer.cpp
   GameScene.cpp
   Generating Code...
+=======
+  GameScene.cpp
+>>>>>>> Stashed changes
   OverlordEngine.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\OverlordEngine\_build\Debug\OverlordEngine.lib

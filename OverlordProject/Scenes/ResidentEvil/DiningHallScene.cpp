@@ -26,6 +26,7 @@
 #include "ResidentEvil/HUD/ReMenuManager.h"
 #include "ResidentEvil/HUD/Menus/ReMenu.h"
 #include "ResidentEvil/HUD/ReButton.h"
+#include "Materials/Post/PostBloom.h"
 
 DiningHallScene::DiningHallScene(void) : GameScene(L"DiningHallScene")
 {
@@ -40,7 +41,7 @@ void DiningHallScene::Initialize()
 	m_SceneContext.settings.enableOnGUI = true;
 	m_SceneContext.settings.drawGrid = false;
 	m_SceneContext.settings.drawPhysXDebug = false;
-	m_SceneContext.useDeferredRendering = false;
+	m_SceneContext.useDeferredRendering = true;
 	m_SceneContext.pLights->GetDirectionalLight().isEnabled = true;
 	m_SceneContext.pLights->SetDirectionalLight({ 0, 56, 0 }, { 4, -2.43f, .040f });
 
@@ -152,7 +153,7 @@ void DiningHallScene::Initialize()
 	AddChild(new ThunderController());
 
 	AddMenus();
-
+	//AddPostProcessing();
 }
 
 void DiningHallScene::Update()
@@ -222,6 +223,16 @@ void DiningHallScene::AddCameras()
 	AddChild(reCam);
 	ReCameraManager::Get().AddVolume(reCam);
 
+	camPos = { 0, 0, 0 };
+	camLook = { 0, 0, 0 };
+	camUp = { 0, 0, 0 };
+	reCam = new ReCamera(camPos, false);
+	cam = reCam->GetCamera();
+	cam->SetFieldOfView(fov);
+	cam->UpdateRotation(m_SceneContext, camUp, camLook);
+	AddChild(reCam);
+	ReCameraManager::Get().AddVolume(reCam);
+
 
 	/*
 	camPos = { 0, 0, 0 };
@@ -253,8 +264,8 @@ void DiningHallScene::AddCameraSwitches()
 	pSwitch->SetTargets(1, 2);
 	m_pSwitches.push_back(pSwitch);
 
-	//pSwitch = AddChild(new CameraSwitch({ 0, 0, 0 }, { 1, 1, 1 }, true));
-	//m_pSwitches.push_back(pSwitch);
+	pSwitch = AddChild(new CameraSwitch({ 0, 0, 0 }, { 1, 1, 1 }, true));
+	m_pSwitches.push_back(pSwitch);
 
 	/*
 	m_pSwitches.push_back(pSwitch);
@@ -337,6 +348,15 @@ void DiningHallScene::AddMenus()
 	//pControlsMenu->AddButton(pBackBtn);
 
 	pMenuManager->SwitchMenu(ReMenuType::MAIN);
+}
+
+void DiningHallScene::AddPostProcessing()
+{
+	auto pMatManager = MaterialManager::Get();
+
+	auto bloom = pMatManager->CreateMaterial<PostBloom>();
+	AddPostProcessingEffect(bloom);
+
 }
 
 
