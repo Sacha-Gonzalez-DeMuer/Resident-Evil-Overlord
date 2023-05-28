@@ -1,6 +1,8 @@
 //=============================================================================
 //// Shader uses position and texture
 //=============================================================================
+
+
 SamplerState samPoint
 {
     Filter = MIN_MAG_MIP_POINT;
@@ -49,44 +51,49 @@ PS_INPUT VS(VS_INPUT input)
     return output;
 }
 
+float gThreshold = .2f;
+float3 gGrayScales = float3(0.1f, 0.5f, 0.114f);
+float4 gBlurColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+float gBlurRadius = 5.0f;
+float gSmoothness = 0.1f;
+float gIntensity = .8f;
 
-
-//PIXEL SHADER
-//------------
+// PIXEL SHADER
+// ------------
 float4 PS(PS_INPUT input) : SV_Target
 {
     float4 baseColor = gTexture.Sample(samPoint, input.TexCoord);
+
+    // Convert the base color to grayscale
+    float grayscale = (baseColor.r + baseColor.g + baseColor.b) / 3.0f;
+
+    // Apply a threshold to identify bright areas
+    float4 brightAreas = smoothstep(gThreshold - gSmoothness, gThreshold + gSmoothness, grayscale);
     
-    float dx = 1.0f / x;
-    float dy = 1.0f / y;
-    
-    float2 dimensions = 0;
+
+    // Apply a blur to the bright areas
+    float4 blurColor = gBlurColor;
+    int numSamples = 0;
+    float blurRadius = gBlurRadius;
+    float sampleStep = blurRadius * 0.5f;
+
+    float2 dimensions;
     gTexture.GetDimensions(dimensions.x, dimensions.y);
-    
-     // Apply a threshold to identify bright areas
-    float threshold = 1.0;
-    float4 brightAreas = (baseColor - threshold) / max(1.0 - threshold, 0.0001f);
-    brightAreas = saturate(brightAreas);
-    
-       // Apply a blur to the bright areas
-    float4 blurColor = float4(0, 0, 0, 0);
-    float blurRadius = 1.f;
-    
-    int numPasses = 5;
-    float4 color = float4(0.0f, 0.0f, 0.0f, 1.0f);
-    for (int i = 0; i < numPasses; ++i)
+    float2 texelSize = float2(3.0 / dimensions.x, 3.0 / dimensions.y);
+
+    for (float x = -blurRadius; x <= blurRadius; x += sampleStep)
     {
-        for (int j = 0; j < numPasses; ++j)
+        for (float y = -blurRadius; y <= blurRadius; y += sampleStep)
         {
-            float2 offset = float2(i * dx * 2.0f, j * dy * 2.0f);
-            color += gTexture.Sample(samPoint, input.TexCoord + offset);
+            float2 offset = float2(x * texelSize.x, y * texelSize.y);
+            blurColor += gTexture.Sample(samPoint, input.TexCoord + offset);
+            numSamples++;
         }
     }
 
+    blurColor /= numSamples;
 
-    color /= numPasses;
-
-    return (color * brightAreas) + baseColor;
+    return blurColor * brightAreas * gIntensity + baseColor;
 }
 
 

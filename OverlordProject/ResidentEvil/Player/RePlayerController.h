@@ -62,4 +62,8 @@ private:
 	void OnCamSwitch();
 	void HandleInputActions(InputManager* input);
 	void Interact();
+	void Shoot();
+	float m_GunDmg{ 25.f };
+
+	GameObject* Raycast();
 };

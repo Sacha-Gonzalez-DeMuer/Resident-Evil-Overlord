@@ -75,7 +75,7 @@ float4 PS(PS_INPUT input) : SV_Target
     float4 blurColor = gBlurColor;
     int numSamples = 0;
     float blurRadius = gBlurRadius;
-    float sampleStep = blurRadius * 0.1f;
+    float sampleStep = blurRadius * 0.5f;
 
     float2 dimensions;
     gTexture.GetDimensions(dimensions.x, dimensions.y);

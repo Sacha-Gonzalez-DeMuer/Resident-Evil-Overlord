@@ -14,27 +14,26 @@ public:
 
 	void Initialize() override;
 	void Update() override;
+	void OnGUI() override;
+	void PostDraw() override;
 
 private:
-	enum InputIds
-	{
-		CharacterMoveLeft,
-		CharacterMoveRight,
-		CharacterMoveForward,
-		CharacterMoveBackward,
-		CharacterJump,
-		Interact
-	};
-
 	RePlayerController* m_pCharacter{};
 	GameObject* pPlayerObject{};
+	GameObject* m_pMainHall{};
 
 	std::vector<CameraSwitch*> m_pSwitches{};
 	std::vector<ReDoor*> m_pDoors{};
-	std::vector<Light*> m_pLights{};
+	Light m_TestLight;
 
+	bool m_DrawShadowMap{};
+	void LoadWorld();
 	void AddLights();
 	void AddCameras();
 	void AddCameraSwitches();
 	void AddDoors();
+	void AddPostProcessing();
+	void AddInput();
+	void AddNavCollider(const PxMaterial& material);
+	void AddPlayer(PxMaterial* material);
 };

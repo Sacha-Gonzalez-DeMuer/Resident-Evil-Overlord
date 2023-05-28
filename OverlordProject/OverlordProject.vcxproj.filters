@@ -42,7 +42,7 @@
     <ClCompile Include="ResidentEvil\Player\RePlayerController.cpp" />
     <ClCompile Include="Utils\FbxLoader.cpp" />
     <ClCompile Include="Utils\StaticMeshFactory.cpp" />
-    <ClCompile Include="HealthComponent.cpp" />
+    <ClCompile Include="ResidentEvil\Components\HealthComponent.cpp" />
     <ClCompile Include="ResidentEvil\NPC\ReZombie.cpp" />
     <ClCompile Include="ResidentEvil\World\ReInteractableObject.cpp" />
     <ClCompile Include="ResidentEvil\World\ReClock.cpp" />
@@ -58,6 +58,8 @@
     <ClCompile Include="ResidentEvil\HUD\Menus\ReMenu.cpp" />
     <ClCompile Include="Scenes\Week 4\SpriteTestScene.cpp" />
     <ClCompile Include="Materials\Post\PostBloom.cpp" />
+    <ClCompile Include="Materials\Post\PostGrain.cpp" />
+    <ClCompile Include="Scenes\ResidentEvil\MainMenuScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -101,7 +103,7 @@
     <ClInclude Include="ResidentEvil\Player\RePlayerController.h" />
     <ClInclude Include="Utils\FbxLoader.h" />
     <ClInclude Include="Utils\StaticMeshFactory.h" />
-    <ClInclude Include="HealthComponent.h" />
+    <ClInclude Include="ResidentEvil\Components\HealthComponent.h" />
     <ClInclude Include="ResidentEvil\NPC\ReZombie.h" />
     <ClInclude Include="ResidentEvil\ReData.h" />
     <ClInclude Include="ResidentEvil\World\ReInteractableObject.h" />
@@ -118,6 +120,8 @@
     <ClInclude Include="ResidentEvil\HUD\Menus\ReMenu.h" />
     <ClInclude Include="Scenes\Week 4\SpriteTestScene.h" />
     <ClInclude Include="Materials\Post\PostBloom.h" />
+    <ClInclude Include="Materials\Post\PostGrain.h" />
+    <ClInclude Include="Scenes\ResidentEvil\MainMenuScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scenes">

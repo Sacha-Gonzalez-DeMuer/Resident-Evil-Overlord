@@ -1,21 +1,12 @@
 ﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
-  MainGame.cpp
-  ReZombie.cpp
+  DiffuseMaterial.cpp
   DiningHallScene.cpp
-  PostProcessingScene.cpp
+  MainHallScene.cpp
+  FbxLoader.cpp
+  StaticMeshFactory.cpp
   Generating Code...
-     Creating library D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.lib and object D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.exp
   OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.exe
   0 File(s) copied
   0 File(s) copied
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
   0 File(s) copied
-  D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\OverlordProject\Resources\Effects\Post\Grayscale.fx
-=======
-  D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\OverlordProject\Resources\Effects\Post\Bloom.fx
->>>>>>> Stashed changes
-=======
-  D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\OverlordProject\Resources\Effects\Post\Bloom.fx
->>>>>>> Stashed changes
-  1 File(s) copied
+  0 File(s) copied

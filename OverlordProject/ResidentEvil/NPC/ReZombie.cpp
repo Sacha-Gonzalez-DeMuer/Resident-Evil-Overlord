@@ -11,6 +11,8 @@
 #include "ResidentEvil/ReData.h"
 #include "ResidentEvil/Player/RePlayerController.h"
 
+#include "ResidentEvil/Components/HealthComponent.h"
+
 ReZombie::ReZombie(const ReCharacterDesc& characterDesc)
 	: m_CharacterDesc(characterDesc), m_Acceleration(0.5f)
 {
@@ -34,14 +36,31 @@ void ReZombie::Initialize(const SceneContext&)
 	pModelTransform->Translate(0.f, -m_CharacterDesc.controller.height / 2, 0.f);
 	pModelTransform->Rotate(0.f, 180.f, 0.f);
 	m_pAnimController = AddComponent(new ReZombieAnimController(modelComponent->GetAnimator(), this));
+
+	auto pHealth = AddComponent(new HealthComponent());
+	pHealth->OnDeath.AddFunction([this]() { Die(); });
+	pHealth->OnTakeDamage.AddFunction([this]() {OnTakeDamage(); });
+
+
+	auto bloodemitterObj = AddChild(new GameObject());
+	ParticleEmitterSettings particleSettings{};
+	particleSettings.minSize = .1f;
+	particleSettings.maxSize = 2.f;
+	particleSettings.maxEnergy = .3f;
+	particleSettings.minEnergy = .1f;
+	particleSettings.maxScale = 5.5f;
+	particleSettings.maxEmitterRadius = 0.1f;
+	particleSettings.minEmitterRadius = 0.05f;
+	particleSettings.velocity = XMFLOAT3(-10.f, 10.f, 0.f);
+	particleSettings.offset = XMFLOAT3(0.f, m_CharacterDesc.controller.height / 2, 0.f);
+	m_pBloodEmitter = bloodemitterObj->AddComponent(new ParticleEmitterComponent(FilePath::BLOOD_PARTICLE, particleSettings, 200));
 }
 
 void ReZombie::Update(const SceneContext& sceneContext)
 {
-
+	if (m_Dead) return;
 	if (sceneContext.pCamera->IsActive())
 	{
-		if (m_CurrentHealth <= 0) return;
 		const float deltaTime{ sceneContext.pGameTime->GetElapsed() };
 		if (m_CooldownTimer > 0)
 		{
@@ -138,14 +157,12 @@ void ReZombie::SetTarget(RePlayerController* pPlayer)
 	m_pTarget = pPlayer->GetTransform();
 }
 
-void ReZombie::GetShot()
+void ReZombie::Die()
 {
-	m_CurrentHealth -= 20;
-	if (m_CurrentHealth <= 0)
-	{
-		m_State = ZState::DEAD;
-		m_pAnimController->TriggerState(ZState::DEAD);
-	}
+	m_pAnimController->TriggerState(ZState::DEAD, [this]() {
+		m_Dead = true; 
+		m_pAnimController->Pause();
+		});
 }
 
 void ReZombie::Attack()
@@ -158,6 +175,12 @@ void ReZombie::Attack()
 		m_pPlayer->GetAttacked();
 	}
 
+}
+
+void ReZombie::OnTakeDamage()
+{
+	if (m_Dead) return;
+	m_pBloodEmitter->Emit(10);
 }
 
 void ReZombie::UpdateBehavior(const SceneContext& /*sceneContext*/)

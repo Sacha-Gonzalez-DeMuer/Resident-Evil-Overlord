@@ -44,7 +44,7 @@ public:
 	//For Deferred Rendering
 	UINT AddLight(const Light& l) { m_Lights.push_back(l); return static_cast<UINT>(m_Lights.size() - 1); }
 	Light& GetLight(int id) { return m_Lights[id]; }
-	const std::vector<Light>& GetLights() const { return m_Lights; }
+	std::vector<Light>& GetLights()  { return m_Lights; }
 
 	Light& GetDirectionalLight() { return m_DirectionalLight; }
 	void SetDirectionalLight(const XMFLOAT3& position, const XMFLOAT3& direction);

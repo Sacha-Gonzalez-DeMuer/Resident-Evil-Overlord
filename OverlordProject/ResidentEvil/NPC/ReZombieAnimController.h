@@ -23,8 +23,10 @@ public:
 	void Initialize(const SceneContext& sceneContext) override;
 	void Update(const SceneContext& sceneContext) override;
 	void TriggerState(const ZState& state);
-
+	void TriggerState(const ZState& state, std::function<void()> onCompletion);
+	void Pause() { m_pAnimator->Pause(); }
 	const std::wstring& GetAnimName() const { return m_pAnimator->GetClipName(); }
+
 
 private:
 	ModelAnimator* m_pAnimator{};

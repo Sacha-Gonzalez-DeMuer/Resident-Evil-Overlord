@@ -22,6 +22,24 @@ ParticleEmitterComponent::~ParticleEmitterComponent()
 	m_pVertexBuffer->Release();
 }
 
+void ParticleEmitterComponent::Emit(const int amount)
+{
+	int emitted = 0;
+	for (UINT i = 0; i < m_ParticleCount; ++i)
+	{
+		if (emitted >= amount) return;
+
+		auto& p = m_ParticlesArray[i];
+
+		if (!p.isActive)
+		{
+			SpawnParticle(p);
+			++emitted;
+		}
+	}
+
+}
+
 void ParticleEmitterComponent::Initialize(const SceneContext& sceneContext)
 {
 	if (!m_pParticleMaterial)
@@ -111,9 +129,9 @@ void ParticleEmitterComponent::UpdateParticle(Particle& p, float elapsedTime) co
 	p.vertexInfo.Color.w *= lifePercentage;
 }
 
-void ParticleEmitterComponent::SpawnParticle(Particle& p)
+void ParticleEmitterComponent::SpawnParticle(Particle& p, bool forced)
 {
-	if(!m_IsPlaying) return;
+	if(!forced && !m_IsPlaying) return;
 
 	p.isActive = true;
 

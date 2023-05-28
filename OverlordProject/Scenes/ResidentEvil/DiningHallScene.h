@@ -22,18 +22,6 @@ class DiningHallScene final : public GameScene
 	void PostDraw() override;
 
 private:
-	enum InputIds
-	{
-		CharacterMoveLeft,
-		CharacterMoveRight,
-		CharacterMoveForward,
-		CharacterMoveBackward,
-		CharacterJump,
-		Interact,
-		CharacterSprint,
-		CharacterAim,
-		CharacterAttack
-	};
 
 	RePlayerController* m_pCharacter{};
 	GameObject* pPlayerObject{};

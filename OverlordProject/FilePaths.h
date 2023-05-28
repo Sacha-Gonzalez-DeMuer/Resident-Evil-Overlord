@@ -40,6 +40,7 @@ namespace FilePath
 
 	// Main Hall
 	const std::wstring FOLDER_ENV_MAINHALL{ L"ResidentEvil/Environments/MainHall/" };
+	const std::wstring ENV_MAIN_NAVMESH{ L"ResidentEvil/Environments/MainHall/Additional/MainHall_NavMesh.ovpt" };
 
 	// Stairs
 	const std::wstring FOLDER_ENV_STAIRS{ L"ResidentEvil/Environments/Stairs/FBX/" };
@@ -53,7 +54,7 @@ namespace FilePath
 	const std::wstring ZOMBIE_NORMAL{ L"ResidentEvil/Characters/Zombie/Zombie_normal.png" };
 
 	// HUD
-	const std::wstring SUBTITLE_FONT{ L"Fonts/Consolas_32.fnt" };
+	const std::wstring DEFAULT_FONT{ L"Fonts/Consolas_32.fnt" };
 	const std::wstring TEST_SPRITE{ L"Textures/TestSprite.jpg" };
 
 

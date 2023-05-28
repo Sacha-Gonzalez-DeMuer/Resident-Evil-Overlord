@@ -5,7 +5,7 @@ class ReButton;
 class ReMenu : public GameObject
 {
 public:
-	ReMenu(ReMenuType type, const std::wstring& backgroundImg);
+	ReMenu(ReMenuType type, const std::wstring& backgroundImg = L"");
 	~ReMenu() override = default;
 	ReMenu(const ReMenu& other) = delete;
 	ReMenu(ReMenu&& other) noexcept = delete;
@@ -20,7 +20,7 @@ public:
 
 private:
 	ReMenuType m_Type{};
-	bool m_IsActive{ false };
+	bool m_IsActive{ true };
 	std::vector<ReButton*> m_pButtons{};
 	SpriteComponent* m_pBackgroundImg{};
 

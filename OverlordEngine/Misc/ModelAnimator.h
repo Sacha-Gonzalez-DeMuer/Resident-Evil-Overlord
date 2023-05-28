@@ -20,6 +20,7 @@ public:
 	void SetAnimationSpeed(float speedPercentage) { m_AnimationSpeed = speedPercentage; }
 
 	void PlayOnce(const std::wstring& clipName, const std::wstring& nextClipName);
+	void PlayOnce(const std::wstring& clipName, const std::wstring& nextClipName, std::function<void()> onCompletion);
 	void SetNextClip(const std::wstring& clipName);
 
 	bool IsPlaying() const { return m_IsPlaying; }
@@ -35,6 +36,7 @@ public:
 private:
 	AnimationClip m_CurrentClip{};
 	AnimationClip m_NextClip{};
+	std::function<void()> m_OnCompletionCallback{};
 
 	std::vector<AnimationClip> m_AnimationClips{};
 	MeshFilter* m_pMeshFilter{};

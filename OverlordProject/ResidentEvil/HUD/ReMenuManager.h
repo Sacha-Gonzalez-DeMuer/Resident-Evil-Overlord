@@ -15,6 +15,7 @@ public:
 
 	void Initialize(const SceneContext&) override {};
 	void SwitchMenu(ReMenuType type);
+	void DisableMenus();
 	void AddMenu(ReMenu* pMenu) { m_pMenus.push_back(pMenu); }
 
 private:

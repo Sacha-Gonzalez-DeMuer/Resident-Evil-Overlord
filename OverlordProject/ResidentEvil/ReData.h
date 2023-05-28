@@ -66,5 +66,19 @@ enum class ReMenuType
 {
 	MAIN,
 	INGAME,
-	CONTROLS
+	CONTROLS,
+	EMPTY
+};
+
+enum InputIds
+{
+	CharacterMoveLeft,
+	CharacterMoveRight,
+	CharacterMoveForward,
+	CharacterMoveBackward,
+	CharacterJump,
+	Interact,
+	CharacterSprint,
+	CharacterAim,
+	CharacterAttack
 };

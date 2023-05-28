@@ -20,3 +20,12 @@ void ReMenuManager::SwitchMenu(ReMenuType type)
 		} else { Logger::LogWarning(L"ReMenuManager::SwitchMenu > Menu type not found!"); }
 	}
 }
+
+void ReMenuManager::DisableMenus()
+{
+	for (auto pMenu : m_pMenus)
+	{
+		pMenu->SetActive(false);
+	}
+	m_pLastActiveMenus.clear();
+}

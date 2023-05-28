@@ -25,3 +25,8 @@ void ReInventory::AddItem(const ReItem& item)
 	Logger::LogInfo(L"ReInventory::AddItem()" + static_cast<UINT>(item));
 	++m_Items[static_cast<UINT>(item)];
 }
+
+int ReInventory::GetItemAmount(const ReItem& item) const
+{
+	return m_Items[static_cast<UINT>(item)];
+}

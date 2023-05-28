@@ -29,6 +29,12 @@ void ReCamera::Update(const SceneContext& /*sceneContext*/)
     GetTransform()->Rotate(m_TotalPitch, m_TotalYaw, m_TotalRoll);
 }
 
+void ReCamera::OnCameraSwitch()
+{
+    if (m_HasLight)
+        GetScene()->GetSceneContext().pLights->SetDirectionalLight(GetTransform()->GetPosition(), m_LightOrientation);
+}
+
 void ReCamera::InitializeCamera(const XMFLOAT3& position, bool targetable)
 {   
     m_pCamera = AddComponent(new CameraComponent(targetable));

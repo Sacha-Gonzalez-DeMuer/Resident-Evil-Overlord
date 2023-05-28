@@ -20,17 +20,17 @@ void SpriteComponent::SetTexture(const std::wstring& spriteAsset)
 
 void SpriteComponent::Draw(const SceneContext& /*sceneContext*/)
 {
-	if (!m_pTexture || !m_IsActive)
+	if (!m_pTexture)
 		return;
 
 	// Get the sprite renderer instance
 	auto pSpriteRenderer = SpriteRenderer::Get();
 
 	// Get the owning GameObject's transform
-	const auto& transform = m_pGameObject->GetTransform();
+	auto transform = m_pGameObject->GetTransform();
 
 	// Get the position of the sprite
-	const auto& position = transform->GetPosition();
+	//const auto& position = transform->GetPosition();
 	const auto& worldPosition = transform->GetWorldPosition();
 
 	// Get the scale of the sprite
@@ -45,5 +45,5 @@ void SpriteComponent::Draw(const SceneContext& /*sceneContext*/)
 		{ worldPosition.x, worldPosition.y },
 		m_Color, m_Pivot,
 		scale,
-		rotation.z, position.z);
+		rotation.z, worldPosition.z);
 }

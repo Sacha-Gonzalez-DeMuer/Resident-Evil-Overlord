@@ -49,7 +49,7 @@ public:
 	void Play() { m_IsPlaying = true; }
 	void Stop() { m_IsPlaying = false; }
 	bool IsPlaying() const { return m_IsPlaying; }
-
+	void Emit(const int amount = 10);
 	void SetOffset(const XMFLOAT3& offset) { m_EmitterSettings.offset = offset; }
 protected:
 	void Initialize(const SceneContext&) override;
@@ -59,7 +59,7 @@ protected:
 private:
 	void CreateVertexBuffer(const SceneContext& sceneContext); //Method to create the vertex buffer
 	void UpdateParticle(Particle& p, float elapsedTime) const;
-	void SpawnParticle(Particle& p);
+	void SpawnParticle(Particle& p, bool forced = false);
 
 	TextureData* m_pParticleTexture{};
 	static ParticleMaterial* m_pParticleMaterial; //Material used to render the particles (static >> shared by all emitters)

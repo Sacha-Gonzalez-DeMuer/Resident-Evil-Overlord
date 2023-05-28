@@ -122,8 +122,9 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Scenes\ResidentEvil\MainMenuScene.cpp" />
     <ClCompile Include="Materials\Deferred\BasicMaterial_Deferred_Shadow.cpp" />
-    <ClCompile Include="HealthComponent.cpp" />
+    <ClCompile Include="ResidentEvil\Components\HealthComponent.cpp" />
     <ClCompile Include="Materials\Post\PostGrayscale.cpp" />
     <ClCompile Include="Materials\Post\PostBlur.cpp" />
     <ClCompile Include="Materials\Post\PostAmbientOcclusion.cpp" />
@@ -133,6 +134,7 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClCompile Include="Materials\Shadow\DiffuseMaterial_Shadow.cpp" />
     <ClCompile Include="Materials\Shadow\DiffuseMaterial_Shadow_Skinned.cpp" />
     <ClCompile Include="Materials\Post\PostBloom.cpp" />
+    <ClCompile Include="Materials\Post\PostGrain.cpp" />
     <ClCompile Include="Prefabs\BoneObject.cpp" />
     <ClCompile Include="Materials\DiffuseMaterial.cpp" />
     <ClCompile Include="Prefabs\Character.cpp" />
@@ -198,8 +200,9 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Scenes\ResidentEvil\MainMenuScene.h" />
     <ClInclude Include="Materials\Deferred\BasicMaterial_Deferred_Shadow.h" />
-    <ClInclude Include="HealthComponent.h" />
+    <ClInclude Include="ResidentEvil\Components\HealthComponent.h" />
     <ClInclude Include="Materials\Post\PostGrayscale.h" />
     <ClInclude Include="Materials\Post\PostBlur.h" />
     <ClInclude Include="Materials\Post\PostAmbientOcclusion.h" />
@@ -209,6 +212,7 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     <ClInclude Include="Materials\Shadow\DiffuseMaterial_Shadow.h" />
     <ClInclude Include="Materials\Shadow\DiffuseMaterial_Shadow_Skinned.h" />
     <ClInclude Include="Materials\Post\PostBloom.h" />
+    <ClInclude Include="Materials\Post\PostGrain.h" />
     <ClInclude Include="Prefabs\BoneObject.h" />
     <ClInclude Include="Materials\DiffuseMaterial.h" />
     <ClInclude Include="FilePaths.h" />

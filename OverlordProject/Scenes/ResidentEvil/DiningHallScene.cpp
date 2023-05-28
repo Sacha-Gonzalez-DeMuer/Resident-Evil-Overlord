@@ -26,7 +26,9 @@
 #include "ResidentEvil/HUD/ReMenuManager.h"
 #include "ResidentEvil/HUD/Menus/ReMenu.h"
 #include "ResidentEvil/HUD/ReButton.h"
+
 #include "Materials/Post/PostBloom.h"
+#include "Materials/Post/PostGrain.h"
 
 DiningHallScene::DiningHallScene(void) : GameScene(L"DiningHallScene")
 {
@@ -41,7 +43,7 @@ void DiningHallScene::Initialize()
 	m_SceneContext.settings.enableOnGUI = true;
 	m_SceneContext.settings.drawGrid = false;
 	m_SceneContext.settings.drawPhysXDebug = false;
-	m_SceneContext.useDeferredRendering = true;
+	m_SceneContext.useDeferredRendering = false;
 	m_SceneContext.pLights->GetDirectionalLight().isEnabled = true;
 	m_SceneContext.pLights->SetDirectionalLight({ 0, 56, 0 }, { 4, -2.43f, .040f });
 
@@ -132,12 +134,12 @@ void DiningHallScene::Initialize()
 	AddDoors();
 	pCamVolumeManager.SetActiveCamera(UINT(0));
 
-	// Clock
-	m_pClock = AddChild(new ReClock({37,14,-28}, {15,30,10}));
-	Subtitle clockSub;
-	clockSub.font = ContentManager::Load<SpriteFont>(FilePath::SUBTITLE_FONT);
-	clockSub.text = "blablabla look at game to see \nwhat the text is";
-	m_pClock->SetSubtitle(clockSub);
+	//// Clock
+	//m_pClock = AddChild(new ReClock({37,14,-28}, {15,30,10}));
+	//Subtitle clockSub;
+	//clockSub.font = ContentManager::Load<SpriteFont>(FilePath::SUBTITLE_FONT);
+	//clockSub.text = "blablabla look at game to see \nwhat the text is";
+	//m_pClock->SetSubtitle(clockSub);
 
 	//m_pGun = AddChild(new ReGun({ 8,10,-63 }, { -15,29,8 }));
 	//m_pGun->SetDestInventory(m_pCharacter->GetInventory());
@@ -153,7 +155,6 @@ void DiningHallScene::Initialize()
 
 
 	AddChild(new ThunderController());
-
 	AddMenus();
 	AddPostProcessing();
 }
@@ -225,15 +226,15 @@ void DiningHallScene::AddCameras()
 	AddChild(reCam);
 	ReCameraManager::Get().AddVolume(reCam);
 
-	camPos = { 0, 0, 0 };
-	camLook = { 0, 0, 0 };
-	camUp = { 0, 0, 0 };
-	reCam = new ReCamera(camPos, false);
-	cam = reCam->GetCamera();
-	cam->SetFieldOfView(fov);
-	cam->UpdateRotation(m_SceneContext, camUp, camLook);
-	AddChild(reCam);
-	ReCameraManager::Get().AddVolume(reCam);
+	//camPos = { 0, 0, 0 };
+	//camLook = { 0, 0, 0 };
+	//camUp = { 0, 0, 0 };
+	//reCam = new ReCamera(camPos, false);
+	//cam = reCam->GetCamera();
+	//cam->SetFieldOfView(fov);
+	//cam->UpdateRotation(m_SceneContext, camUp, camLook);
+	//AddChild(reCam);
+	//ReCameraManager::Get().AddVolume(reCam);
 
 
 	/*
@@ -291,53 +292,34 @@ void DiningHallScene::AddMenus()
 {
 	auto pMenuManager = AddChild(new ReMenuManager());
 	//const float thirdHeight{ m_SceneContext.windowHeight * .33f };
-	const float quarterHeight{ m_SceneContext.windowHeight * .25f };
+	//const float quarterHeight{ m_SceneContext.windowHeight * .25f };
 	const float halfWidth{ m_SceneContext.windowWidth * .5f };
-	const float btnWidth{ .3f };
-	const float btnHeight{ .1f };
+	const float btnWidth{ 1.0f };
+	const float btnHeight{ 1.0f };
+	const float centerWidth = m_SceneContext.windowWidth * .5f;
+	const float centerHeight = m_SceneContext.windowHeight * .5f;
+	
+	// In-game Menu
+	auto pInGameMenu = AddChild(new ReMenu(ReMenuType::INGAME));
+	pInGameMenu->GetTransform()->Translate(centerWidth, centerHeight, 0);
 
-	float depth{ 0 };
+	auto pToMainBtn = pInGameMenu->AddChild(new ReButton());
+	pToMainBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
+	pToMainBtn->GetTransform()->Translate(0, btnHeight, 0.f);
+	pToMainBtn->SetOnClick([this]() { SceneManager::Get()->SetActiveGameScene(L"MainMenu"); });
+	pInGameMenu->AddButton(pToMainBtn);
 
-	// Main Menu
-	auto pMainMenu = AddChild(new ReMenu(ReMenuType::MAIN, FilePath::TEST_SPRITE));
-	pMainMenu->GetTransform()->Scale(1.f, 1.f, 1.f);
-	pMenuManager->AddMenu(pMainMenu);
-	m_pMenus.push_back(pMainMenu);
+	auto pToGameBtn = pInGameMenu->AddChild(new ReButton());
+	pToGameBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
+	pToGameBtn->GetTransform()->Translate(halfWidth, 0, 0.f);
+	pToGameBtn->SetOnClick([&]() { pMenuManager->SwitchMenu(ReMenuType::EMPTY); });
+	pInGameMenu->AddButton(pToGameBtn);
 
-	auto pStartBtn = AddChild(new ReButton(FilePath::TEST_SPRITE));
-	pStartBtn->GetTransform()->Scale(btnWidth, btnHeight, 1.f);
-	pStartBtn->GetTransform()->Translate(halfWidth, quarterHeight, depth++);
-	pStartBtn->SetOnClick([this]() { std::cout << "Start game!"; });
-	pMainMenu->AddButton(pStartBtn);
-	m_pButtons.push_back(pStartBtn);
-
-	auto pControlsBtn = AddChild(new ReButton(FilePath::TEST_SPRITE));
-	pControlsBtn->GetTransform()->Scale(btnWidth, btnHeight, 1.f);
-	pControlsBtn->GetTransform()->Translate(halfWidth, quarterHeight * 2, depth++);
-	pControlsBtn->SetOnClick([&]() { pMenuManager->SwitchMenu(ReMenuType::CONTROLS); });
-	pMainMenu->AddButton(pControlsBtn);
-	m_pButtons.push_back(pControlsBtn);
-
-	auto pExitBtn = AddChild(new ReButton(FilePath::TEST_SPRITE));
-	pExitBtn->GetTransform()->Scale(btnWidth, btnHeight, 1.f);
-	pExitBtn->GetTransform()->Translate(halfWidth, quarterHeight * 3, depth++);
-	pExitBtn->SetOnClick([this]() { std::cout << "Exit game!"; });
-	pMainMenu->AddButton(pExitBtn);
-	pMenuManager->AddMenu(pMainMenu);
-	m_pButtons.push_back(pExitBtn);
-
-	//// In-game Menu
-	//auto pInGameMenu = AddChild(new ReMenu(ReMenuType::INGAME, FilePath::TEST_SPRITE));
-	//auto pToMainBtn = new ReButton(FilePath::TEST_SPRITE);
-	//pToMainBtn->GetTransform()->Scale(btnWidth, btnHeight, 1.f);
-	//pToMainBtn->GetTransform()->Translate(halfWidth, thirdHeight, 0.f);
-	//pToMainBtn->SetOnClick([this]() { std::cout << "To main menu!"; });
-	//pInGameMenu->AddButton(pToMainBtn);
+	m_pMenus.push_back(pInGameMenu);
 
 	//auto pRestartBtn = AddChild(new ReButton(FilePath::TEST_SPRITE));
 	//pRestartBtn->GetTransform()->Scale(btnWidth, btnHeight, 1.f);
 	//pRestartBtn->GetTransform()->Translate(halfWidth, thirdHeight * 2, 0.f);
-	//pRestartBtn->SetOnClick([this]() { std::cout << "Restart game!"; });
 	//pInGameMenu->AddButton(pRestartBtn);
 	//pInGameMenu->AddButton(pExitBtn);
 
@@ -349,7 +331,7 @@ void DiningHallScene::AddMenus()
 	//pBackBtn->SetOnClick([this]() { std::cout << "Back to main menu!"; });
 	//pControlsMenu->AddButton(pBackBtn);
 
-	pMenuManager->SwitchMenu(ReMenuType::MAIN);
+	//pMenuManager->SwitchMenu(ReMenuType::MAIN);
 }
 
 void DiningHallScene::AddPostProcessing()
@@ -359,16 +341,18 @@ void DiningHallScene::AddPostProcessing()
 	auto bloom = pMatManager->CreateMaterial<PostBloom>();
 	AddPostProcessingEffect(bloom);
 
+	auto grain = pMatManager->CreateMaterial<PostGrain>();
+	AddPostProcessingEffect(grain);
 }
 
 
 #pragma region GUI
-bool camunlocked = false;
 void DiningHallScene::OnGUI()
 {
 	DeferredRenderer::Get()->DrawImGui();
 	if (ImGui::CollapsingHeader("Camera"))
 	{
+		static bool camunlocked = false;
 		if (!camunlocked)
 		{
 			const auto& activeVolume = ReCameraManager::Get().GetActiveCamera();
@@ -526,8 +510,8 @@ void DiningHallScene::OnGUI()
 		if(selectedBtn <0) selectedBtn = 0;
 		auto pBtn = m_pButtons[selectedBtn];
 
-		const auto& position = pBtn->GetTransform()->GetPosition();
-		float positionArray[3] = { position.x, position.y, position.z };
+		const auto& bposition = pBtn->GetTransform()->GetPosition();
+		float positionArray[3] = { bposition.x, bposition.y, bposition.z };
 		ImGui::DragFloat3("Position", positionArray);
 
 		const auto& size = pBtn->GetTransform()->GetScale();
@@ -545,8 +529,8 @@ void DiningHallScene::OnGUI()
 		auto pMenu = m_pMenus[selectedMenu];
 		if (selectedMenu < 0) selectedMenu = 0;
 
-		const auto& position = pMenu->GetTransform()->GetPosition();
-		float positionArray[3] = { position.x, position.y, position.z };
+		const auto& mposition = pMenu->GetTransform()->GetPosition();
+		float positionArray[3] = { mposition.x, mposition.y, mposition.z };
 		ImGui::DragFloat3("Position", positionArray);
 
 		const auto& size = pMenu->GetTransform()->GetScale();

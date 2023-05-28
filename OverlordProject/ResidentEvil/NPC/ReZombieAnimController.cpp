@@ -66,3 +66,24 @@ void ReZombieAnimController::TriggerState(const ZState& state)
 	}
 
 }
+
+void ReZombieAnimController::TriggerState(const ZState& state, std::function<void()> onCompletion)
+{
+	const auto& currentAnim = m_pAnimator->GetClipName();
+
+	switch (state)
+	{
+	case ZState::ATTACKING:
+		if (currentAnim != Attack)
+		{
+			m_pAnimator->PlayOnce(Attack, Idle, onCompletion);
+		}
+		break;
+	case ZState::DEAD:
+		if (currentAnim != Dying)
+		{
+			m_pAnimator->PlayOnce(Dying, Idle, onCompletion);
+		}
+		break;
+	}
+}

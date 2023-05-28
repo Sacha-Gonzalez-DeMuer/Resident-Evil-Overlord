@@ -9,6 +9,8 @@
 #include "ResidentEvil/Player/RePlayerAnimController.h"
 #include "ResidentEvil/Items/ReInventory.h"
 #include "ResidentEvil/HUD/SubtitleManager.h"
+//#include "ResidentEvil/NPC/ReZombie.h"
+#include "ResidentEvil/Components/HealthComponent.h"
 
 RePlayerController::RePlayerController(const ReCharacterDesc& characterDesc) 
 	: m_CharacterDesc(characterDesc),
@@ -201,16 +203,53 @@ void RePlayerController::Interact()
 	PxRaycastBuffer hit;
 	PxQueryFilterData filterData{};
 
-	if (GetScene()->GetPhysxProxy()
-		->Raycast(pxOrigin, pxForward, 10.f, hit, PxHitFlag::eDEFAULT, filterData))
+	auto goHit = Raycast();
+	if (goHit)
 	{
-		if (hit.hasBlock)
+		auto pInteractable = goHit->GetComponent<InteractableComponent>();
+		if (pInteractable)
+			pInteractable->Interact();
+	}
+
+}
+
+void RePlayerController::Shoot()
+{
+	if (m_IsAiming)
+	{
+		if (m_pInventory->GetItemAmount(ReItem::GUN) > 0)
 		{
-			auto go = static_cast<BaseComponent*>(hit.block.actor->userData)->GetGameObject();
-			auto pInteractable = go->GetComponent<InteractableComponent>();
-			if (pInteractable)
-				pInteractable->Interact();
+			auto goHit = Raycast();
+			if (goHit)
+			{
+				auto pHP = goHit->GetComponent<HealthComponent>();
+				if (pHP)
+					pHP->TakeDamage(m_GunDmg);
+			}
+		}
+	}
+}
+
+GameObject* RePlayerController::Raycast()
+{
+	// Interactables
+	const auto& origin = m_pControllerComponent->GetPosition();
+	PxVec3 pxOrigin = { origin.x, origin.y, origin.z };
+
+	const auto& forward = m_pControllerComponent->GetTransform()->GetForward();
+	PxVec3 pxForward = { forward.x, forward.y, forward.z };
+
+	PxRaycastBuffer pxHit;
+	PxQueryFilterData filterData{};
+
+	if (GetScene()->GetPhysxProxy()
+		->Raycast(pxOrigin, pxForward, 10.f, pxHit, PxHitFlag::eDEFAULT, filterData))
+	{
+		if (pxHit.hasBlock)
+		{
+			return static_cast<BaseComponent*>(pxHit.block.actor->userData)->GetGameObject();
 		}
 	}
 
+	return nullptr;
 }

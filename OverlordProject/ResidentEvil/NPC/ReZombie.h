@@ -4,6 +4,7 @@
 class ReZombieAnimController;
 class RePlayerController;
 class ParticleEmitterComponent;
+class HealthComponent;
 class ReZombie final : public GameObject
 {
 public:
@@ -21,12 +22,14 @@ public:
 	TransformComponent* GetTarget() const { return m_pTarget; }
 	const ReCharacterDesc& GetDesc() const { return m_CharacterDesc; }
 	ZState GetState() const { return m_State; }
-	void GetShot();
+	void Die();
+
 private:
 	// Components
 	ParticleEmitterComponent* m_pBloodEmitter{};
 	ReZombieAnimController* m_pAnimController{};
 	ControllerComponent* m_pControllerComponent{};
+	HealthComponent* m_pHealthComponent{};
 	GameObject* m_pModelObject{};
 
 	// Target info
@@ -41,16 +44,13 @@ private:
 	float m_RotationSpeed{ 0.5f };
 	float m_Rotation{ 0.f };
 
-	//Health
-	float m_MaxHealth{ 100.f };
-	float m_CurrentHealth{ 100.f };
-
 	// Brain
 	float m_CooldownTimer = { 5.f };
+	bool m_Dead{ false };
 
 	ZState m_State{ ZState::IDLE };
 	void UpdateBehavior(const SceneContext& sceneContext);
 	void Attack();
-	
+	void OnTakeDamage();
 };
 

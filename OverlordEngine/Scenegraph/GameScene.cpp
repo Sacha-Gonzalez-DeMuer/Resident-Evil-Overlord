@@ -191,12 +191,12 @@ void GameScene::RootDraw()
 	//DEFERRED END
 	DeferredRenderer::Get()->End(m_SceneContext);
 
+	//TextRenderer Draw
+	TextRenderer::Get()->Draw(m_SceneContext);
 
 	//SpriteRenderer Draw
 	SpriteRenderer::Get()->Draw(m_SceneContext);
 
-	//TextRenderer Draw
-	TextRenderer::Get()->Draw(m_SceneContext);
 
 	//Object-Scene Post-Draw
 	PostDraw();

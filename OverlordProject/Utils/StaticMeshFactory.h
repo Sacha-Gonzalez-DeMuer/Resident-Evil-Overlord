@@ -15,6 +15,7 @@ public:
 	StaticMeshFactory& operator=(const StaticMeshFactory& other) = delete;
 	StaticMeshFactory& operator=(StaticMeshFactory&& other) noexcept = delete;
 
+	template<typename T_MaterialType>
 	void AddMtlModelComponent(GameObject& modelObj, const std::wstring& folderPath);
 
 	struct MtlMaterial
@@ -56,3 +57,68 @@ public:
 
 };
 
+template<typename T_MaterialType>
+inline void StaticMeshFactory::AddMtlModelComponent(GameObject& modelObj, const std::wstring& folderPath)
+{
+	// check if template is of class material
+	static_assert(std::is_base_of<Material<T_MaterialType>, T_MaterialType>::value, "StaticMeshFactory::AddMtlModelComponent >> T_MaterialType must be of type Material");
+	// find relevant files
+	std::wstring objFilePath;
+	std::wstring mtlFilePath;
+	std::wstring ovmFilePath;
+
+	//std::wstring searchPath = ContentManager::GetFullAssetPath(folderPath);
+	for (const auto& entry : std::filesystem::directory_iterator(folderPath))
+	{
+		if (entry.path().extension() == L".obj")
+			objFilePath = entry.path().wstring();
+		else if (entry.path().extension() == L".mtl")
+			mtlFilePath = entry.path().wstring();
+		else if (entry.path().extension() == L".ovm")
+			ovmFilePath = entry.path().wstring();
+	}
+
+	if (objFilePath == L"" || mtlFilePath == L"" || ovmFilePath == L"")
+		throw std::runtime_error("StaticMeshFactory::LoadModel_MtlObj >> Could not find all required files");
+
+	auto model = modelObj.AddComponent(new ModelComponent(ovmFilePath));
+	auto materialInfo = ParseMTL(mtlFilePath);
+	auto submeshInfo = GetMeshNamesAndMaterials(objFilePath);
+
+
+
+	std::vector<T_MaterialType*> materials{ };
+	materials.reserve(materialInfo.size());
+	std::map<std::wstring, T_MaterialType*> materialMap;
+
+	for (const auto& submesh : submeshInfo)
+	{
+		const auto matName = submesh.materialName;
+
+		// check if material with same name has already been added
+		const auto& existingMat = materialMap.find(matName);
+		if (existingMat != materialMap.end())
+		{
+			continue;
+		}
+
+		// find corresponding material info
+		const auto& it = std::find_if(materialInfo.begin(), materialInfo.end(), [&matName](const MtlMaterial& mat) {return mat.name == matName; });
+
+		if (it == materialInfo.end())
+			throw std::runtime_error("StaticMeshFactory::LoadModel_MtlObj >> Could not find material info");
+
+
+		auto pDiffuseMat = MaterialManager::Get()->CreateMaterial<T_MaterialType>();
+
+		auto path = folderPath + it->diffuseFile;
+		if (!std::filesystem::exists(ContentManager::GetFullAssetPath(path)))
+			continue;
+
+		pDiffuseMat->SetDiffuseMap(folderPath + it->diffuseFile);
+		materials.emplace_back(pDiffuseMat);
+	}
+
+	for (UINT8 i = 0; i < materials.size(); ++i)
+		model->SetMaterial(materials[i], i);
+}

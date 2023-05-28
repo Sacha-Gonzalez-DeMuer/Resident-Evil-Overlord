@@ -50,15 +50,10 @@ void SpriteRenderer::UpdateBuffer(const SceneContext& sceneContext)
 	{
 		// If the vertex buffer does not exist, or the number of sprites is bigger than the buffer size
 		// Release the buffer
-		if (m_pVertexBuffer)
-		{
-			m_pVertexBuffer->Release();
-			m_pVertexBuffer = nullptr;
-		}
-
+		SafeRelease(m_pVertexBuffer);
 
 		// Update the buffer size
-		if(m_Sprites.size() != m_BufferSize) m_BufferSize = static_cast<UINT>(m_Sprites.size());
+		if(m_Sprites.size() > m_BufferSize) m_BufferSize = static_cast<UINT>(m_Sprites.size());
 
 		// Create a new buffer. Make sure the Usage flag is set to Dynamic, bound as vertex buffer,
 		// and set the CPU access flags to D3D11_CPU_ACCESS_WRITE
@@ -68,7 +63,6 @@ void SpriteRenderer::UpdateBuffer(const SceneContext& sceneContext)
 		buffDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		buffDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		buffDesc.MiscFlags = 0;
-
 
 		ID3D11Device* pDevice = sceneContext.d3dContext.pDevice;
 
@@ -138,7 +132,7 @@ void SpriteRenderer::Draw(const SceneContext& sceneContext)
 
 	constexpr UINT stride = sizeof(VertexSprite);
 	constexpr UINT offset = 0;
-	pDeviceContext->IASetVertexBuffers(0, static_cast<UINT>(m_Sprites.size()), &m_pVertexBuffer, &stride, &offset);
+	pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 	pDeviceContext->IASetInputLayout(m_pInputLayout);
 
 	UINT batchSize = 1;
@@ -168,7 +162,7 @@ void SpriteRenderer::Draw(const SceneContext& sceneContext)
 		for (unsigned int j = 0; j < techDesc.Passes; ++j)
 		{
 			m_pTechnique->GetPassByIndex(j)->Apply(0, pDeviceContext);
-			pDeviceContext->Draw(batchSize, batchOffset);
+			pDeviceContext->Draw(batchSize, 0);
 		}
 
 		batchOffset += batchSize;

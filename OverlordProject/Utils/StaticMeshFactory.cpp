@@ -1,110 +1,111 @@
 #include "stdafx.h"
 #include "StaticMeshFactory.h"
 #include "../OverlordEngine/Components/ModelComponent.h"
-#include "Materials/Deferred/BasicMaterial_Deferred.h"
+#include "Materials/Shadow/DiffuseMaterial_Shadow.h"
+#include "Materials/Deferred/BasicMaterial_Deferred_Shadow.h"
 #include <map>
 
-void StaticMeshFactory::AddMtlModelComponent(GameObject& modelObj, const std::wstring& folderPath)
-{
-    // find relevant files
-    std::wstring objFilePath;
-    std::wstring mtlFilePath;
-    std::wstring ovmFilePath;
-
-    //std::wstring searchPath = ContentManager::GetFullAssetPath(folderPath);
-    for (const auto& entry : std::filesystem::directory_iterator(folderPath))
-    {
-		if (entry.path().extension() == L".obj")
-			objFilePath = entry.path().wstring();
-		else if (entry.path().extension() == L".mtl")
-			mtlFilePath = entry.path().wstring();
-		else if (entry.path().extension() == L".ovm")
-			ovmFilePath = entry.path().wstring();
-	}
-
-    if (objFilePath == L"" || mtlFilePath == L"" || ovmFilePath == L"")
-		throw std::runtime_error("StaticMeshFactory::LoadModel_MtlObj >> Could not find all required files");
-
-    auto model = modelObj.AddComponent(new ModelComponent(ovmFilePath));
-    auto materialInfo = ParseMTL(mtlFilePath);
-    auto submeshInfo = GetMeshNamesAndMaterials(objFilePath);
-
-
-
-    std::vector<BasicMaterial_Deferred*> materials{ };
-    materials.reserve(materialInfo.size());
-    std::map<std::wstring, BasicMaterial_Deferred*> materialMap;
-
-    for (const auto& submesh : submeshInfo)
-    {
-        const auto matName = submesh.materialName;
-
-        // check if material with same name has already been added
-        const auto& existingMat = materialMap.find(matName);
-        if (existingMat != materialMap.end())
-        {
-            continue;
-        }
-
-        // find corresponding material info
-        const auto& it = std::find_if(materialInfo.begin(), materialInfo.end(), [&matName](const MtlMaterial& mat) {return mat.name == matName; });
-
-        if (it == materialInfo.end())
-            throw std::runtime_error("StaticMeshFactory::LoadModel_MtlObj >> Could not find material info");
-
-
-        auto pDiffuseMat = MaterialManager::Get()->CreateMaterial<BasicMaterial_Deferred>();
-
-        auto path = folderPath + it->diffuseFile;
-        if (!std::filesystem::exists(ContentManager::GetFullAssetPath(path)))
-            continue;
-
-        pDiffuseMat->SetDiffuseMap(folderPath + it->diffuseFile);
-        materials.emplace_back(pDiffuseMat);
-    }
-
-    for (UINT8 i = 0; i < materials.size(); ++i)
-        model->SetMaterial(materials[i], i); 
-    
-    
-    /*
-    std::vector<DiffuseMaterial*> materials{ };
-    materials.reserve(materialInfo.size());
-    std::map<std::wstring, DiffuseMaterial*> materialMap;
-
-    for (const auto& submesh : submeshInfo)
-    {
-        const auto matName = submesh.materialName;
-
-        // check if material with same name has already been added
-        const auto& existingMat = materialMap.find(matName);
-        if (existingMat != materialMap.end())
-        {
-            continue;
-        }
-
-        // find corresponding material info
-        const auto& it = std::find_if(materialInfo.begin(), materialInfo.end(), [&matName](const MtlMaterial& mat) {return mat.name == matName; });
-
-        if (it == materialInfo.end())
-            throw std::runtime_error("StaticMeshFactory::LoadModel_MtlObj >> Could not find material info");
-
-
-        auto pDiffuseMat = MaterialManager::Get()->CreateMaterial<DiffuseMaterial>();
-
-        auto path = folderPath + it->diffuseFile;
-        if (!std::filesystem::exists(ContentManager::GetFullAssetPath(path)))
-            continue;
-
-        pDiffuseMat->SetDiffuseTexture(folderPath + it->diffuseFile);
-        materials.emplace_back(pDiffuseMat);
-    }
-
-    for (UINT8 i = 0; i < materials.size(); ++i)
-        model->SetMaterial(materials[i], i);
-        */
-}
-   
+//void StaticMeshFactory::AddMtlModelComponent(GameObject& modelObj, const std::wstring& folderPath, bool deferred)
+//{
+//    // find relevant files
+//    std::wstring objFilePath;
+//    std::wstring mtlFilePath;
+//    std::wstring ovmFilePath;
+//
+//    //std::wstring searchPath = ContentManager::GetFullAssetPath(folderPath);
+//    for (const auto& entry : std::filesystem::directory_iterator(folderPath))
+//    {
+//		if (entry.path().extension() == L".obj")
+//			objFilePath = entry.path().wstring();
+//		else if (entry.path().extension() == L".mtl")
+//			mtlFilePath = entry.path().wstring();
+//		else if (entry.path().extension() == L".ovm")
+//			ovmFilePath = entry.path().wstring();
+//	}
+//
+//    if (objFilePath == L"" || mtlFilePath == L"" || ovmFilePath == L"")
+//		throw std::runtime_error("StaticMeshFactory::LoadModel_MtlObj >> Could not find all required files");
+//
+//    auto model = modelObj.AddComponent(new ModelComponent(ovmFilePath));
+//    auto materialInfo = ParseMTL(mtlFilePath);
+//    auto submeshInfo = GetMeshNamesAndMaterials(objFilePath);
+//
+//
+//
+//    std::vector<BasicMaterial_Deferred*> materials{ };
+//    materials.reserve(materialInfo.size());
+//    std::map<std::wstring, BasicMaterial_Deferred*> materialMap;
+//
+//    for (const auto& submesh : submeshInfo)
+//    {
+//        const auto matName = submesh.materialName;
+//
+//        // check if material with same name has already been added
+//        const auto& existingMat = materialMap.find(matName);
+//        if (existingMat != materialMap.end())
+//        {
+//            continue;
+//        }
+//
+//        // find corresponding material info
+//        const auto& it = std::find_if(materialInfo.begin(), materialInfo.end(), [&matName](const MtlMaterial& mat) {return mat.name == matName; });
+//
+//        if (it == materialInfo.end())
+//            throw std::runtime_error("StaticMeshFactory::LoadModel_MtlObj >> Could not find material info");
+//
+//
+//        auto pDiffuseMat = MaterialManager::Get()->CreateMaterial<BasicMaterial_Deferred>();
+//
+//        auto path = folderPath + it->diffuseFile;
+//        if (!std::filesystem::exists(ContentManager::GetFullAssetPath(path)))
+//            continue;
+//
+//        pDiffuseMat->SetDiffuseMap(folderPath + it->diffuseFile);
+//        materials.emplace_back(pDiffuseMat);
+//    }
+//
+//    for (UINT8 i = 0; i < materials.size(); ++i)
+//        model->SetMaterial(materials[i], i); 
+//    
+//    
+//    /*
+//    std::vector<DiffuseMaterial*> materials{ };
+//    materials.reserve(materialInfo.size());
+//    std::map<std::wstring, DiffuseMaterial*> materialMap;
+//
+//    for (const auto& submesh : submeshInfo)
+//    {
+//        const auto matName = submesh.materialName;
+//
+//        // check if material with same name has already been added
+//        const auto& existingMat = materialMap.find(matName);
+//        if (existingMat != materialMap.end())
+//        {
+//            continue;
+//        }
+//
+//        // find corresponding material info
+//        const auto& it = std::find_if(materialInfo.begin(), materialInfo.end(), [&matName](const MtlMaterial& mat) {return mat.name == matName; });
+//
+//        if (it == materialInfo.end())
+//            throw std::runtime_error("StaticMeshFactory::LoadModel_MtlObj >> Could not find material info");
+//
+//
+//        auto pDiffuseMat = MaterialManager::Get()->CreateMaterial<DiffuseMaterial>();
+//
+//        auto path = folderPath + it->diffuseFile;
+//        if (!std::filesystem::exists(ContentManager::GetFullAssetPath(path)))
+//            continue;
+//
+//        pDiffuseMat->SetDiffuseTexture(folderPath + it->diffuseFile);
+//        materials.emplace_back(pDiffuseMat);
+//    }
+//
+//    for (UINT8 i = 0; i < materials.size(); ++i)
+//        model->SetMaterial(materials[i], i);
+//        */
+//}
+//   
 
 
 std::vector<StaticMeshFactory::MtlMaterial> StaticMeshFactory::ParseMTL(const std::wstring& mtlFilePath)

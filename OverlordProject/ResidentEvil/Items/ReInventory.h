@@ -17,9 +17,10 @@ public:
 	void EquipItem(const ReItem& item);
 	bool HasGun() const;
 	void AddItem(const ReItem& item);
+	int GetItemAmount(const ReItem& item) const;
 
 private:
 	ReItem m_EquippedItem;
-	std::vector<int> m_Items; // idx = item, value = amount
+	std::vector<int> m_Items; // idx = item, value = amount, amount of guns = bullets
 };
 

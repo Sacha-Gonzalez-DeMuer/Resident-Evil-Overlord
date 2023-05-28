@@ -12,7 +12,7 @@
 #include "Materials/Post/PostBlur.h"
 #include "Materials/Post/PostAmbientOcclusion.h"
 #include "Materials/Post/PostBloom.h"
-
+#include "Materials/Post/PostGrain.h"
 
 void PostProcessingScene::Initialize()
 {
@@ -63,6 +63,9 @@ void PostProcessingScene::Initialize()
 
 	m_pPostBloom = pMatManager->CreateMaterial<PostBloom>();
 	AddPostProcessingEffect(m_pPostBloom);
+
+	auto postGrain = pMatManager->CreateMaterial<PostGrain>();
+	AddPostProcessingEffect(postGrain);
    
 	//m_pPostBlur = pMatManager->CreateMaterial<PostBlur>();
 	//AddPostProcessingEffect(m_pPostBlur);
@@ -77,7 +80,7 @@ void PostProcessingScene::OnGUI()
 	//ImGui::Checkbox("Bloom PP", &isEnabled);
 	//m_pPostBloom->SetIsEnabled(isEnabled);
 
-	bool isEnabled = m_pPostBlur->IsEnabled();
-	ImGui::Checkbox("Blur PP", &isEnabled);
-	m_pPostBlur->SetIsEnabled(isEnabled);
+	//bool isEnabled = m_pPostBlur->IsEnabled();
+	//ImGui::Checkbox("Blur PP", &isEnabled);
+	//m_pPostBlur->SetIsEnabled(isEnabled);
 }

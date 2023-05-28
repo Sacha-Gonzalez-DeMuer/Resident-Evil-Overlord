@@ -32,6 +32,11 @@ void ModelAnimator::Update(const SceneContext& sceneContext)
 				if (m_SinglePlay)
 				{
 					m_SinglePlay = false;
+					if (m_OnCompletionCallback)
+					{
+						m_OnCompletionCallback();
+						m_OnCompletionCallback = nullptr;
+					}
 					SetAnimation(m_NextClip);
 				}
 
@@ -177,6 +182,23 @@ void ModelAnimator::PlayOnce(const std::wstring& clipName, const std::wstring& n
 	m_Reversed = false;
 	m_IsPlaying = true;
 	m_SinglePlay = true;
+	SetNextClip(nextClipName);
+
+	//Check if clipName is different than the current clip m_CurrentClip.name
+	if (clipName != m_CurrentClip.name)
+	{
+		//	Call SetAnimation(clipName)
+		SetAnimation(clipName);
+	}
+}
+
+void ModelAnimator::PlayOnce(const std::wstring& clipName, const std::wstring& nextClipName, std::function<void()> onCompletion)
+{
+	m_Reversed = false;
+	m_IsPlaying = true;
+	m_SinglePlay = true;
+	m_OnCompletionCallback = onCompletion;
+
 	SetNextClip(nextClipName);
 
 	//Check if clipName is different than the current clip m_CurrentClip.name
