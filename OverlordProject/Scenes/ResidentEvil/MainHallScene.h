@@ -2,6 +2,7 @@
 class RePlayerController;
 class CameraSwitch;
 class ReDoor;
+class CubePrefab;
 class MainHallScene final : public GameScene
 {
 public:
@@ -21,10 +22,13 @@ private:
 	RePlayerController* m_pCharacter{};
 	GameObject* pPlayerObject{};
 	GameObject* m_pMainHall{};
+	GameObject* m_pNavCollider{};
 
+	CubePrefab* m_pDebugCube{};
 	std::vector<CameraSwitch*> m_pSwitches{};
 	std::vector<ReDoor*> m_pDoors{};
 	Light m_TestLight;
+
 
 	bool m_DrawShadowMap{};
 	void LoadWorld();

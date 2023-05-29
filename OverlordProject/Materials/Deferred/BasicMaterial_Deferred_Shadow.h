@@ -11,8 +11,8 @@ public:
 	BasicMaterial_Deferred_Shadow& operator=(const BasicMaterial_Deferred_Shadow& other) = delete;
 	BasicMaterial_Deferred_Shadow& operator=(BasicMaterial_Deferred_Shadow&& other) noexcept = delete;
 
-	void SetDiffuseMap(const std::wstring& assetFile);
-	void SetDiffuseMap(TextureData* pTextureData);
+	void SetDiffuseTexture(const std::wstring& assetFile);
+	void SetDiffuseTexture(TextureData* pTextureData);
 
 	void SetNormalMap(const std::wstring& assetFile);
 	void SetNormalMap(TextureData* pTextureData);

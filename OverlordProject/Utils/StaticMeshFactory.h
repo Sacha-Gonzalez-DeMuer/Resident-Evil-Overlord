@@ -115,7 +115,7 @@ inline void StaticMeshFactory::AddMtlModelComponent(GameObject& modelObj, const 
 		if (!std::filesystem::exists(ContentManager::GetFullAssetPath(path)))
 			continue;
 
-		pDiffuseMat->SetDiffuseMap(folderPath + it->diffuseFile);
+		pDiffuseMat->SetDiffuseTexture(folderPath + it->diffuseFile);
 		materials.emplace_back(pDiffuseMat);
 	}
 

@@ -188,10 +188,10 @@ void RePlayerController::HandleInputActions(InputManager* input)
 
 void RePlayerController::Interact()
 {
-	// Subtitles
-	auto& pSubtitles = SubtitleManager::Get();
-	if (pSubtitles.IsDisplaying())
-		pSubtitles.CloseSubtitle();
+	//// Subtitles
+	//auto& pSubtitles = SubtitleManager::Get();
+	//if (pSubtitles.IsDisplaying())
+	//	pSubtitles.CloseSubtitle();
 
 	// Interactables
 	const auto& origin = m_pControllerComponent->GetPosition();

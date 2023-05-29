@@ -6,12 +6,12 @@ BasicMaterial_Deferred_Shadow::BasicMaterial_Deferred_Shadow() :
 {
 }
 
-void BasicMaterial_Deferred_Shadow::SetDiffuseMap(const std::wstring& assetFile)
+void BasicMaterial_Deferred_Shadow::SetDiffuseTexture(const std::wstring& assetFile)
 {
-	SetDiffuseMap(ContentManager::Load<TextureData>(assetFile));
+	SetDiffuseTexture(ContentManager::Load<TextureData>(assetFile));
 }
 
-void BasicMaterial_Deferred_Shadow::SetDiffuseMap(TextureData* pTextureData)
+void BasicMaterial_Deferred_Shadow::SetDiffuseTexture(TextureData* pTextureData)
 {
 	SetVariable_Scalar(L"gUseDiffuseMap", pTextureData != nullptr);
 	SetVariable_Texture(L"gDiffuseMap", pTextureData);

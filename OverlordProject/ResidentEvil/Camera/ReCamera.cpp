@@ -4,7 +4,6 @@
 #include "ReCameraManager.h"
 #include "Prefabs/CubePrefab.h"
 
-// constructor
 ReCamera::ReCamera(const DirectX::XMFLOAT3& position, bool targetable)
 	: m_TotalPitch{0}
     , m_TotalYaw{0}
@@ -24,15 +23,24 @@ void ReCamera::ActivateCam()
     ReCameraManager::Get().SetActiveCamera(m_idx);
 }
 
-void ReCamera::Update(const SceneContext& /*sceneContext*/)
+void ReCamera::Update(const SceneContext& sceneContext)
 {
-    GetTransform()->Rotate(m_TotalPitch, m_TotalYaw, m_TotalRoll);
+    if (m_pCamera->IsActive())
+    {
+
+        
+        GetTransform()->Rotate(m_TotalPitch, m_TotalYaw, m_TotalRoll);
+        sceneContext.pLights->GetDirectionalLight().direction = m_LightOrientation;
+        sceneContext.pLights->GetDirectionalLight().position = m_LightPosition;
+    }
+
+
 }
 
 void ReCamera::OnCameraSwitch()
 {
     if (m_HasLight)
-        GetScene()->GetSceneContext().pLights->SetDirectionalLight(GetTransform()->GetPosition(), m_LightOrientation);
+        GetScene()->GetSceneContext().pLights->SetDirectionalLight(GetTransform()->GetPosition(), { m_LightOrientation.x, m_LightOrientation.y, m_LightOrientation.z });
 }
 
 void ReCamera::InitializeCamera(const XMFLOAT3& position, bool targetable)
