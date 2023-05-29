@@ -54,7 +54,7 @@ PS_INPUT VS(VS_INPUT input)
 float gThreshold = .2f;
 float3 gGrayScales = float3(0.1f, 0.5f, 0.114f);
 float4 gBlurColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
-float gBlurRadius = 5.0f;
+float gBlurRadius = 2.0f;
 float gSmoothness = 0.1f;
 float gIntensity = .8f;
 

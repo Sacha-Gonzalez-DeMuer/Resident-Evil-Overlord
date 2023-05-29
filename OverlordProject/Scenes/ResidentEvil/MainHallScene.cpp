@@ -38,7 +38,7 @@ void MainHallScene::Initialize()
 
 	m_pDebugCube = AddChild(new CubePrefab());
 
-	//AddChild(new ThunderController());
+	AddChild(new ThunderController());
 	AddLights();
 	AddDoors();
 	AddCameras();
@@ -164,6 +164,16 @@ void MainHallScene::OnGUI()
 			float lposition[3] = { light.position.x, light.position.y, light.position.z };
 			ImGui::DragFloat3("Position", lposition, .2f);
 			light.position = { lposition[0], lposition[1], lposition[2], 1.0f };
+
+			if (light.type == LightType::Spot)
+			{
+				ImGui::SliderFloat("SpotAngle", &light.spotLightAngle, 0, 180);
+
+				// direction
+				float direction[3] = { light.direction.x, light.direction.y, light.direction.z };
+				ImGui::DragFloat3("Direction", direction, .2f);
+				light.direction = { direction[0], direction[1], direction[2], 1.0f };
+			}
 
 			ImGui::Checkbox("Enabled", &light.isEnabled);
 		}
@@ -293,24 +303,83 @@ void MainHallScene::AddLights()
 	m_SceneContext.pLights->SetDirectionalLight({ 0, 56.6f, 62.4f }, { -.187f, -0.017f, -.993f });
 
 	Light light{};
+	XMFLOAT4 color{1.580f, 1.54f, 1.18f, 1.f};
 
 	// Main hall light
 	light.type = LightType::Point;
-	light.position = { 1.2f, 86.f, 14.8f, 1 };
-	light.color = { 1, 1, 1, 1 };
-	light.intensity = .5f;
+	light.position = { 1.2f, 81.2f, 14.8f, 1 };
+	light.color = color;
+	light.intensity = .981f;
 	light.range = 100.f;
 	light.isEnabled = true;
 	m_SceneContext.pLights->AddLight(light);
 
 
-	// Main hall light
+	// Main candle right
 	light.type = LightType::Point;
-	light.position = { 0.2f, 0.f, 0, 1 };
-	light.color = { 1, 1, 1, 1 };
+	light.position = { -14.8f, 29.f, 33.4f, 1 };
+	light.color = color;
+	light.intensity = .905f;
+	light.range = 41.905f;
+	light.isEnabled = true;
+	m_SceneContext.pLights->AddLight(light);
+
+	// Main candle left
+	light.type = LightType::Point;
+	light.position = { 1.580f, 1.54f, 1.18f, 1 };
+	light.color = color;
 	light.intensity = .0f;
 	light.range = 10.f;
 	light.isEnabled = true;
+	m_SceneContext.pLights->AddLight(light);
+
+	// Door light R1
+	light.type = LightType::Spot;
+	light.position = { 54.2f, 28.f, 62.2f, 1.f };
+	light.direction = { 0.f, -1.f, 0.f, 1.f };
+	light.spotLightAngle = 0.785398f;
+	light.color = color;
+	light.intensity = .9f;
+	light.range = 37.143f;
+	light.isEnabled = true;
+	m_SceneContext.pLights->AddLight(light);
+
+	// Door light R2
+	light.type = LightType::Point;
+	light.position = { 54.2f, 29.f, 11.2f, 1.f };
+	light.color = color;
+	light.intensity = .352f;
+	light.range = 43.81f;
+	light.isEnabled = false;
+	m_SceneContext.pLights->AddLight(light);
+
+	// Stair light
+	light.type = LightType::Spot;
+	light.position = { 0.2f, 0.f, 0, 1 };
+	light.color = color;
+	light.direction = { 0.f, -1.f, 0.f, 1.f };
+	light.spotLightAngle = 0.785398f;
+	light.intensity = .0f;
+	light.range = 10.f;
+	light.isEnabled = false;
+	m_SceneContext.pLights->AddLight(light);
+
+	// CT1 
+	light.type = LightType::Point;
+	light.position = { 54.2f, 29.f, 11.2f, 1.f };
+	light.color = { -31.62f, 13.34f, 88.78f, 1.f };
+	light.intensity = .352f;
+	light.range = 43.81f;
+	light.isEnabled = false;
+	m_SceneContext.pLights->AddLight(light);
+
+	// CT2
+	light.type = LightType::Point;
+	light.position = { 34.2f, 13.f, 88.78f, 1.f };
+	light.color = { 1.68f, 1.66f, 2.f, 1.f };
+	light.intensity = .962f;
+	light.range = 21.905f;
+	light.isEnabled = false;
 	m_SceneContext.pLights->AddLight(light);
 }
 
