@@ -15,6 +15,18 @@ CameraSwitch::CameraSwitch(const XMFLOAT3& pos, const XMFLOAT3& size, bool debug
 	AddChild(new CubePrefab());
 }
 
+void CameraSwitch::SetTargets(const int cam0, const int cam1)
+{
+	m_TargetCam0 = cam0; m_TargetCam1 = cam1;
+	m_SingleTarget = false;
+}
+
+void CameraSwitch::SetTarget(const int cam)
+{
+	m_TargetCam0 = cam;
+	m_SingleTarget = true;
+}
+
 void CameraSwitch::InitializeTriggerBox(const XMFLOAT3& pos, const XMFLOAT3& size)
 {
 	auto pDefaultMaterial = PhysXManager::Get()->GetPhysics()->createMaterial(0.5f, 0.5f, 0.f);
@@ -35,9 +47,11 @@ void CameraSwitch::OnTrigger(GameObject * trigger, GameObject * other, PxTrigger
 {
 	if (action == PxTriggerAction::ENTER && other->GetTag() == L"Player" && trigger == this)
 	{
-		auto currentCam = ReCameraManager::Get().GetActiveCamera();
-		ReCameraManager::Get()
-			.SetActiveCamera(currentCam->GetIdx() == m_TargetCam0
+		auto& camManager = ReCameraManager::Get();
+		auto currentCam = camManager.GetActiveCamera();
+
+		if(m_SingleTarget) camManager.SetActiveCamera(m_TargetCam0);
+		else camManager.SetActiveCamera(currentCam->GetIdx() == m_TargetCam0
 				? m_TargetCam1 : m_TargetCam0);
 	}
 }

@@ -60,6 +60,8 @@
     <ClCompile Include="Materials\Post\PostBloom.cpp" />
     <ClCompile Include="Materials\Post\PostGrain.cpp" />
     <ClCompile Include="Scenes\ResidentEvil\MainMenuScene.cpp" />
+    <ClCompile Include="DoorAnimator.cpp" />
+    <ClCompile Include="ResidentEvil\World\ReClassicDoor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -122,6 +124,8 @@
     <ClInclude Include="Materials\Post\PostBloom.h" />
     <ClInclude Include="Materials\Post\PostGrain.h" />
     <ClInclude Include="Scenes\ResidentEvil\MainMenuScene.h" />
+    <ClInclude Include="DoorAnimator.h" />
+    <ClInclude Include="ResidentEvil\World\ReClassicDoor.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scenes">

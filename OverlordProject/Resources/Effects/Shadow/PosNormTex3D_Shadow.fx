@@ -7,6 +7,8 @@ float gLightIntensity = 1.0f;
 
 Texture2D gDiffuseMap;
 Texture2D gShadowMap;
+Texture2D gNormalMap;
+bool gUseNormalMap;
 
 SamplerState samLinear
 {
@@ -73,7 +75,6 @@ VS_OUTPUT VS(VS_INPUT input)
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	
 	//TODO: complete Vertex Shader
-	//Hint: Don't forget to project our position to light clip space and store it in lPos
 	output.lPos = mul(float4(input.pos, 1.0f), gWorldViewProj_Light);
 	output.pos = mul(float4(input.pos, 1.0f), gWorldViewProj);
 	output.normal = input.normal;
@@ -105,9 +106,6 @@ float EvaluateShadowMap(float4 lpos)
 	// apply shadow bias
 	lpos.z -= gShadowMapBias;
 
-	// sample shadow map
-	float shadowMapDepth = gShadowMap.Sample(samPoint, lpos.xy).r;
-
 	//perform PCF filtering 
     float x, y, sum;
     for (y = -3.5; y <= 3.5; y += 1.0)
@@ -126,17 +124,25 @@ float EvaluateShadowMap(float4 lpos)
 //--------------------------------------------------------------------------------------
 float4 PS(VS_OUTPUT input) : SV_TARGET
 {
-	float shadowValue = EvaluateShadowMap(input.lPos);
+    float shadowValue = EvaluateShadowMap(input.lPos);
 
-	float4 diffuseColor = gDiffuseMap.Sample( samLinear, input.texCoord );
-	float3 color_rgb= diffuseColor.rgb;
-	float color_a = diffuseColor.a;
-	
-	//HalfLambert Diffuse :)
-	float diffuseStrength = dot(input.normal, -gLightDirection);
-	diffuseStrength = diffuseStrength * 0.5 + 0.5;
-	diffuseStrength = saturate(diffuseStrength);
-	color_rgb = color_rgb * diffuseStrength;
+    float4 diffuseColor = gDiffuseMap.Sample(samLinear, input.texCoord);
+    float3 color_rgb = diffuseColor.rgb;
+    float color_a = diffuseColor.a;
+
+    // Diffuse calculation
+    float diffuseStrength = dot(input.normal, -gLightDirection);
+    diffuseStrength = diffuseStrength * 0.5 + 0.5;
+    diffuseStrength = saturate(diffuseStrength);
+    color_rgb = color_rgb * diffuseStrength;
+
+    // Normal mapping
+    float3 normalMap = gUseNormalMap ? gNormalMap.Sample(samLinear, input.texCoord).rgb * 2 - 1 : input.normal;
+    normalMap = normalize(mul(float4(normalMap, 0), (float4x4) gWorld));
+
+    // Calculate light intensity based on normal map
+    float normalIntensity = saturate(dot(normalMap, -gLightDirection));
+    color_rgb *= normalIntensity;
 
     return float4(color_rgb * shadowValue * gLightIntensity, color_a);
 }

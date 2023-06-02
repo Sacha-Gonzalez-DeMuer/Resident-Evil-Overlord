@@ -82,3 +82,28 @@ enum InputIds
 	CharacterAim,
 	CharacterAttack
 };
+
+enum class ReMainHallCamera
+{
+	MAIN,
+	DINING,
+	CT1,
+	STAIRS,
+	ENTRANCE,
+	CT2,
+	STAIRS_MID,
+	UPPER_MAIN,
+	UPPER_DINING,
+	STAIRS_BRIDGE,
+	UPPER_RCORNER,
+	WINDOW,
+
+	DOORS,
+};
+
+enum class ReScenes
+{
+	MAIN,
+	DINING,
+	MENU
+};

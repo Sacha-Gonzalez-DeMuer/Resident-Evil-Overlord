@@ -14,6 +14,7 @@ public:
 	float GetHealth() const { return m_Health; }
 	void TakeDamage(float damage);
 	void Heal(float heal);
+	bool IsDead() const { return m_Health <= 0.f; }
 
 	Delegate<> OnDeath;
 	Delegate<> OnTakeDamage;

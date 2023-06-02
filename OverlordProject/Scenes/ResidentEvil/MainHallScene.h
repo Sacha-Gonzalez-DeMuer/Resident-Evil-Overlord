@@ -3,6 +3,7 @@ class RePlayerController;
 class CameraSwitch;
 class ReDoor;
 class CubePrefab;
+class ReClassicDoor;
 class MainHallScene final : public GameScene
 {
 public:
@@ -29,6 +30,8 @@ private:
 	std::vector<ReDoor*> m_pDoors{};
 	Light m_TestLight;
 
+	ReClassicDoor* m_pClassicDoor{};
+
 
 	bool m_DrawShadowMap{};
 	void LoadWorld();
@@ -40,4 +43,5 @@ private:
 	void AddInput();
 	void AddNavCollider(const PxMaterial& material);
 	void AddPlayer(PxMaterial* material);
+	//void AddSound();
 };

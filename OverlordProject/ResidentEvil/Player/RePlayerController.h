@@ -3,6 +3,7 @@
 
 class RePlayerAnimController;
 class ReInventory;
+class HealthComponent;
 class RePlayerController : public GameObject
 {
 #pragma warning(disable : 4324) // https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4324?view=msvc-170 I couldn't find why this is happening 
@@ -38,6 +39,7 @@ private:
 	ControllerComponent* m_pControllerComponent{};
 	GameObject* m_pModelObject{};
 	ParticleEmitterComponent* m_pBloodEmitter{};
+	HealthComponent* m_pHealth{};
 
 	ReCharacterDesc m_CharacterDesc;
 	XMFLOAT3 m_TotalVelocity{};						//TotalVelocity with X/Z for Horizontal Movement AND Y for Vertical Movement (fall/jump)
@@ -57,7 +59,6 @@ private:
 	bool m_IsMoving{ false };
 	bool m_IsAiming{ false };
 	bool m_AnimationLocked{ false };
-	//bool m_IsGettingBit{ false };
 
 	void OnCamSwitch();
 	void HandleInputActions(InputManager* input);

@@ -252,7 +252,6 @@ what is the rotation matrix to convert from vector V1 to V2*/
 			if (diffuseMap == L"") continue;
 
 			auto pBasicMat = MaterialManager::Get()->CreateMaterial<BasicMaterial_Deferred_Shadow>();
-			pBasicMat->UseTransparency(false);
 
 			pBasicMat->SetDiffuseTexture(fbxFolderPath + diffuseMap);
 			basicMaterials.push_back(pBasicMat);

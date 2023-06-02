@@ -19,12 +19,6 @@ public:
 
 	void SetShadowMap(TextureData* pTextureData);
 
-	void SetSpecularMap(const std::wstring& assetFile);
-	void SetSpecularMap(TextureData* pTextureData);
-	void SetSpecularColor(const XMFLOAT4& color);
-
-	void UseTransparency(bool enable);
-
 protected:
 	void InitializeEffectVariables() override;
 	void OnUpdateModelVariables(const SceneContext& /*sceneContext*/, const ModelComponent* /*pModel*/) const;

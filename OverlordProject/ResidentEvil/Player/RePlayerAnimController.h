@@ -10,6 +10,7 @@ namespace PAnimNames {
 	const std::wstring PistolWalk{ L"Pistol_Walk" };
 	const std::wstring OpenDoor{ L"OpenDoor" };
 	const std::wstring Bitten{ L"Bitten" };
+	const std::wstring Death{ L"Death" };
 }
 
 

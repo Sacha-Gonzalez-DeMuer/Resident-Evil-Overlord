@@ -1,10 +1,5 @@
 ﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
-  DiffuseMaterial.cpp
-  DiningHallScene.cpp
   MainHallScene.cpp
-  FbxLoader.cpp
-  StaticMeshFactory.cpp
-  Generating Code...
   OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.exe
   0 File(s) copied
   0 File(s) copied

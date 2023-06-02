@@ -22,6 +22,7 @@ RePlayerController::RePlayerController(const ReCharacterDesc& characterDesc)
 
 void RePlayerController::GetAttacked()
 {
+	m_pHealth->TakeDamage(33.f);
 	SetAnimLocked(true);
 	m_pAnimController->TriggerAnim(PAnimNames::Bitten);
 }
@@ -76,6 +77,11 @@ void RePlayerController::Update(const SceneContext& sceneContext)
 
 	if (sceneContext.pCamera->IsActive() && !m_AnimationLocked)
 	{
+		//if (m_pHealth->IsDead())
+		//{
+		//	m_pAnimController->TriggerAnim(PAnimNames::Death);
+		//
+		//}
 		constexpr float epsilon{ 0.01f };
 		const float deltaTime{ sceneContext.pGameTime->GetElapsed() };
 

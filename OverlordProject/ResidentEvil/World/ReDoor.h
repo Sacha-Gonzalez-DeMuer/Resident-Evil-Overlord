@@ -1,5 +1,6 @@
 #pragma once
 #include "ResidentEvil/World/ReInteractableObject.h"
+#include "Delegate.h"
 
 class ReDoor final : public ReInteractableObject
 {
@@ -12,8 +13,6 @@ public:
 	ReDoor& operator=(ReDoor&& other) noexcept = delete;
 
 	void Interact() override;
-	void SetSceneToLoad(int idx){ m_sceneToLoadIdx = idx; }
 
-private:
-	int m_sceneToLoadIdx{};
+	Delegate<> OnInteract;
 };

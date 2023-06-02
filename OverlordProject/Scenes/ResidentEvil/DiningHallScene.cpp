@@ -43,7 +43,7 @@ void DiningHallScene::Initialize()
 	m_SceneContext.settings.enableOnGUI = true;
 	m_SceneContext.settings.drawGrid = false;
 	m_SceneContext.settings.drawPhysXDebug = false;
-	m_SceneContext.useDeferredRendering = false;
+	m_SceneContext.useDeferredRendering = true;
 	m_SceneContext.pLights->GetDirectionalLight().isEnabled = true;
 	m_SceneContext.pLights->SetDirectionalLight({ 0, 56, 0 }, { 4, -2.43f, .040f });
 
@@ -281,7 +281,6 @@ void DiningHallScene::AddDoors()
 	XMFLOAT3 size{ 33.0f, 30.0f, 15.0f };
 
 	auto pDoor = AddChild(new ReDoor(pos, size));
-	pDoor->SetSceneToLoad(1);
 	m_pDoors.emplace_back(pDoor);
 }
 

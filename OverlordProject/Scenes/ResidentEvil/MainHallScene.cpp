@@ -17,6 +17,7 @@
 #include "ResidentEvil/HUD/SubtitleManager.h"
 #include "ResidentEvil/World/ThunderController.h"
 #include "Prefabs/CubePrefab.h"
+#include "ResidentEvil/World/ReClassicDoor.h"
 
 #include "Materials/Post/PostGrain.h"
 #include "Materials/Post/PostBloom.h"
@@ -35,19 +36,23 @@ void MainHallScene::Initialize()
 	m_SceneContext.useDeferredRendering = true;
 	m_SceneContext.pLights->GetDirectionalLight().isEnabled = true;
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
-
+	
 	m_pDebugCube = AddChild(new CubePrefab());
-
+	//m_pClassicDoor = AddChild(new ReClassicDoor());
+	
 	AddChild(new ThunderController());
 	AddLights();
 	AddDoors();
 	AddCameras();
-	AddCameraSwitches();
+	//AddCameraSwitches();
 	AddInput();
 	AddNavCollider(*pDefaultMaterial);
 	AddPlayer(pDefaultMaterial);
-	
+	AddPostProcessing();
+
 	LoadWorld();
+
+	ReCameraManager::Get().SetActiveCamera(UINT(0));
 }
 
 void MainHallScene::Update()
@@ -74,7 +79,7 @@ void gSaveReCamVariables(const ReCamera& cam)
 	// print lookat
 	XMFLOAT3 lookat;
 	XMStoreFloat3(&lookat, cam.GetLookAt());
-	myfile << "LookAt: " << lookat.x << " " << lookat.y << " " << lookat.z << "\n";
+	myfile << "LookAt: " << lookat.x << "f, " << lookat.y << "f, " << lookat.z << "f\n";
 
 	// print right
 	XMFLOAT3 right;
@@ -84,7 +89,7 @@ void gSaveReCamVariables(const ReCamera& cam)
 	//print up
 	XMFLOAT3 up;
 	XMStoreFloat3(&up, cam.GetUp());
-	myfile << "Up: " << up.x << " " << up.y << " " << up.z << "\n";
+	myfile << "Up: " << up.x << "f, " << up.y << "f, " << up.z << "f\n";
 
 	// print position
 	XMFLOAT3 position{ cam.GetTransform()->GetPosition() };
@@ -141,6 +146,7 @@ void MainHallScene::OnGUI()
 			ImGui::DragFloat3("LightPosition", lightPositionArray, .1f);
 			activeVolume->GetLightPosition() = { lightPositionArray[0], lightPositionArray[1], lightPositionArray[2], 1.0f };
 
+			ReCameraManager::Get().SetActiveCamera(UINT(camIdx));
 		}
 	}
 
@@ -286,6 +292,13 @@ void MainHallScene::OnGUI()
 	//}
 
 }
+
+
+//void MainHallScene::AddSound()
+//{
+//	auto pFModSys = SoundManager::Get()->GetSystem();
+//}
+
 void MainHallScene::LoadWorld()
 {
 	m_pMainHall = AddChild(new GameObject());
@@ -375,7 +388,7 @@ void MainHallScene::AddLights()
 
 	// CT2
 	light.type = LightType::Point;
-	light.position = { 34.2f, 13.f, 88.78f, 1.f };
+	light.position = { 34.98f, 13.34f, 88.78f, 1.f };
 	light.color = { 1.68f, 1.66f, 2.f, 1.f };
 	light.intensity = .962f;
 	light.range = 21.905f;
@@ -395,6 +408,7 @@ void MainHallScene::AddCameras()
 	XMFLOAT4 lOrientation{46.6f, -290.3f, 168.f, 1.f};
 	XMFLOAT4 lPosition{-18.1f, 70.f, -55.8f, 1.f};
 
+	// [0] Main
 	auto reCam = new ReCamera(camPos);
 	auto cam = reCam->GetCamera();
 	cam->SetFieldOfView(fov);
@@ -404,24 +418,202 @@ void MainHallScene::AddCameras()
 	AddChild(reCam);
 	pCamManager.AddVolume(reCam);
 
-	camPos = { 0.f, 0, -0 };
+	// [1] Dining 
+	camPos = { 46.f, 7, -19 };
+	camLook = { -0.952282f, 0.178562f, 0.247536f };
+	camUp = { 0.172819f, 0.983929f, -0.0449225f };
+	lOrientation = { -16.2f, -11.3f, 6.5f, 1.0f };
+	lPosition = { 60.9f, 65.4f, 0.f, 1.0f };
 	reCam = new ReCamera(camPos);
+	fov = .868f;
 	cam = reCam->GetCamera();
 	cam->SetFieldOfView(fov);
+	reCam->SetLightOrientation(lOrientation);
+	reCam->SetLightPosition(lPosition);
 	cam->UpdateRotation(m_SceneContext, camUp, camLook);
 	AddChild(reCam);
 	pCamManager.AddVolume(reCam);
 
-	pCamManager.SetActiveCamera(UINT(0));
+	// [2] CT1
+	camLook = { -0.350739f, 0.0598116f, 0.934561f };
+	camUp = { 0.0210159f, 0.99821f, -0.0559979f };
+	camPos = { -27.f, 11.f, -10.f };
+	lOrientation = { -1.5f, -0.43f, 4.2f, 1.0f };
+	lPosition = { 1.5f, 42.8f, -0.9f, 1.0f };
+	fov = .688f;
+	reCam = new ReCamera(camPos);
+	cam = reCam->GetCamera();
+	cam->SetFieldOfView(fov);
+	reCam->SetLightOrientation(lOrientation);
+	reCam->SetLightPosition(lPosition);
+	cam->UpdateRotation(m_SceneContext, camUp, camLook);
+	AddChild(reCam);
+	pCamManager.AddVolume(reCam);
+
+	// [3] Stairs
+	camLook = { -0.163124f, 0.406737f, 0.898864f };
+	camUp = { 0.0726276f, 0.913546f, -0.4002f };
+	camPos = { 10.f, 0.f, 11.1f };
+	lOrientation = { 0.f, 2.9f, 17.1f, 1.0f };
+	lPosition = { 0.f, 8.3f, .0f, 1.0f };
+	fov = .494f;
+	reCam = new ReCamera(camPos);
+	cam = reCam->GetCamera();
+	cam->SetFieldOfView(fov);
+	reCam->SetLightOrientation(lOrientation);
+	reCam->SetLightPosition(lPosition);
+	cam->UpdateRotation(m_SceneContext, camUp, camLook);
+	AddChild(reCam);
+	pCamManager.AddVolume(reCam);
+
+	// [5] Entrance
+	camPos = { -10.f, 66.f, 9.f };
+	camLook = { 0.21046f, -0.61172f, -0.762564f };
+	camUp = { 0.162744f, 0.791074f, - 0.589675f };
+	lOrientation = { -74.1f, -1.6f, -40.1f, 1.0f };
+	lPosition = { 0.f, 14.3f, .0f, 1.0f };
+	fov = .703f;
+	reCam = new ReCamera(camPos);
+	cam = reCam->GetCamera();
+	cam->SetFieldOfView(fov);
+	reCam->SetLightOrientation(lOrientation);
+	reCam->SetLightPosition(lPosition);
+	cam->UpdateRotation(m_SceneContext, camUp, camLook);
+	AddChild(reCam);
+	pCamManager.AddVolume(reCam);
+
+	// [6] CT2
+	camLook = { 0.459824f, 0.0598116f, 0.885993f };
+	camUp = { -0.0275522f, 0.99821f, -0.0530877f };
+	camPos = { 21, 9, 0 };
+	lOrientation = { 0.9f, -1.43f, 7.0f, 1.0f };
+	lPosition = { 1.5f, 42.8f, -0.9f, 1.0f };
+	fov = .688f;
+	reCam = new ReCamera(camPos);
+	cam = reCam->GetCamera();
+	cam->SetFieldOfView(fov);
+	reCam->SetLightOrientation(lOrientation);
+	reCam->SetLightPosition(lPosition);
+	cam->UpdateRotation(m_SceneContext, camUp, camLook);
+	AddChild(reCam);
+	pCamManager.AddVolume(reCam);
+
+
+	// [7] Stairs Mid
+	camLook = { -0.804462f, - 0.406737f, 0.432904f };
+	camUp = { -0.35817f, 0.913545f, 0.192741f };
+	camPos = { 26, 51, 69 };
+	lOrientation = { 6.4f, -3.3f, 7.2f, 1.0f };
+	lPosition = { -37.5f, 75.3f, 80.9f, 1.0f };
+	fov = .755f;
+	reCam = new ReCamera(camPos);
+	cam = reCam->GetCamera();
+	cam->SetFieldOfView(fov);
+	reCam->SetLightOrientation(lOrientation);
+	reCam->SetLightPosition(lPosition);
+	cam->UpdateRotation(m_SceneContext, camUp, camLook);
+	AddChild(reCam);
+	pCamManager.AddVolume(reCam);
+
+	// [8] Upper Main
+	camLook = { -0.82755f, - 0.294758f, - 0.477786f };
+	camUp = { -0.255268f, 0.955572f - 0.147379f };
+	camPos = { 60, 72, 81 };
+	lOrientation = { -1.2f, -.7f, 1.5f, 1.0f };
+	lPosition = {0.f, 80.4f, 0.f, 1.0f };
+	fov = .898f;
+	reCam = new ReCamera(camPos);
+	cam = reCam->GetCamera();
+	cam->SetFieldOfView(fov);
+	reCam->SetLightOrientation(lOrientation);
+	reCam->SetLightPosition(lPosition);
+	cam->UpdateRotation(m_SceneContext, camUp, camLook);
+	AddChild(reCam);
+	pCamManager.AddVolume(reCam);
+
+	// [8] Upper Dining
+	camLook = { -0.777137f - 0.406737f, 0.480232f };
+	camUp = { -0.346004f, 0.913545f, 0.213813f };
+	camPos = { -14, 78 ,- 29 };
+	lOrientation = { -1.4f, -.8f, 1.5f, 1.5f };
+	lPosition = { 16.9f, 63.9f, 3.1f, 1.0f };
+	fov = .770f;
+	reCam = new ReCamera(camPos);
+	cam = reCam->GetCamera();
+	cam->SetFieldOfView(fov);
+	reCam->SetLightOrientation(lOrientation);
+	reCam->SetLightPosition(lPosition);
+	cam->UpdateRotation(m_SceneContext, camUp, camLook);
+	AddChild(reCam);
+	pCamManager.AddVolume(reCam);
+
+	// [9] Stair Bridge
+	camLook = { 0.970635f, - 0.178562f, - 0.161192f };
+	camUp = { 0.176149f, 0.983929f, - 0.0292529f };
+	camPos = { -32, 68, 71 };
+	lOrientation = { 12.2f, -4.3f, 8.6f, 1.5f };
+	lPosition = { -10.3f, 85.2f, 0.8f, 1.0f };
+	fov = .770f;
+	reCam = new ReCamera(camPos);
+	cam = reCam->GetCamera();
+	cam->SetFieldOfView(fov);
+	reCam->SetLightOrientation(lOrientation);
+	reCam->SetLightPosition(lPosition);
+	cam->UpdateRotation(m_SceneContext, camUp, camLook);
+	AddChild(reCam);
+	pCamManager.AddVolume(reCam);
+
+	// [10] Right Corner
+	camLook = { 0.764587f, - 0.294758f, - 0.573171f };
+	camUp = { 0.235846f, 0.955572f, - 0.176802f };
+	camPos = { -2 ,79, 8 };
+	lOrientation = { 12.2f, -4.3f, 8.6f, 1.5f };
+	lPosition = { -10.3f, 85.2f, 0.8f, 1.0f };
+	fov = .793f;
+	reCam = new ReCamera(camPos);
+	cam = reCam->GetCamera();
+	cam->SetFieldOfView(fov);
+	reCam->SetLightOrientation(lOrientation);
+	reCam->SetLightPosition(lPosition);
+	cam->UpdateRotation(m_SceneContext, camUp, camLook);
+	AddChild(reCam);
+	pCamManager.AddVolume(reCam);
+
+	// [11] Window 
+	camLook = { 0.649952f, - 0.294757f, - 0.700485f };
+	camUp = { 0.200485f, 0.955572f, - 0.216073f };
+	camPos = { -47, 76, 2 };
+	lOrientation = { -21.5f, -10.6f, -49.6f, 1.5f };
+	lPosition = { 38.9f, 66.3f, 3.6f, 1.0f };
+	fov = .778f;
+	reCam = new ReCamera(camPos);
+	cam = reCam->GetCamera();
+	cam->SetFieldOfView(fov);
+	reCam->SetLightOrientation(lOrientation);
+	reCam->SetLightPosition(lPosition);
+	cam->UpdateRotation(m_SceneContext, camUp, camLook);
+	AddChild(reCam);
+	pCamManager.AddVolume(reCam);
 }
 
+#define SC_UINT(x) static_cast<UINT>(x)
 void MainHallScene::AddCameraSwitches()
 {
-	XMFLOAT3 pos = { 0, 0, 0 };
-	XMFLOAT3 size = { 1, 1, 1 };
+	// Main <-> CT2
+	XMFLOAT3 pos = { 43.8f, 9.6f, 28.8f };
+	XMFLOAT3 size = { 43, 21, 2 };
 	auto pSwitch = AddChild(new CameraSwitch(pos, size));
-	pSwitch->SetTargets(0, 1);
+	pSwitch->SetTargets(SC_UINT(ReMainHallCamera::MAIN), SC_UINT(ReMainHallCamera::CT2));
+	pSwitch->GetTransform()->Rotate(0, 29, 0);
 	m_pSwitches.push_back(pSwitch);
+
+
+	// -> Stairs
+	pos = { 43.8f, 9.6f, 28.8f };
+	size = { 43, 21, 2 };
+	pSwitch = AddChild(new CameraSwitch(pos, size));
+	pSwitch->SetTarget( SC_UINT(ReMainHallCamera::STAIRS));
+	pSwitch->GetTransform()->Rotate(0, 29, 0);
 
 
 	pSwitch = AddChild(new CameraSwitch({ 0, 0, 0 }, { 1, 1, 1 }, true));
@@ -433,15 +625,22 @@ void MainHallScene::AddDoors()
 	XMFLOAT3 pos{ 0.f, 0.f, 0.f };
 	XMFLOAT3 size{ 1.f, 1.f,1.f };
 
+	// To Dining
 	pos = { -56.0f, 11.0f, 26.0f };
 	size = { 7.0f, 31.0f, 29.0f };
 	auto pDoor = AddChild(new ReDoor(pos, size));
-	pDoor->SetSceneToLoad(1);
+	pDoor->OnInteract.AddFunction([this]()
+		{
+			m_pClassicDoor->SetSceneToLoad(L"DiningRoomScene");
+			m_pClassicDoor->Trigger();
+		});
+
 	m_pDoors.emplace_back(pDoor);
 
+
+	// To Upper Dining
 	pos = { -56.0f, 61.0f, 26.0f };
 	pDoor = AddChild(new ReDoor(pos, size));
-	pDoor->SetSceneToLoad(1);
 	m_pDoors.emplace_back(pDoor);
 }
 

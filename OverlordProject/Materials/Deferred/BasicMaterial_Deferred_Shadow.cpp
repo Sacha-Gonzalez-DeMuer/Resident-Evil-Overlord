@@ -34,27 +34,6 @@ void BasicMaterial_Deferred_Shadow::SetShadowMap(TextureData* pTextureData)
 	SetVariable_Texture(L"gShadowMap", pTextureData);
 }
 
-void BasicMaterial_Deferred_Shadow::SetSpecularMap(const std::wstring& assetFile)
-{
-	SetSpecularMap(ContentManager::Load<TextureData>(assetFile));
-
-}
-
-void BasicMaterial_Deferred_Shadow::SetSpecularMap(TextureData* pTextureData)
-{
-	SetVariable_Scalar(L"gUseSpecularMap", pTextureData != nullptr);
-	SetVariable_Texture(L"gSpecularMap", pTextureData);
-}
-
-void BasicMaterial_Deferred_Shadow::SetSpecularColor(const XMFLOAT4& color)
-{
-	SetVariable_Vector(L"gSpecularColor", color);
-}
-
-void BasicMaterial_Deferred_Shadow::UseTransparency(bool /*enable*/)
-{
-	//SetTechnique(enable ? L"Default_Alpha" : L"Default");
-}
 
 void BasicMaterial_Deferred_Shadow::InitializeEffectVariables()
 {

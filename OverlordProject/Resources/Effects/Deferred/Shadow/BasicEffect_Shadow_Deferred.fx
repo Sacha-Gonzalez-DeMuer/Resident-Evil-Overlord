@@ -126,7 +126,7 @@ int gShininess <
 	float UIMin = 1;
 	float UIMax = 100;
 	float UIStep = 0.1f;
-> = 15;
+> = 55;
 
 //AMBIENT
 //*******

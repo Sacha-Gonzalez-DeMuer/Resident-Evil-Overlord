@@ -1,10 +1,10 @@
 ﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
-  MainHallScene.cpp
+  MainGame.cpp
      Creating library D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.lib and object D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.exp
   Generating code
-  8 of 8698 functions (<0.1%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    7 functions had inline decision re-evaluated but remain unchanged
+  356 of 9165 functions ( 3.9%) were compiled, the rest were copied from previous compilation.
+    4 functions were new in current compilation
+    82 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Release\OverlordProject.exe
   0 File(s) copied

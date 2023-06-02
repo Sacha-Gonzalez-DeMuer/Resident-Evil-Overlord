@@ -11,7 +11,7 @@ public:
 	DiffuseMaterial_Shadow& operator=(DiffuseMaterial_Shadow&& other) noexcept = delete;
 
 	void SetDiffuseTexture(const std::wstring& assetFile);
-
+	void SetNormalMap(const std::wstring& assetFile);
 
 protected:
 	void InitializeEffectVariables() override;
@@ -19,5 +19,7 @@ protected:
 
 private:
 	TextureData* m_pDiffuseTexture{};
+	TextureData* m_pSpecularMap{};
+	TextureData* m_pNormalMap{};
 };
 
