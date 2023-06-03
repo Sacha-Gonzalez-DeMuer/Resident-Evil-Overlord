@@ -17,7 +17,6 @@ RePlayerController::RePlayerController(const ReCharacterDesc& characterDesc)
 	m_MoveAcceleration(characterDesc.maxMoveSpeed / characterDesc.moveAccelerationTime),
 	m_FallAcceleration(characterDesc.maxFallSpeed / characterDesc.fallAccelerationTime)
 {
-
 }
 
 void RePlayerController::GetAttacked()
@@ -27,8 +26,21 @@ void RePlayerController::GetAttacked()
 	m_pAnimController->TriggerAnim(PAnimNames::Bitten);
 }
 
+void RePlayerController::Reset()
+{
+	m_pInventory->Reset();
+	m_pAnimController->Reset();
+	m_pHealth->Reset();
+	const auto& spawnPos = m_CharacterDesc.spawnPosition;
+	GetTransform()->Translate(spawnPos.x, spawnPos.y + m_CharacterDesc.controller.height * .5f, spawnPos.z);
+
+}
+
 void RePlayerController::Initialize(const SceneContext&)
 {
+	const auto& spawnPos = m_CharacterDesc.spawnPosition;
+	GetTransform()->Translate(spawnPos.x, spawnPos.y + m_CharacterDesc.controller.height * .5f, spawnPos.z);
+
 	//Controller
 	m_pControllerComponent = AddComponent(new ControllerComponent(m_CharacterDesc.controller));
 	SetTag(L"Player");
@@ -45,12 +57,10 @@ void RePlayerController::Initialize(const SceneContext&)
 	modelComponent->SetMaterial(pSkinnedMaterial);
 
 	m_pModelObject->GetTransform()->Scale(0.11f, 0.11f, 0.11f);
-	m_pModelObject->GetTransform()->Translate(0.f, -m_CharacterDesc.controller.height / 2, 0.f);
-	 
-	
+	m_pModelObject->GetTransform()->Translate(0.f, -m_CharacterDesc.controller.height * .5f, 0.f);
+
 	// Animation
 	m_pAnimController = AddComponent(new RePlayerAnimController(modelComponent->GetAnimator(), this));
-
 
 	auto bloodemitterObj = AddChild(new GameObject());
 	ParticleEmitterSettings particleSettings{};
@@ -62,13 +72,41 @@ void RePlayerController::Initialize(const SceneContext&)
 	particleSettings.maxEmitterRadius = 0.1f;
 	particleSettings.minEmitterRadius = 0.05f;
 	particleSettings.velocity = XMFLOAT3(-10.f, 10.f, 0.f);
-	particleSettings.offset = XMFLOAT3(0.f, m_CharacterDesc.controller.height /2, 0.f);
+	particleSettings.offset = XMFLOAT3(0.f, m_CharacterDesc.controller.height * .5f, 0.f);
 	m_pBloodEmitter = bloodemitterObj->AddComponent(new ParticleEmitterComponent(FilePath::BLOOD_PARTICLE, particleSettings, 200));
 	
 	m_pAnimController->SetBloodEmitter(m_pBloodEmitter);
 
 	// Inventory
 	m_pInventory = AddComponent(new ReInventory());
+
+	// Audio
+	auto pFMODSys = SoundManager::Get()->GetSystem();
+	const auto& stepSoundPath = ContentManager::GetFullAssetPath(FilePath::FOOTSTEPA_AUDIO);
+	auto result = pFMODSys->createStream(stepSoundPath.string().c_str(), FMOD_LOOP_OFF | FMOD_2D, nullptr, &m_pStepSoundA);
+	if (result != FMOD_OK)
+	{
+		std::wstringstream ss;
+		ss << "Failed to load sound: " << stepSoundPath << std::endl;
+		Logger::LogError(ss.str());
+		return;
+	}
+
+	 result = pFMODSys->createStream(ContentManager::GetFullAssetPath(FilePath::FOOTSTEPB_AUDIO).string().c_str(), FMOD_LOOP_OFF | FMOD_2D, nullptr, &m_pStepSoundB);
+	 if (result != FMOD_OK)
+	 {
+		std::wstringstream ss;
+		ss << "Failed to load sound: " << stepSoundPath << std::endl;
+		Logger::LogError(ss.str());
+		return;
+	}
+
+	 // Health
+	 m_pHealth = AddComponent(new HealthComponent(m_CharacterDesc.maxHealth));
+	 m_pHealth->OnDeath.AddFunction([this]() {
+		 OnDeath();
+		 //m_pAnimController->Pause();
+		 });
 }
 
 void RePlayerController::Update(const SceneContext& sceneContext)
@@ -77,11 +115,6 @@ void RePlayerController::Update(const SceneContext& sceneContext)
 
 	if (sceneContext.pCamera->IsActive() && !m_AnimationLocked)
 	{
-		//if (m_pHealth->IsDead())
-		//{
-		//	m_pAnimController->TriggerAnim(PAnimNames::Death);
-		//
-		//}
 		constexpr float epsilon{ 0.01f };
 		const float deltaTime{ sceneContext.pGameTime->GetElapsed() };
 
@@ -104,7 +137,8 @@ void RePlayerController::Update(const SceneContext& sceneContext)
 		if (abs(move.x) < epsilon)
 			move.x = InputManager::GetThumbstickPosition(true).x;
 
-
+		m_IsSprinting = pInput->IsActionTriggered(m_CharacterDesc.actionId_Sprint);
+		if (move.y < 0 && m_IsSprinting) return;
 
 		//************************
 		//GATHER TRANSFORM INFO
@@ -131,6 +165,9 @@ void RePlayerController::Update(const SceneContext& sceneContext)
 
 			m_MoveSpeed += acceleration;
 			m_MoveSpeed = std::min(m_MoveSpeed, m_CharacterDesc.maxMoveSpeed);
+
+
+
 		}
 		else
 		{
@@ -153,18 +190,47 @@ void RePlayerController::Update(const SceneContext& sceneContext)
 		else
 			m_TotalVelocity.y = 0.f;
 
+
 		//************
 		//DISPLACEMENT
-		float scale = deltaTime;
-		if (pInput->IsActionTriggered(m_CharacterDesc.actionId_Sprint))
-			scale *= 2;
+		const float scale = deltaTime;
+		if (m_IsSprinting)
+		{
+			m_CurrentStepInterval = m_StepInterval *(1-m_SprintScale);
+		}
+		else
+			m_CurrentStepInterval = m_StepInterval;
 
+		UpdateStepSound(deltaTime);
 		auto displacement = XMVectorScale(XMLoadFloat3(&m_TotalVelocity), scale);
 
 		XMFLOAT3 displacementFloat3;
 		XMStoreFloat3(&displacementFloat3, displacement);
 		m_pControllerComponent->Move(displacementFloat3, 0.001f);
 	}
+}
+
+void RePlayerController::UpdateStepSound(float dt)
+{
+	if (m_IsMoving || m_IsSprinting)
+	{
+		m_StepTimer += dt;
+		if (m_StepTimer >= m_CurrentStepInterval)
+		{
+			m_StepTimer -= m_StepInterval;
+			auto pFMODSys = SoundManager::Get()->GetSystem();
+			static bool stepA{};
+			pFMODSys->playSound(stepA ? m_pStepSoundA : m_pStepSoundB, nullptr, false, &m_pPlayerChannel);
+			stepA = !stepA;
+		}
+	}
+	else
+		m_StepTimer = 0.f;
+}
+
+void RePlayerController::OnDeath()
+{
+	m_pAnimController->TriggerAnim(PAnimNames::Death);
 }
 
 void RePlayerController::OnCamSwitch()

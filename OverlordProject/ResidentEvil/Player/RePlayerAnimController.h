@@ -30,6 +30,9 @@ public:
 	void Update(const SceneContext& sceneContext) override;
 	void TriggerAnim(const std::wstring& clipName);
 	void SetBloodEmitter(ParticleEmitterComponent* emitter) { m_pBloodEmitter = emitter; }
+
+	void Pause();
+	void Reset();
 private:
 	ModelAnimator* m_pAnimator{};
 	RePlayerController* m_pPlayerController{};

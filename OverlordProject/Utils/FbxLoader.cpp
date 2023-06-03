@@ -22,7 +22,6 @@
 #pragma comment(lib, "D:\\DAE_SEM4\\Graphics Prog 2\\OverlordEngine\\3rdParty\\FBX SDK\\2020.0.1\\lib\\vs2017\\x64\\Release\\zlib-md.lib")
 #endif
 
-
 // helpful links
 // http://docs.autodesk.com/FBX/2014/ENU/FBX-SDK-Documentation
 // https://www.youtube.com/watch?v=xLwJFtEc2Ws&ab_channel=%EA%B6%8C%ED%95%98%EB%8A%98
@@ -160,19 +159,18 @@ coordinate system B contains a rotation vector, V2 which is defined by (x=0,y=90
 what is the rotation matrix to convert from vector V1 to V2*/
 
 
-	Light FbxLoader::ConvertToOverlord(const FbxLight& fbxLight)
+	Light FbxLoader::ConvertToOverlord(FbxLight* fbxLight)
 	{
 		Light overlordLight{};
-		FbxNode* pLightNode = fbxLight.GetNode();
+		FbxNode* pLightNode = fbxLight->GetNode();
 
-		switch (fbxLight.LightType)
+		switch (fbxLight->LightType)
 		{
 		case FbxLight::eDirectional:
 			break; // TODO: support directional light loading
 
 		case FbxLight::ePoint:
 		{
-			overlordLight.type = LightType::Point;
 			break;
 		}
 		case FbxLight::eSpot:
@@ -189,12 +187,13 @@ what is the rotation matrix to convert from vector V1 to V2*/
 		FbxDouble3 lightRotation = pLightNode->LclRotation.Get();
 
 		// Create a light struct and fill in the necessary information
+		overlordLight.type = LightType::Point; //todo: support other types
 		overlordLight.isEnabled = true;
 		overlordLight.position = { static_cast<float>(lightPosition[0]), static_cast<float>(lightPosition[1]), static_cast<float>(lightPosition[2]), 1.0f };
-		overlordLight.color = { static_cast<float>(fbxLight.Color.Get()[0]), static_cast<float>(fbxLight.Color.Get()[1]), static_cast<float>(fbxLight.Color.Get()[2]), 1.0f };
-		overlordLight.intensity = static_cast<float>(fbxLight.Intensity) * .000001f;
+		overlordLight.color = { static_cast<float>(fbxLight->Color.Get()[0]), static_cast<float>(fbxLight->Color.Get()[1]), static_cast<float>(fbxLight->Color.Get()[2]), 1.0f };
+		overlordLight.intensity = static_cast<float>(fbxLight->Intensity) * .000001f;
 
-		const auto& prop = fbxLight.FindProperty("Range");
+		const auto& prop = fbxLight->FindProperty("Range");
 		overlordLight.range = static_cast<float>(prop.Get<FbxDouble>()) * 2;
 
 		pLightNode->Destroy();
@@ -265,7 +264,7 @@ what is the rotation matrix to convert from vector V1 to V2*/
 	{
 		for (const auto& light : lights)
 		{
-			auto overlordLight = ConvertToOverlord(*light);
+			auto overlordLight = ConvertToOverlord(light);
 			sceneContext.pLights->AddLight(overlordLight);
 		}
 	}

@@ -18,3 +18,9 @@ void ReMenu::SetActive(bool isActive)
 		pBtn->SetActive(m_IsActive);
 	}
 }
+
+void ReMenu::AddButton(ReButton* pButton)
+{
+	m_pButtons.push_back(pButton);
+	AddChild(pButton);
+}

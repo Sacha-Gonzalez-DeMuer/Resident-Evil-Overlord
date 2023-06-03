@@ -13,20 +13,19 @@ struct ReCharacterDesc
 {
 	PxCapsuleControllerDesc controller{};
 
-	XMFLOAT3 cameraOffset{ 0.f, controller.height * .5f, .0f };
+	XMFLOAT3 spawnPosition{ 0.f, controller.height * .5f, .0f };
 
 	float maxMoveSpeed{ 15.f };
 	float maxFallSpeed{ 15.f };
-	float JumpSpeed{ 15.f };
 	float moveAccelerationTime{ .3f };
 	float fallAccelerationTime{ .3f };
 	float rotationSpeed{ 60.f };
 	float attackDistance{ 5.f };
+	float maxHealth{ 100.f };
 	int actionId_MoveLeft{ -1 };
 	int actionId_MoveRight{ -1 };
 	int actionId_MoveForward{ -1 };
 	int actionId_MoveBackward{ -1 };
-	int actionId_Jump{ -1 };
 	int actionId_Interact{ -1 };
 	int actionId_Sprint{ -1 };
 	int actionId_Aim{ -1 };
@@ -76,11 +75,11 @@ enum InputIds
 	CharacterMoveRight,
 	CharacterMoveForward,
 	CharacterMoveBackward,
-	CharacterJump,
 	Interact,
 	CharacterSprint,
 	CharacterAim,
-	CharacterAttack
+	CharacterAttack,
+	ResetScene
 };
 
 enum class ReMainHallCamera

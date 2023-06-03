@@ -27,20 +27,25 @@ void ReCamera::Update(const SceneContext& sceneContext)
 {
     if (m_pCamera->IsActive())
     {
-
-        
         GetTransform()->Rotate(m_TotalPitch, m_TotalYaw, m_TotalRoll);
-        sceneContext.pLights->GetDirectionalLight().direction = m_LightOrientation;
-        sceneContext.pLights->GetDirectionalLight().position = m_LightPosition;
+
+        if (m_HasLight)
+        {
+            sceneContext.pLights->GetDirectionalLight().direction = m_LightOrientation;
+            sceneContext.pLights->GetDirectionalLight().position = m_LightPosition;
+        }
+       // else sceneContext.pLights->ResetDirectionalLight();
     }
-
-
 }
 
 void ReCamera::OnCameraSwitch()
 {
+    auto pLights = GetScene()->GetSceneContext().pLights;
     if (m_HasLight)
-        GetScene()->GetSceneContext().pLights->SetDirectionalLight(GetTransform()->GetPosition(), { m_LightOrientation.x, m_LightOrientation.y, m_LightOrientation.z });
+    {
+        pLights->SetDirectionalLight({m_LightPosition.x, m_LightPosition.y, m_LightPosition.z}, {m_LightOrientation.x, m_LightOrientation.y, m_LightOrientation.z});
+    }
+    else pLights->ResetDirectionalLight();
 }
 
 void ReCamera::InitializeCamera(const XMFLOAT3& position, bool targetable)

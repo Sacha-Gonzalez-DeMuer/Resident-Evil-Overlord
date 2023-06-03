@@ -11,19 +11,21 @@ public:
 
 	void Initialize(const SceneContext&) override {};
 	void Update(const SceneContext&) override;
-
+	void Disable() {m_Enabled = false;}
+	void Enable() {m_Enabled = true;}
 
 
 private:
+	bool m_Enabled{true};
 	float m_FlashDuration{ 0.1f };
 
 	float m_MinFlashDuration{ 0.01f };
 	float m_MaxFlashDuration{ 0.4f };
 
 	float m_MinDelay{ .1f };
-	float m_MaxDelay{ 3.f };
+	float m_MaxDelay{ 10.f };
 
-	float m_MinIntensity{ .25f };
+	float m_MinIntensity{ .3f };
 	float m_MaxIntensity{ 1.f };
 
 	float m_CurrentFlashDuration{ .1f };

@@ -36,3 +36,8 @@
 *.ilk
 *.ipch
 .vs/Overlord_x64/v17/Browse.VC.opendb
+*.wav
+*.mp3
+*.m4a
+*.WAV
+*.WAV

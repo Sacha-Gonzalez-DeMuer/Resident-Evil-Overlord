@@ -44,14 +44,18 @@ public:
 	//For Deferred Rendering
 	UINT AddLight(const Light& l) { m_Lights.push_back(l); return static_cast<UINT>(m_Lights.size() - 1); }
 	Light& GetLight(int id) { return m_Lights[id]; }
-	std::vector<Light>& GetLights()  { return m_Lights; }
+	std::vector<Light>& GetLights() { return m_Lights; }
 
 	Light& GetDirectionalLight() { return m_DirectionalLight; }
 	void SetDirectionalLight(const XMFLOAT3& position, const XMFLOAT3& direction);
+	void SetDefaultDirectionalPos(const XMFLOAT3& position) { defaultPos = position; }
+	void SetDefaultDirectionalDir(const XMFLOAT3& direction) { defaultDir = direction; }
 
+	void ResetDirectionalLight();
 private:
-
 	std::vector<Light> m_Lights{};
 	Light m_DirectionalLight{};
+	XMFLOAT3 defaultPos{ 0.9f, 0.9f, 0.8f };
+	XMFLOAT3 defaultDir{ -0.577f, -0.577f, 0.577f };
 };
 

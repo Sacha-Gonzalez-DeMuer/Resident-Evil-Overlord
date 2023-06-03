@@ -14,6 +14,7 @@ public:
 
 	void SetDestInventory(ReInventory* toInventory) { m_pDestInventory = toInventory;}
 	void Interact() override;
+	void Reset();
 
 private:
 	bool m_IsInteracted{};

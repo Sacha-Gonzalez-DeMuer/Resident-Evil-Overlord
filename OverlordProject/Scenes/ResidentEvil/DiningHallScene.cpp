@@ -4,7 +4,7 @@
 #include "Materials/DiffuseMaterial.h"
 #include "FilePaths.h"
 #include "Utils/StaticMeshFactory.h"
-#include "Utils/FbxLoader.h"
+//#include "Utils/FbxLoader.h"
 #include "Utils/Utils.h"
 #include <codecvt>
 #include <locale>
@@ -26,6 +26,7 @@
 #include "ResidentEvil/HUD/ReMenuManager.h"
 #include "ResidentEvil/HUD/Menus/ReMenu.h"
 #include "ResidentEvil/HUD/ReButton.h"
+#include "ResidentEvil/World/ReClassicDoor.h"
 
 #include "Materials/Post/PostBloom.h"
 #include "Materials/Post/PostGrain.h"
@@ -45,36 +46,74 @@ void DiningHallScene::Initialize()
 	m_SceneContext.settings.drawPhysXDebug = false;
 	m_SceneContext.useDeferredRendering = true;
 	m_SceneContext.pLights->GetDirectionalLight().isEnabled = true;
-	m_SceneContext.pLights->SetDirectionalLight({ 0, 56, 0 }, { 4, -2.43f, .040f });
-
-	auto pSubController = AddChild(new SubtitleController());
-	SubtitleManager::Get().SetController(pSubController);
+	m_SceneContext.pLights->SetDefaultDirectionalPos({ 0, 56, 0 });
+	m_SceneContext.pLights->SetDefaultDirectionalDir({ 4, -2.43f, .040f });
 
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
 
-	
+	AddSound();
+	AddPlayer(pDefaultMaterial);
+	AddZombie(pDefaultMaterial);
+	AddInput();
+	AddGun();
+	AddMenus();
+	AddPostProcessing();
+	AddNavCollider(*pDefaultMaterial);
 
-	// Zombie
-	ReCharacterDesc zombieDesc{ pDefaultMaterial };
-	zombieDesc.controller.height = 17.5f;
-	zombieDesc.rotationSpeed = 60.f;
-	zombieDesc.maxMoveSpeed = 10.f;
-	zombieDesc.moveAccelerationTime = 0.3f;
-	zombieDesc.attackDistance = 20.f;
-	// navmesh
-	auto nav_go = AddChild(new GameObject());
-	auto pNavTriangleMesh = ContentManager::Load<PxTriangleMesh>(FilePath::ENV_DINING_NAVMESH);
-	auto pNavRb = nav_go->AddComponent(new RigidBodyComponent(true));
-	pNavRb->SetCollisionGroup(CollisionGroup::Group0);
-	pNavRb->AddCollider(PxTriangleMeshGeometry(pNavTriangleMesh), *pDefaultMaterial);
+	auto& pCamVolumeManager = ReCameraManager::Get();
+	AddCameras();
+	pCamVolumeManager.SetActiveCamera(UINT(0));
+	AddCameraSwitches();
+	AddDoors();
+	auto thunder = AddChild(new ThunderController());
 
-	//Character
-	ReCharacterDesc characterDesc{ pDefaultMaterial };
+	auto loadingDoor = AddChild(new ReClassicDoor());
+
+	loadingDoor->OnAnimationStart.AddFunction([&]() {
+		thunder->Disable(); 
+		m_pAmbientChannel->setPaused(true);
+		});
+
+	loadingDoor->OnAnimationFinished.AddFunction([&]() {
+		thunder->Enable();
+		m_pAmbientChannel->setPaused(false);
+		});
+
+	LoadWorld();
+}
+
+void DiningHallScene::Update()
+{
+	if (m_SceneContext.pInput->IsActionTriggered(ResetScene))
+		Reset();
+}
+
+
+void DiningHallScene::Reset()
+{
+	m_pCharacter->Reset();
+	m_pClassicDoor->Reset();
+	m_pZombie->Reset();
+	m_pGun->Reset();
+}
+
+void DiningHallScene::LoadWorld()
+{
+	//auto pDiningHall = AddChild(new GameObject());
+	//std::wstring dining_fbx_path = ContentManager::GetFullAssetPath(FilePath::ENV_DINING_FBX);
+	//const auto& dining_fbx_path_c = StringUtil::ConvertWStringToChar(dining_fbx_path);
+	//dae::FbxLoader loader{ dining_fbx_path_c };
+	//delete[] dining_fbx_path_c;
+	//loader.LoadToOverlord(*pDiningHall, m_SceneContext, FilePath::FOLDER_ENV_DINING);
+}
+
+void DiningHallScene::AddPlayer(PxMaterial* material)
+{
+	ReCharacterDesc characterDesc{ material };
 	characterDesc.actionId_MoveForward = CharacterMoveForward;
 	characterDesc.actionId_MoveBackward = CharacterMoveBackward;
 	characterDesc.actionId_MoveLeft = CharacterMoveLeft;
 	characterDesc.actionId_MoveRight = CharacterMoveRight;
-	characterDesc.actionId_Jump = CharacterJump;
 	characterDesc.actionId_Interact = Interact;
 	characterDesc.actionId_Sprint = CharacterSprint;
 	characterDesc.actionId_Aim = CharacterAim;
@@ -83,15 +122,29 @@ void DiningHallScene::Initialize()
 	characterDesc.rotationSpeed = 120.f;
 	characterDesc.maxMoveSpeed = 15.f;
 	characterDesc.moveAccelerationTime = 0.01f;
+	characterDesc.spawnPosition = m_BottomSpawnPos;
 
 	m_pCharacter = AddChild(new RePlayerController(characterDesc));
-	m_pCharacter->GetTransform()->Translate(0.f, 15.f, -90.f); // spawn pos
+}
 
+void DiningHallScene::AddZombie(PxMaterial* material)
+{
+	// Zombie
+	ReCharacterDesc zombieDesc{ material };
+	zombieDesc.controller.height = 17.5f;
+	zombieDesc.rotationSpeed = 60.f;
+	zombieDesc.maxMoveSpeed = 10.f;
+	zombieDesc.moveAccelerationTime = 0.3f;
+	zombieDesc.attackDistance = 20.f;
 
 	m_pZombie = AddChild(new ReZombie(zombieDesc));
 	m_pZombie->GetTransform()->Translate(26.f, 10.f, 63.f); // spawn pos
 	m_pZombie->SetTarget(m_pCharacter);
 
+}
+
+void DiningHallScene::AddInput()
+{
 	//Input
 	auto inputAction = InputAction(CharacterMoveLeft, InputState::down, 'A');
 	m_SceneContext.pInput->AddInputAction(inputAction);
@@ -111,70 +164,22 @@ void DiningHallScene::Initialize()
 	inputAction = InputAction(CharacterSprint, InputState::down, VK_SHIFT);
 	m_SceneContext.pInput->AddInputAction(inputAction);
 
-	inputAction = InputAction(CharacterJump, InputState::pressed, VK_SPACE, -1, XINPUT_GAMEPAD_A);
-	m_SceneContext.pInput->AddInputAction(inputAction);
-
 	inputAction = InputAction(CharacterAim, InputState::down, VK_RBUTTON);
 	m_SceneContext.pInput->AddInputAction(inputAction);
 
-
-
-
-	auto pDiningHall = AddChild(new GameObject());
-	std::wstring dining_fbx_path = ContentManager::GetFullAssetPath(FilePath::ENV_DINING_FBX);
-	const auto& dining_fbx_path_c = StringUtil::ConvertWStringToChar(dining_fbx_path);
-	dae::FbxLoader loader{ dining_fbx_path_c };
-	delete[] dining_fbx_path_c;
-	
-	loader.LoadToOverlord(*pDiningHall, m_SceneContext, FilePath::FOLDER_ENV_DINING);
-	
-	auto& pCamVolumeManager = ReCameraManager::Get();
-	AddCameras();
-	AddCameraSwitches();
-	AddDoors();
-	pCamVolumeManager.SetActiveCamera(UINT(0));
-
-	//// Clock
-	//m_pClock = AddChild(new ReClock({37,14,-28}, {15,30,10}));
-	//Subtitle clockSub;
-	//clockSub.font = ContentManager::Load<SpriteFont>(FilePath::SUBTITLE_FONT);
-	//clockSub.text = "blablabla look at game to see \nwhat the text is";
-	//m_pClock->SetSubtitle(clockSub);
-
-	//m_pGun = AddChild(new ReGun({ 8,10,-63 }, { -15,29,8 }));
-	//m_pGun->SetDestInventory(m_pCharacter->GetInventory());
-	ParticleEmitterSettings particleSettings{};
-	particleSettings.maxSize = 5.f;
-	particleSettings.maxEnergy = 3.f;
-	particleSettings.minEnergy = 1.f;
-	particleSettings.maxScale = 5.5f;
-	particleSettings.maxEmitterRadius = 0.1f;
-	particleSettings.minEmitterRadius = 0.05f;
-	particleSettings.velocity = XMFLOAT3(0.f, 10.f, 0.f);
-
-
-
-	AddChild(new ThunderController());
-	AddMenus();
-	AddPostProcessing();
+	inputAction = InputAction(ResetScene, InputState::down, 'M');
+	m_SceneContext.pInput->AddInputAction(inputAction);
 }
 
-void DiningHallScene::Update()
+void DiningHallScene::AddNavCollider(const PxMaterial& material)
 {
+	// navmesh
+	auto nav_go = AddChild(new GameObject());
+	auto pNavTriangleMesh = ContentManager::Load<PxTriangleMesh>(FilePath::ENV_DINING_NAVMESH);
+	auto pNavRb = nav_go->AddComponent(new RigidBodyComponent(true));
+	pNavRb->SetCollisionGroup(CollisionGroup::Group0);
+	pNavRb->AddCollider(PxTriangleMeshGeometry(pNavTriangleMesh), material);
 }
-
-void DiningHallScene::Draw()
-{
-}
-
-void DiningHallScene::PostDraw()
-{
-	//Draw ShadowMap (Debug Visualization)
-		//ShadowMapRenderer::Get()->Debug_DrawDepthSRV({ m_SceneContext.windowWidth - 10.f, 10.f }, { .3f, .3f }, { 1.f,0.f });
-}
-
-
-#pragma region BuildWorld
 
 void DiningHallScene::AddCameras()
 {
@@ -284,9 +289,6 @@ void DiningHallScene::AddDoors()
 	m_pDoors.emplace_back(pDoor);
 }
 
-#pragma endregion BuildWorld
-
-
 void DiningHallScene::AddMenus()
 {
 	auto pMenuManager = AddChild(new ReMenuManager());
@@ -344,25 +346,105 @@ void DiningHallScene::AddPostProcessing()
 	AddPostProcessingEffect(grain);
 }
 
+void DiningHallScene::AddGun()
+{
+	//m_pGun = AddChild(new ReGun({ 8,10,-63 }, { -15,29,8 }));
+	//m_pGun->SetDestInventory(m_pCharacter->GetInventory());
+}
+
+void DiningHallScene::AddClock()
+{
+	//m_pClock = AddChild(new ReClock({37,14,-28}, {15,30,10}));
+	//Subtitle clockSub;
+	//clockSub.font = ContentManager::Load<SpriteFont>(FilePath::SUBTITLE_FONT);
+	//clockSub.text = "blablabla look at game to see \nwhat the text is";
+	//m_pClock->SetSubtitle(clockSub);
+}
+
+void DiningHallScene::AddSubtitles()
+{
+	auto pSubController = AddChild(new SubtitleController());
+	SubtitleManager::Get().SetController(pSubController);
+}
+
+void DiningHallScene::AddSound()
+{
+	auto pFMODSys = SoundManager::Get()->GetSystem();
+	const auto& ambientPath = ContentManager::GetFullAssetPath(FilePath::DINING_AMBIENT_AUDIO);
+	auto result = pFMODSys->createStream(ambientPath.string().c_str(), FMOD_LOOP_NORMAL, nullptr, &m_pAmbientSound);
+	if (result != FMOD_OK)
+	{
+		std::wstringstream ss;
+		ss << "Failed to load sound: " << FilePath::DINING_AMBIENT_AUDIO << std::endl;
+		Logger::LogError(ss.str());
+		return;
+	}
+
+	result = pFMODSys->playSound(m_pAmbientSound, nullptr, false, &m_pAmbientChannel);
+	if (result != FMOD_OK)
+	{
+		std::wstringstream ss;
+		ss << "Failed to play sound: " << FilePath::DINING_AMBIENT_AUDIO << std::endl;
+		Logger::LogError(ss.str());
+		return;
+	}
+}
+// function that saves variables to a text file
+void gSaveCamVariables(const ReCamera& cam)
+{
+	std::ofstream myfile;
+	myfile.open("variables.txt");
+	// print lookat
+	XMFLOAT3 lookat;
+	XMStoreFloat3(&lookat, cam.GetLookAt());
+	myfile << "LookAt: " << lookat.x << "f, " << lookat.y << "f, " << lookat.z << "f\n";
+
+	// print right
+	XMFLOAT3 right;
+	XMStoreFloat3(&right, cam.GetRight());
+	myfile << "Right: " << right.x << " " << right.y << " " << right.z << "\n";
+
+	//print up
+	XMFLOAT3 up;
+	XMStoreFloat3(&up, cam.GetUp());
+	myfile << "Up: " << up.x << "f, " << up.y << "f, " << up.z << "f\n";
+
+	// print position
+	XMFLOAT3 position{ cam.GetTransform()->GetPosition() };
+	myfile << "Position: " << position.x << " " << position.y << " " << position.z << "\n";
+
+	myfile.close();
+}
 
 #pragma region GUI
 void DiningHallScene::OnGUI()
 {
 	DeferredRenderer::Get()->DrawImGui();
+	static bool drawSM{};
+	ImGui::Checkbox("Draw ShadowMap", &drawSM);
+
 	if (ImGui::CollapsingHeader("Camera"))
 	{
 		static bool camunlocked = false;
-		if (!camunlocked)
+		static bool useCam;
+		if (ImGui::Button("Unlock Camera"))
 		{
+			camunlocked = true;
+			SetActiveCamera(nullptr);
+		}
+		ImGui::Checkbox("Use Camera", &useCam);
+		if (!camunlocked && useCam)
+		{
+
 			const auto& activeVolume = ReCameraManager::Get().GetActiveCamera();
 			const auto& volumeCam = activeVolume->GetCamera();
 
 			const auto& position = volumeCam->GetTransform()->GetPosition();
 			int camIdx = activeVolume->GetIdx();
+			if (ImGui::Button("SaveVariables"))
+				gSaveCamVariables(*activeVolume);
 
 			ImGui::InputInt("Cam Volume Idx", &camIdx);
-			ReCameraManager::Get().SetActiveCamera(camIdx);
-
 			ImGui::SliderFloat("Pitch", &activeVolume->GetPitch(), -360.0f, 360.0f);
 			ImGui::SliderFloat("Yaw", &activeVolume->GetYaw(), -360.0f, 360.0f);
 			ImGui::SliderFloat("Roll", &activeVolume->GetRoll(), -360.0f, 360.0f);
@@ -373,11 +455,21 @@ void DiningHallScene::OnGUI()
 
 			ImGui::SliderFloat("FOV", &activeVolume->GetFOV(), 0.0f, PxPi / 2);
 
-			if (ImGui::Button("Unlock Camera"))
-			{
-				camunlocked = true;
-				SetActiveCamera(nullptr);
-			}
+			bool useLight = activeVolume->HasLight();
+			ImGui::Checkbox("UseLight", &useLight);
+			activeVolume->SetHasLight(useLight);
+
+			const auto& lightOrientation = activeVolume->GetLightOrientation();
+			float lightOrientationArray[3] = { lightOrientation.x, lightOrientation.y, lightOrientation.z };
+			ImGui::DragFloat3("LightOrientation", lightOrientationArray, .1f);
+			activeVolume->GetLightOrientation() = { lightOrientationArray[0], lightOrientationArray[1], lightOrientationArray[2], 1.0f };
+
+			const auto& lightPosition = activeVolume->GetLightPosition();
+			float lightPositionArray[3] = { lightPosition.x, lightPosition.y, lightPosition.z };
+			ImGui::DragFloat3("LightPosition", lightPositionArray, .1f);
+			activeVolume->GetLightPosition() = { lightPositionArray[0], lightPositionArray[1], lightPositionArray[2], 1.0f };
+
+			ReCameraManager::Get().SetActiveCamera(UINT(camIdx));
 		}
 	}
 
@@ -540,4 +632,3 @@ void DiningHallScene::OnGUI()
 		pMenu->GetTransform()->Scale(sizeArray[0], sizeArray[1], sizeArray[2]);
 	}
 }
-#pragma endregion GUI

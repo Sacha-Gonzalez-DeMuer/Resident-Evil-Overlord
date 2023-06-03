@@ -23,9 +23,10 @@ public:
 	XMFLOAT4& GetLightOrientation() { return m_LightOrientation; }
 	XMFLOAT4& GetLightPosition()  { return m_LightPosition; }
 
-	void SetLightOrientation(const XMFLOAT4& orientation) { m_LightOrientation = orientation; }
-	void SetLightPosition(const XMFLOAT4& position) { m_LightPosition = position; }
+	void SetLightOrientation(const XMFLOAT4& orientation) { m_LightOrientation = orientation; m_HasLight = true; }
+	void SetLightPosition(const XMFLOAT4& position) { m_LightPosition = position; m_HasLight = true; }
 	void SetHasLight(bool hasLight) { m_HasLight = hasLight; }
+	bool HasLight() const { return m_HasLight; }
 
 	int GetIdx() const { return m_idx; }
 	void SetIdx(int idx) { m_idx = idx; }

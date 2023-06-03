@@ -12,3 +12,8 @@ void ReGun::Interact()
 	m_pDestInventory->AddItem(ReItem::GUN);
 	m_IsInteracted = true;
 }
+
+void ReGun::Reset()
+{
+	m_IsInteracted = false;
+}

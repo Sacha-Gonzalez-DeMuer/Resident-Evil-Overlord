@@ -61,16 +61,19 @@ namespace FilePath
 	const std::wstring BLOOD_PARTICLE{ L"ResidentEvil/Particles/Blood.png" };
 
 	// AUDIO
-	const std::wstring DINING_AMBIENT_AUDIO{ L"ResidentEvil/Audio/Ambient_Dining.mp3" };
-	const std::wstring MAIN_AMBIENT_AUDIO{ L"ResidentEvil/Audio/Ambient_Main.mp3" };
-	const std::wstring ZOMBIE_IDLE_AUDIO{L"ResidentEvil/Audio/Zombie_Idle.mp3"};
-	const std::wstring ZOMBIE_AGGRO_AUDIO{ L"ResidentEvil/Audio/Zombie_Aggro.mp3" };
+	const std::wstring DINING_AMBIENT_AUDIO{ L"ResidentEvil/Audio/DiningHall_Ambient.wav" };
+	const std::wstring MAINHALL_AMBIENT_AUDIO{ L"ResidentEvil/Audio/MainHall_Ambient.wav" };
+	const std::wstring MAIN_AMBIENT_AUDIO{ L"ResidentEvil/Audio/Ambient_Main.wav" };
+	const std::wstring ZOMBIE_IDLE_AUDIO{L"ResidentEvil/Audio/Zombie_Idle.wav"};
+	const std::wstring ZOMBIE_AGGRO_AUDIO{ L"ResidentEvil/Audio/Zombie_Aggro.wav" };
+	const std::wstring ZOMBIE_DETECTED_AUDIO{ L"ResidentEvil/Audio/Zombie_Detected.wav" };
 	const std::wstring DOOR_AUDIO{ L"ResidentEvil/Audio/Door.mp3" };
-	const std::wstring GUNSHOT_AUDIO{ L"ResidentEvil/Audio/Gunshot.mp3" };
-	const std::wstring FOOTSTEP_AUDIO{ L"ResidentEvil/Audio/Footstep.mp3 "};
-	const std::wstring BUTTON_CONFIRM_AUDIO{ L"ResidentEvil/Audio/Confirm.mp3" };
-	const std::wstring BUTTON_HOVER_AUDIO{ L"ResidentEvil/Audio/Hover.mp3" };
-	const std::wstring INTRO_AUDIO{ L"ResidentEvil/Audio/ResidentEvillll.mp3" };
+	const std::wstring GUNSHOT_AUDIO{ L"ResidentEvil/Audio/Gunshot.wav" };
+	const std::wstring FOOTSTEPA_AUDIO{ L"ResidentEvil/Audio/SE_StepA.wav "};
+	const std::wstring FOOTSTEPB_AUDIO { L"ResidentEvil/Audio/SE_StepB.wav" };
+	const std::wstring BUTTON_CONFIRM_AUDIO{ L"ResidentEvil/Audio/Confirm.wav" };
+	const std::wstring BUTTON_HOVER_AUDIO{ L"ResidentEvil/Audio/Hover.wav" };
+	const std::wstring INTRO_AUDIO{ L"ResidentEvil/Audio/ResidentEvillll.wav" };
 
 	// Door
 	const std::wstring DOOR_FOLDER{ L"ResidentEvil/Props/Door/" };
@@ -78,4 +81,7 @@ namespace FilePath
 	const std::wstring DOOR_DIFFUSE{ L"ResidentEvil/Props/Door/DoorDiffuse.png" };
 	const std::wstring DOOR_NORMAL{ L"ResidentEvil/Props/Door/DoorNormal.png "};
 	const std::wstring DOOR_SPEC{ L"ResidentEvil/Props/Door/DoorSpecular.png "};
+
+	// Text
+	const std::wstring SUB_FONT{ L"ResidentEvil/Fonts/ReFont_subtitles.fnt" };
 }

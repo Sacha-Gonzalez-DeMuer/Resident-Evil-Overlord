@@ -47,9 +47,6 @@ void ReButton::Update(const SceneContext& sceneContext)
 	const auto mousePos = sceneContext.pInput->GetMousePosition();
 	const auto btnPos = GetTransform()->GetPosition();
 	const auto btnScale = GetTransform()->GetScale();
-
-
-
 	const auto btnWidth = btnScale.x * m_pFont->GetDescription().textureWidth * 2;
 	const auto btnHeight = btnScale.y * m_pFont->GetDescription().textureHeight * 2;
 

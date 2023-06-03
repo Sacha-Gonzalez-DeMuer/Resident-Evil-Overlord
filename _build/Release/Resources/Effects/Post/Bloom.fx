@@ -54,9 +54,9 @@ PS_INPUT VS(VS_INPUT input)
 float gThreshold = .2f;
 float3 gGrayScales = float3(0.1f, 0.5f, 0.114f);
 float4 gBlurColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
-float gBlurRadius = 2.0f;
+float gBlurRadius = 1.0f;
 float gSmoothness = 0.1f;
-float gIntensity = .8f;
+float gIntensity = .5f;
 
 // PIXEL SHADER
 // ------------
@@ -68,8 +68,7 @@ float4 PS(PS_INPUT input) : SV_Target
     float grayscale = (baseColor.r + baseColor.g + baseColor.b) / 3.0f;
 
     // Apply a threshold to identify bright areas
-    float4 brightAreas = smoothstep(gThreshold - gSmoothness, gThreshold + gSmoothness, grayscale);
-    
+    float brightAreas = saturate((grayscale - gThreshold) / (1.0f - gThreshold));
 
     // Apply a blur to the bright areas
     float4 blurColor = gBlurColor;

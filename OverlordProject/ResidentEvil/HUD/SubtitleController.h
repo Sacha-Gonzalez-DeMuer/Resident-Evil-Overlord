@@ -23,7 +23,5 @@ public:
 		Subtitle m_CurrentSubtitle{};
 		XMFLOAT2 m_SubtitlePos{};
 		XMFLOAT4 m_SubtitleColor{};
-
-
 };
 

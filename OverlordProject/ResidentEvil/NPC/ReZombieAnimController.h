@@ -25,6 +25,7 @@ public:
 	void TriggerState(const ZState& state);
 	void TriggerState(const ZState& state, std::function<void()> onCompletion);
 	void Pause() { m_pAnimator->Pause(); }
+	void Reset() { m_pAnimator->Reset(); }
 	const std::wstring& GetAnimName() const { return m_pAnimator->GetClipName(); }
 
 

@@ -5,24 +5,22 @@
 #include "ResidentEvil/Camera/ReCameraManager.h"
 #include "Utils/StaticMeshFactory.h"
 #include "ResidentEvil/ReData.h"
-
 #include "Materials/Deferred/BasicMaterial_Deferred_Shadow.h"
 #include "Materials/Shadow/DiffuseMaterial_Shadow.h"
-
-
 #include "ResidentEvil/Camera/ReCamera.h"
 #include "ResidentEvil/Camera/CameraSwitch.h"
 #include "ResidentEvil/Player/RePlayerController.h"
 #include "ResidentEvil/World/ReDoor.h"
-#include "ResidentEvil/HUD/SubtitleManager.h"
 #include "ResidentEvil/World/ThunderController.h"
 #include "Prefabs/CubePrefab.h"
 #include "ResidentEvil/World/ReClassicDoor.h"
-
+#include "ResidentEvil/HUD/SubtitleManager.h"
 #include "Materials/Post/PostGrain.h"
 #include "Materials/Post/PostBloom.h"
+#include "ResidentEvil/HUD/ReMenuManager.h"
+#include "ResidentEvil/HUD/Menus/ReMenu.h"
+#include "ResidentEvil/HUD/ReButton.h"
 
-	static int m_SelectedLight;
 MainHallScene::MainHallScene()
 	: GameScene(L"MainHallScene")
 {
@@ -30,17 +28,20 @@ MainHallScene::MainHallScene()
 
 void MainHallScene::Initialize()
 {
-	m_SceneContext.settings.drawPhysXDebug = true;
+	m_SceneContext.useDeferredRendering = false;
+
+
+	m_SceneContext.settings.drawPhysXDebug = false;
 	m_SceneContext.settings.enableOnGUI = true;
 	m_SceneContext.settings.drawGrid = false;
-	m_SceneContext.useDeferredRendering = true;
 	m_SceneContext.pLights->GetDirectionalLight().isEnabled = true;
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
-	
+
 	m_pDebugCube = AddChild(new CubePrefab());
 	//m_pClassicDoor = AddChild(new ReClassicDoor());
-	
+
 	AddChild(new ThunderController());
+	LoadMainMenu();
 	AddLights();
 	AddDoors();
 	AddCameras();
@@ -51,18 +52,22 @@ void MainHallScene::Initialize()
 	AddPostProcessing();
 
 	LoadWorld();
+	AddSound();
 
 	ReCameraManager::Get().SetActiveCamera(UINT(0));
 }
 
+static int m_SelectedLight;
 void MainHallScene::Update()
 {
 	if (m_pDebugCube)
 	{
-		// selected light pos
-		const auto& lightPos = m_SceneContext.pLights->GetLights()[m_SelectedLight].position;
-		m_pDebugCube->GetTransform()->Translate(lightPos.x, lightPos.y, lightPos.z);
+		const auto& selectedLightPos = m_SceneContext.pLights->GetLights()[m_SelectedLight].position;
+		m_pDebugCube->GetTransform()->Translate(selectedLightPos.x, selectedLightPos.y, selectedLightPos.z);
 	}
+
+	if (m_SceneContext.pInput->IsActionTriggered(ResetScene))
+		Reset();
 }
 
 void MainHallScene::PostDraw()
@@ -134,7 +139,7 @@ void MainHallScene::OnGUI()
 			activeVolume->GetCamera()->GetTransform()->Translate(positionArray[0], positionArray[1], positionArray[2]);
 
 			ImGui::SliderFloat("FOV", &activeVolume->GetFOV(), 0.0f, PxPi / 2);
-			
+
 
 			const auto& lightOrientation = activeVolume->GetLightOrientation();
 			float lightOrientationArray[3] = { lightOrientation.x, lightOrientation.y, lightOrientation.z };
@@ -293,12 +298,93 @@ void MainHallScene::OnGUI()
 
 }
 
+void MainHallScene::Reset()
+{
+	m_pCharacter->Reset();
 
-//void MainHallScene::AddSound()
-//{
-//	auto pFModSys = SoundManager::Get()->GetSystem();
-//}
+	ReCameraManager::Get().SetActiveCamera(static_cast<UINT>(ReMainHallCamera::MAIN));
 
+}
+
+
+void MainHallScene::AddSound()
+{
+	auto pFMODSys = SoundManager::Get()->GetSystem();
+	const auto& ambientPath = ContentManager::GetFullAssetPath(FilePath::MAINHALL_AMBIENT_AUDIO);
+	auto result = pFMODSys->createStream(ambientPath.string().c_str(), FMOD_LOOP_NORMAL, nullptr, &m_pAmbientSound);
+	if (result != FMOD_OK)
+	{
+		Logger::LogError(L"Failed to load sound: " + FilePath::MAINHALL_AMBIENT_AUDIO);
+		return;
+	}
+
+	result = pFMODSys->playSound(m_pAmbientSound, nullptr, false, &m_pAmbientChannel);
+	if (result != FMOD_OK)
+	{
+		Logger::LogError(L"Failed to play sound: " + FilePath::MAINHALL_AMBIENT_AUDIO);
+		return;
+	}
+}
+
+void MainHallScene::LoadMainMenu()
+{
+	auto pMenuManager = AddChild(new ReMenuManager());
+	//const float thirdHeight{ m_SceneContext.windowHeight * .33f };
+	//const float quarterHeight{ m_SceneContext.windowHeight * .25f };
+	const float btnWidth{ 5.f };
+	const float btnHeight{ 3.f };
+	const float margin{ 100.f };
+	const float centerWidth = m_SceneContext.windowWidth * .5f;
+	const float centerHeight = m_SceneContext.windowHeight * .5f;
+
+	SpriteFont* pFont = ContentManager::Load<SpriteFont>(FilePath::DEFAULT_FONT);
+
+	float depth{ 0 };
+
+	// Main 
+	auto pMainMenu = AddChild(new ReMenu(ReMenuType::MAIN));
+	pMainMenu->GetTransform()->Scale(1.f, 1.f, 1.f);
+
+	auto pStartBtn_null = new ReButton(pFont);
+	pStartBtn_null->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
+	pStartBtn_null->SetOnClick([]() { std::cout << "Start"; });
+	pStartBtn_null->SetText("START_NULL");
+
+
+	//auto pStartBtn = AddChild(new ReButton(pFont));
+	//pStartBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
+	//pStartBtn->SetOnClick([this]() { StartGame(); });
+	//pStartBtn->SetText("START");
+
+	auto pControlsBtn = new ReButton(pFont);
+	pControlsBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
+	pControlsBtn->SetOnClick([&]() {
+		//m_pMenuManager->SwitchMenu(ReMenuType::CONTROLS); 
+		std::cout << "Controls\n";
+		});
+	pControlsBtn->SetText("CONTROLS");
+
+	auto pExitBtn = new ReButton(pFont);
+	pExitBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
+	pExitBtn->SetOnClick([this]() {
+		std::cout << "Exit\n";
+		});
+	pExitBtn->SetText("EXIT");
+
+
+	pMainMenu->AddButton(pExitBtn);
+	pMainMenu->AddButton(pControlsBtn);
+	pMainMenu->AddButton(pStartBtn_null);
+	pMenuManager->AddMenu(pMainMenu);
+
+
+	pStartBtn_null->GetTransform()->Translate(centerWidth, centerHeight - margin, depth);
+	//pStartBtn->GetTransform()->Translate(centerWidth, centerHeight - margin, depth);
+	pControlsBtn->GetTransform()->Translate(centerWidth, centerHeight, depth);
+	pExitBtn->GetTransform()->Translate(centerWidth, centerHeight + margin, depth);
+
+
+}
 void MainHallScene::LoadWorld()
 {
 	m_pMainHall = AddChild(new GameObject());
@@ -316,7 +402,7 @@ void MainHallScene::AddLights()
 	m_SceneContext.pLights->SetDirectionalLight({ 0, 56.6f, 62.4f }, { -.187f, -0.017f, -.993f });
 
 	Light light{};
-	XMFLOAT4 color{1.580f, 1.54f, 1.18f, 1.f};
+	XMFLOAT4 color{ 1.580f, 1.54f, 1.18f, 1.f };
 
 	// Main hall light
 	light.type = LightType::Point;
@@ -405,8 +491,8 @@ void MainHallScene::AddCameras()
 	XMVECTOR camLook{ 0.681785f,  -0.237076f, 0.692072f };
 	float fov = 0.703f;
 
-	XMFLOAT4 lOrientation{46.6f, -290.3f, 168.f, 1.f};
-	XMFLOAT4 lPosition{-18.1f, 70.f, -55.8f, 1.f};
+	XMFLOAT4 lOrientation{ 46.6f, -290.3f, 168.f, 1.f };
+	XMFLOAT4 lPosition{ -18.1f, 70.f, -55.8f, 1.f };
 
 	// [0] Main
 	auto reCam = new ReCamera(camPos);
@@ -469,7 +555,7 @@ void MainHallScene::AddCameras()
 	// [5] Entrance
 	camPos = { -10.f, 66.f, 9.f };
 	camLook = { 0.21046f, -0.61172f, -0.762564f };
-	camUp = { 0.162744f, 0.791074f, - 0.589675f };
+	camUp = { 0.162744f, 0.791074f, -0.589675f };
 	lOrientation = { -74.1f, -1.6f, -40.1f, 1.0f };
 	lPosition = { 0.f, 14.3f, .0f, 1.0f };
 	fov = .703f;
@@ -500,7 +586,7 @@ void MainHallScene::AddCameras()
 
 
 	// [7] Stairs Mid
-	camLook = { -0.804462f, - 0.406737f, 0.432904f };
+	camLook = { -0.804462f, -0.406737f, 0.432904f };
 	camUp = { -0.35817f, 0.913545f, 0.192741f };
 	camPos = { 26, 51, 69 };
 	lOrientation = { 6.4f, -3.3f, 7.2f, 1.0f };
@@ -516,11 +602,11 @@ void MainHallScene::AddCameras()
 	pCamManager.AddVolume(reCam);
 
 	// [8] Upper Main
-	camLook = { -0.82755f, - 0.294758f, - 0.477786f };
+	camLook = { -0.82755f, -0.294758f, -0.477786f };
 	camUp = { -0.255268f, 0.955572f - 0.147379f };
 	camPos = { 60, 72, 81 };
 	lOrientation = { -1.2f, -.7f, 1.5f, 1.0f };
-	lPosition = {0.f, 80.4f, 0.f, 1.0f };
+	lPosition = { 0.f, 80.4f, 0.f, 1.0f };
 	fov = .898f;
 	reCam = new ReCamera(camPos);
 	cam = reCam->GetCamera();
@@ -534,7 +620,7 @@ void MainHallScene::AddCameras()
 	// [8] Upper Dining
 	camLook = { -0.777137f - 0.406737f, 0.480232f };
 	camUp = { -0.346004f, 0.913545f, 0.213813f };
-	camPos = { -14, 78 ,- 29 };
+	camPos = { -14, 78 ,-29 };
 	lOrientation = { -1.4f, -.8f, 1.5f, 1.5f };
 	lPosition = { 16.9f, 63.9f, 3.1f, 1.0f };
 	fov = .770f;
@@ -548,8 +634,8 @@ void MainHallScene::AddCameras()
 	pCamManager.AddVolume(reCam);
 
 	// [9] Stair Bridge
-	camLook = { 0.970635f, - 0.178562f, - 0.161192f };
-	camUp = { 0.176149f, 0.983929f, - 0.0292529f };
+	camLook = { 0.970635f, -0.178562f, -0.161192f };
+	camUp = { 0.176149f, 0.983929f, -0.0292529f };
 	camPos = { -32, 68, 71 };
 	lOrientation = { 12.2f, -4.3f, 8.6f, 1.5f };
 	lPosition = { -10.3f, 85.2f, 0.8f, 1.0f };
@@ -564,8 +650,8 @@ void MainHallScene::AddCameras()
 	pCamManager.AddVolume(reCam);
 
 	// [10] Right Corner
-	camLook = { 0.764587f, - 0.294758f, - 0.573171f };
-	camUp = { 0.235846f, 0.955572f, - 0.176802f };
+	camLook = { 0.764587f, -0.294758f, -0.573171f };
+	camUp = { 0.235846f, 0.955572f, -0.176802f };
 	camPos = { -2 ,79, 8 };
 	lOrientation = { 12.2f, -4.3f, 8.6f, 1.5f };
 	lPosition = { -10.3f, 85.2f, 0.8f, 1.0f };
@@ -580,8 +666,8 @@ void MainHallScene::AddCameras()
 	pCamManager.AddVolume(reCam);
 
 	// [11] Window 
-	camLook = { 0.649952f, - 0.294757f, - 0.700485f };
-	camUp = { 0.200485f, 0.955572f, - 0.216073f };
+	camLook = { 0.649952f, -0.294757f, -0.700485f };
+	camUp = { 0.200485f, 0.955572f, -0.216073f };
 	camPos = { -47, 76, 2 };
 	lOrientation = { -21.5f, -10.6f, -49.6f, 1.5f };
 	lPosition = { 38.9f, 66.3f, 3.6f, 1.0f };
@@ -612,7 +698,7 @@ void MainHallScene::AddCameraSwitches()
 	pos = { 43.8f, 9.6f, 28.8f };
 	size = { 43, 21, 2 };
 	pSwitch = AddChild(new CameraSwitch(pos, size));
-	pSwitch->SetTarget( SC_UINT(ReMainHallCamera::STAIRS));
+	pSwitch->SetTarget(SC_UINT(ReMainHallCamera::STAIRS));
 	pSwitch->GetTransform()->Rotate(0, 29, 0);
 
 
@@ -657,8 +743,6 @@ void MainHallScene::AddPostProcessing()
 
 void MainHallScene::AddInput()
 {
-
-	//Input
 	auto inputAction = InputAction(CharacterMoveLeft, InputState::down, 'A');
 	m_SceneContext.pInput->AddInputAction(inputAction);
 	inputAction = InputAction(CharacterMoveRight, InputState::down, 'D');
@@ -671,11 +755,10 @@ void MainHallScene::AddInput()
 	m_SceneContext.pInput->AddInputAction(inputAction);
 	inputAction = InputAction(CharacterSprint, InputState::down, VK_SHIFT);
 	m_SceneContext.pInput->AddInputAction(inputAction);
-	inputAction = InputAction(CharacterJump, InputState::pressed, VK_SPACE, -1, XINPUT_GAMEPAD_A);
-	m_SceneContext.pInput->AddInputAction(inputAction);
 	inputAction = InputAction(CharacterAim, InputState::down, VK_RBUTTON);
 	m_SceneContext.pInput->AddInputAction(inputAction);
-
+	inputAction = InputAction(ResetScene, InputState::down, 'M');
+	m_SceneContext.pInput->AddInputAction(inputAction);
 }
 
 void MainHallScene::AddNavCollider(const PxMaterial& material)
@@ -696,7 +779,6 @@ void MainHallScene::AddPlayer(PxMaterial* material)
 	characterDesc.actionId_MoveBackward = CharacterMoveBackward;
 	characterDesc.actionId_MoveLeft = CharacterMoveLeft;
 	characterDesc.actionId_MoveRight = CharacterMoveRight;
-	characterDesc.actionId_Jump = CharacterJump;
 	characterDesc.actionId_Interact = Interact;
 	characterDesc.actionId_Sprint = CharacterSprint;
 	characterDesc.actionId_Aim = CharacterAim;
@@ -705,7 +787,7 @@ void MainHallScene::AddPlayer(PxMaterial* material)
 	characterDesc.rotationSpeed = 120.f;
 	characterDesc.maxMoveSpeed = 15.f;
 	characterDesc.moveAccelerationTime = 0.01f;
+	characterDesc.spawnPosition = m_PlayerStartPos;
 	m_pCharacter = AddChild(new RePlayerController(characterDesc));
-	m_pCharacter->GetTransform()->Translate(0.f, characterDesc.controller.height / 2.f + 5, 0.f);
 }
 

@@ -30,7 +30,7 @@ namespace dae
 		std::wstring ExtractNormalMap(FbxSurfaceMaterial* pMaterial);
 		FbxScene* GetFbxScene() const { return m_pFbxScene; }
 
-		Light ConvertToOverlord(const FbxLight& fbxLightNode);
+		Light ConvertToOverlord(FbxLight* fbxLightNode);
 		//CameraComponent* ConvertToOverlord(const FbxCamera& fbxNode, GameScene* cameraRoot);
 		void MaterialToOverlord_Forward(const std::vector<FbxSurfaceMaterial*>& materials, ModelComponent& toModel, const std::wstring& fbxFolderPath);
 		void MaterialToOverlord_Deferred(const std::vector<FbxSurfaceMaterial*>& materials, ModelComponent& toModel, const std::wstring& fbxFolderPath);

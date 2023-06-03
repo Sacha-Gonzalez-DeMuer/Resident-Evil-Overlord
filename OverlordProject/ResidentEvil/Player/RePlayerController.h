@@ -29,6 +29,8 @@ public:
 	void GetAttacked();
 	ParticleEmitterComponent* GetEmitter() { return m_pBloodEmitter; };
 	void SetYaw(const float yaw) { m_TotalYaw = yaw; }
+
+	void Reset();
 protected:
 	void Initialize(const SceneContext&) override;
 	void Update(const SceneContext&) override;
@@ -50,7 +52,7 @@ private:
 	float m_TotalYaw{};								//Total gamobject Yaw(Y) rotation
 	float m_MoveAcceleration{},						//Acceleration required to reach maxMoveVelocity after 1 second (maxMoveVelocity / moveAccelerationTime)
 		m_FallAcceleration{},						//Acceleration required to reach maxFallVelocity after 1 second (maxFallVelocity / fallAccelerationTime)
-		m_MoveSpeed{};								//MoveSpeed > Horizontal Velocity = MoveDirection * MoveVelocity (= TotalVelocity.xz)
+		m_MoveSpeed{}, m_SprintScale{ 2.f };		//MoveSpeed > Horizontal Velocity = MoveDirection * MoveVelocity (= TotalVelocity.xz)
 
 
 	float m_CamCleanTimer{ .1f };
@@ -58,8 +60,19 @@ private:
 
 	bool m_IsMoving{ false };
 	bool m_IsAiming{ false };
+	bool m_IsSprinting{};
 	bool m_AnimationLocked{ false };
 
+	//Audio
+	FMOD::Channel* m_pPlayerChannel{};
+	FMOD::Sound* m_pStepSoundA{};
+	FMOD::Sound* m_pStepSoundB{};
+	float m_StepInterval{ .55f };
+	float m_CurrentStepInterval{ .5f };
+	float m_StepTimer{ .5f };
+	void UpdateStepSound(float dt);
+
+	void OnDeath();
 	void OnCamSwitch();
 	void HandleInputActions(InputManager* input);
 	void Interact();

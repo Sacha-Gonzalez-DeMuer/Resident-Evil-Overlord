@@ -22,18 +22,27 @@ public:
 private:
 	RePlayerController* m_pCharacter{};
 	GameObject* pPlayerObject{};
-	GameObject* m_pMainHall{};
-	GameObject* m_pNavCollider{};
+	XMFLOAT3 m_PlayerStartPos{ 0,0,0 };
 
 	CubePrefab* m_pDebugCube{};
 	std::vector<CameraSwitch*> m_pSwitches{};
 	std::vector<ReDoor*> m_pDoors{};
+
+	// Env
+	GameObject* m_pMainHall{};
+	GameObject* m_pNavCollider{};
+
+	// Misc
+	ReClassicDoor* m_pClassicDoor{};
 	Light m_TestLight;
 
-	ReClassicDoor* m_pClassicDoor{};
-
+	//Audio
+	FMOD::Channel* m_pAmbientChannel{};
+	FMOD::Sound* m_pAmbientSound{};
 
 	bool m_DrawShadowMap{};
+	void LoadMainMenu();
+
 	void LoadWorld();
 	void AddLights();
 	void AddCameras();
@@ -43,5 +52,7 @@ private:
 	void AddInput();
 	void AddNavCollider(const PxMaterial& material);
 	void AddPlayer(PxMaterial* material);
-	//void AddSound();
+	void AddSound();
+
+	void Reset();
 };

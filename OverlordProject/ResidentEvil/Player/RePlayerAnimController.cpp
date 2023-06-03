@@ -74,3 +74,13 @@ void RePlayerAnimController::TriggerAnim(const std::wstring& clipName)
 		m_pAnimator->PlayOnce(clipName, PAnimNames::Idle);
 	}
 }
+
+void RePlayerAnimController::Pause()
+{
+	m_pAnimator->Pause();
+}
+
+void RePlayerAnimController::Reset()
+{
+	m_pAnimator->Reset();
+}

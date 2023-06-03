@@ -191,12 +191,6 @@ void GameScene::RootDraw()
 	//DEFERRED END
 	DeferredRenderer::Get()->End(m_SceneContext);
 
-	//TextRenderer Draw
-	TextRenderer::Get()->Draw(m_SceneContext);
-
-	//SpriteRenderer Draw
-	SpriteRenderer::Get()->Draw(m_SceneContext);
-
 
 	//Object-Scene Post-Draw
 	PostDraw();
@@ -244,6 +238,8 @@ void GameScene::RootDraw()
 		SpriteRenderer::Get()->DrawImmediate(m_SceneContext.d3dContext, prev_rt->GetColorShaderResourceView(), DirectX::XMFLOAT2(0, 0));
 	}
 
+	TextRenderer::Get()->Draw(m_SceneContext);
+	SpriteRenderer::Get()->Draw(m_SceneContext);
 
 #pragma endregion
 }

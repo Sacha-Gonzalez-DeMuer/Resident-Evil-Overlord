@@ -7,16 +7,16 @@ HealthComponent::HealthComponent(float health)
 {
 }
 
-void HealthComponent::TakeDamage(float damage)
+void HealthComponent::TakeDamage(float /*damage*/)
 {
-	m_Health -= damage;
-	if (m_Health <= 0)
-	{
-		m_Health = 0;
-		OnDeath.Invoke();
-	}
-	else
-		OnTakeDamage.Invoke();
+	//m_Health -= damage;
+	//if (m_Health <= 0)
+	//{
+	//	m_Health = 0;
+	//	OnDeath.Invoke();
+	//}
+	//else
+	//	OnTakeDamage.Invoke();
 }
 
 void HealthComponent::Heal(float heal)
@@ -26,6 +26,12 @@ void HealthComponent::Heal(float heal)
 	{
 		m_Health = m_MaxHealth;
 	}
+}
+
+void HealthComponent::Reset()
+{
+	m_Health = m_MaxHealth;
+
 }
 
 void HealthComponent::Initialize(const SceneContext& )

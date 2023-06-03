@@ -172,31 +172,46 @@ std::vector<StaticMeshFactory::Object3D> StaticMeshFactory::GetMeshNamesAndMater
     std::wifstream file(objFilePath);
     std::wstring line;
     Object3D objInfo;
-    std::wistringstream iss;
     std::wstring token;
+    // Reserve space for objInfoVec to reduce reallocations
+    objInfoVec.reserve(1000);
+
+    // Use a buffer to read the file in larger chunks
+    const size_t bufferSize = 4096;
+    wchar_t* buffer = new wchar_t[bufferSize];
+    file.rdbuf()->pubsetbuf(buffer, bufferSize);
+
     while (std::getline(file, line)) {
-        token.clear();
-        iss.clear(); // clear the wistringstream before each use
-        iss.str(line);
+        if (line.empty()) {
+            continue;
+        }
 
-        iss >> token;
+        wchar_t firstChar = line[0];
+        if (firstChar == L'o' || firstChar == L'u') {
+            std::wistringstream iss(line);
+            iss >> token;
 
-        if (token == L"o") { // "o" specifies the mesh name
-            if (objInfo.name != L"") { // push the previous object info onto the vector
-                objInfoVec.push_back(objInfo);
+            if (token == L"o") {
+                if (!objInfo.name.empty()) {
+                    objInfoVec.emplace_back(std::move(objInfo));
+                    objInfo = Object3D();
+                }
+                iss >> objInfo.name;
             }
-            objInfo.name = L"";
-            objInfo.materialName = L"";
-            iss >> objInfo.name;
-        }
-        else if (token == L"usemtl") { // "usemtl" specifies the material name
-            iss >> objInfo.materialName;
+            else if (token == L"usemtl") {
+                iss >> objInfo.materialName;
+            }
         }
     }
 
-    if (objInfo.name != L"") { // push the last object info onto the vector
-        objInfoVec.push_back(objInfo);
+    // Add the last object to the vector
+    if (!objInfo.name.empty()) {
+        objInfoVec.emplace_back(std::move(objInfo));
     }
+
+    // Clean up the buffer
+    delete[] buffer;
+    file.rdbuf()->pubsetbuf(nullptr, 0);
 
     return objInfoVec;
 }

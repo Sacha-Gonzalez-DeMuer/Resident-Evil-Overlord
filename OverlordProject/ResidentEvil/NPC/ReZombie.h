@@ -1,6 +1,6 @@
 #pragma once
 #include "ResidentEvil/ReData.h"
-
+#include "Delegate.h"
 class ReZombieAnimController;
 class RePlayerController;
 class ParticleEmitterComponent;
@@ -23,7 +23,8 @@ public:
 	const ReCharacterDesc& GetDesc() const { return m_CharacterDesc; }
 	ZState GetState() const { return m_State; }
 	void Die();
-
+	void Reset();
+	Delegate<> OnPlayerDetected;
 private:
 	// Components
 	ParticleEmitterComponent* m_pBloodEmitter{};
@@ -47,6 +48,17 @@ private:
 	// Brain
 	float m_CooldownTimer = { 5.f };
 	bool m_Dead{ false };
+	bool m_DetectedPlayer{ false };
+
+	//Audio
+	float m_MoanTimer;
+	float m_MoanCooldown{ 5.f };
+	float m_MinMoanCooldown{6.f};
+	float m_MaxMoanCooldown{ 15.f };
+	FMOD::Channel* m_pZombieChannel{};
+	FMOD::Sound* m_pIdleSound{};
+	FMOD::Sound* m_pDetectedSound{};
+	FMOD::Sound* m_pAggroSound{};
 
 	ZState m_State{ ZState::IDLE };
 	void UpdateBehavior(const SceneContext& sceneContext);

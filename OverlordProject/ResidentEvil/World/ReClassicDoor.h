@@ -1,6 +1,8 @@
 #pragma once
 #include "Delegate.h"
 
+class ThunderController;
+class ReCamera;
 class ReClassicDoor final : public GameObject
 {
 	public:
@@ -16,23 +18,26 @@ class ReClassicDoor final : public GameObject
 	void Trigger();
 	void SetSceneToLoad(const std::wstring& scene) { m_SceneToLoad = scene; }
 
+	Delegate<> OnAnimationStart;
 	Delegate<> OnAnimationFinished;
+
+	void Reset();
 private:
 	void UpdateKeyframeEvents();
+	ReCamera* m_pCamera;
 
 	bool m_TriggerOpen{};
 	float m_Duration{};
 	float m_TotalYaw{};
 	float m_StartYaw{};
 	float m_EndYaw{};
-	float m_AnimLerp{};
 	float m_TimePassed{};
 	int m_CamID{-1};
 	std::wstring m_SceneToLoad{ };
 
 	// keyframes
-	float m_DoorHingeSFXtime{ 2.f };
-	bool m_DoorHingeSFXplayed{ false };
+	float m_StartMoveCamTime{ 2.f };
+	bool m_CamMoved{ false };
 
 	float m_DoorOpenTime{ 3.f };
 	bool m_OpenDoor{ false };
@@ -41,5 +46,10 @@ private:
 
 	float m_DoorCloseSFXtime{ 5.5f };
 	bool m_DoorCloseSFXplayed{ false };
+
+
+	// AUDIO
+	FMOD::Channel* m_pDoorChannel{};
+	FMOD::Sound* m_pDoorAnimSound;
 };
 

@@ -6,6 +6,7 @@
 #include "Utils/StaticMeshFactory.h"
 #include "ResidentEvil/Camera/ReCameraManager.h"
 #include "ResidentEvil/Camera/ReCamera.h"
+#include "ThunderController.h"
 
 ReClassicDoor::ReClassicDoor()
 	: m_TriggerOpen{ false }
@@ -13,7 +14,6 @@ ReClassicDoor::ReClassicDoor()
 	, m_TotalYaw{ .0f }
 	, m_StartYaw{ 0 }
 	, m_EndYaw{ 90 }
-	, m_AnimLerp{ 0.f }
 {
 }
 
@@ -23,15 +23,13 @@ ReClassicDoor::ReClassicDoor(float duration, float startYaw, float endYaw)
 	, m_TotalYaw{.0f}
 	, m_StartYaw{startYaw}
 	, m_EndYaw{endYaw}
-	, m_AnimLerp{.0f}
+	, m_SceneToLoad{L"MainHallScene"}
 {
 }
 
 void ReClassicDoor::Initialize(const SceneContext& sceneContext)
 {
-	auto pDoor = sceneContext.pCamera->GetScene()->AddChild(new GameObject());
 	auto pDoorModel = AddComponent(new ModelComponent(ContentManager::GetFullAssetPath(FilePath::DOOR_MESH)));
-
 	if (sceneContext.useDeferredRendering)
 	{
 		auto pMaterial = MaterialManager::Get()->CreateMaterial<BasicMaterial_Deferred_Shadow>();
@@ -50,19 +48,35 @@ void ReClassicDoor::Initialize(const SceneContext& sceneContext)
 	// add door cam
 	auto& pCamManager = ReCameraManager::Get();
 
-	XMFLOAT3 camPos{ -10.f,-100.f, 1.0f };
+	XMFLOAT3 camPos{ 0.f,-90.f, -30.f };
 	XMVECTOR camUp{ 0.f, 1.f, 0.f };
-	XMVECTOR camLook{ 1.f,  0.f, 0.f };
+	XMVECTOR camLook{ 0.f,  0.f, 1.f };
 
 	float fov = 0.703f;
-	auto reCam = new ReCamera(camPos);
-	auto cam = reCam->GetCamera();
+	m_pCamera = new ReCamera(camPos);
+	auto cam = m_pCamera->GetCamera();
 	cam->SetFieldOfView(fov);
 	cam->UpdateRotation(sceneContext, camUp, camLook);
-	sceneContext.pCamera->GetScene()->AddChild(reCam);
-	m_CamID = pCamManager.AddVolume(reCam);
+	sceneContext.pCamera->GetScene()->AddChild(m_pCamera);
+	m_CamID = pCamManager.AddVolume(m_pCamera);
 
-	pDoor->GetTransform()->Translate(1.f, -100.f, 1.f);
+	GetTransform()->Translate(1.f, -100.f, 1.f);
+	pDoorModel->GetTransform()->Scale(.1f, .1f, .1f);
+
+	auto pFMODSys = SoundManager::Get()->GetSystem();
+	auto doorSoundPath = ContentManager::GetFullAssetPath(FilePath::DOOR_AUDIO);
+	auto result = pFMODSys->createStream(doorSoundPath.string().c_str(), FMOD_2D, nullptr, &m_pDoorAnimSound);
+	if (result != FMOD_OK)
+	{
+		std::wstringstream ss;
+		ss << L"Failed to load door sound: " << doorSoundPath << L"\n";
+		Logger::LogError(ss.str());
+	}
+
+	OnAnimationStart.AddFunction([this]()
+	{
+		SoundManager::Get()->GetSystem()->playSound(m_pDoorAnimSound, nullptr, false, &m_pDoorChannel);
+	});
 
 	OnAnimationFinished.AddFunction([this]()
 		{
@@ -73,36 +87,64 @@ void ReClassicDoor::Initialize(const SceneContext& sceneContext)
 
 void ReClassicDoor::Update(const SceneContext& sceneContext)
 {
-	if (!m_TriggerOpen) return;
+	if (sceneContext.pInput->IsKeyboardKey(InputState::down, 'O') && !m_TriggerOpen)
+		Trigger();
+
+	if (!m_TriggerOpen)
+		return;
+
+	const float dt = sceneContext.pGameTime->GetElapsed();
+	m_TimePassed += dt;
+	UpdateKeyframeEvents();
+
+	if (!m_CamMoved && m_TimePassed < m_DoorOpenTime)
+	{
+		const auto& camPos = m_pCamera->GetTransform()->GetPosition();
+		m_pCamera->GetTransform()->Translate(camPos.x, camPos.y, camPos.z + 3 * dt);
+	}
+
+	if (m_TimePassed > m_DoorFullOpenTime)
+	{
+		const auto& camPos = m_pCamera->GetTransform()->GetPosition();
+		m_pCamera->GetTransform()->Translate(camPos.x, camPos.y, camPos.z + 15 * dt);
+	}
+
+	if (m_OpenDoor)
+	{
+		float t = m_TimePassed - m_DoorOpenTime / m_TimePassed - m_DoorFullOpenTime;
+		t = std::clamp(t, 0.0f, 1.0f); // Ensure t is within the range [0, 1]
+
+		m_TotalYaw = m_StartYaw + (m_EndYaw - m_StartYaw) * t;
+		GetTransform()->Rotate(0.f, m_TotalYaw, 0.f);
+	}
 
 	if (m_TimePassed > m_Duration)
 	{
-		m_AnimLerp = 0.f;
-		m_TriggerOpen = false;
 		OnAnimationFinished.Invoke();
-		return;
+		Reset();
 	}
-
-	m_TimePassed += sceneContext.pGameTime->GetElapsed();
-	UpdateKeyframeEvents();
-		
-	m_TotalYaw = m_StartYaw + (m_EndYaw - m_StartYaw) * m_AnimLerp;
-	GetTransform()->Rotate(0.f, m_TotalYaw, 0.f);
-
 }
 
 void ReClassicDoor::Trigger()
 {
 	m_TriggerOpen = true;
+	OnAnimationStart.Invoke();
 	ReCameraManager::Get().SetActiveCamera(m_CamID);
+}
+
+void ReClassicDoor::Reset()
+{
+	m_TriggerOpen = false;
+	m_TimePassed = 0.0f;
+	m_OpenDoor = false;
+	m_CamMoved = false;
 }
 
 void ReClassicDoor::UpdateKeyframeEvents()
 {
-	if (m_TimePassed >= m_DoorHingeSFXtime && !m_DoorHingeSFXplayed)
+	if (m_TimePassed >= m_StartMoveCamTime && !m_CamMoved)
 	{
-		// play door hinge sound
-		m_DoorHingeSFXplayed = true;
+		m_CamMoved = true;
 	}
 
 	if (m_TimePassed >= m_DoorOpenTime && m_TimePassed <= m_DoorFullOpenTime)

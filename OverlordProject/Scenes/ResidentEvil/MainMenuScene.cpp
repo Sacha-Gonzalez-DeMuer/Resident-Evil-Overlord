@@ -15,73 +15,74 @@ void MainMenuScene::Initialize()
 	m_SceneContext.useDeferredRendering = false;
 	m_SceneContext.pLights->GetDirectionalLight().isEnabled = false;
 
-	m_pMenuManager = AddChild(new ReMenuManager());
-	//const float thirdHeight{ m_SceneContext.windowHeight * .33f };
-	//const float quarterHeight{ m_SceneContext.windowHeight * .25f };
-	const float btnWidth{ 5.f };
-	const float btnHeight{ 3.f };
-	const float margin{ 100.f };
-	const float centerWidth = m_SceneContext.windowWidth * .5f;
-	const float centerHeight = m_SceneContext.windowHeight * .5f;
+	//m_pMenuManager = AddChild(new ReMenuManager());
+	////const float thirdHeight{ m_SceneContext.windowHeight * .33f };
+	////const float quarterHeight{ m_SceneContext.windowHeight * .25f };
+	//const float btnWidth{ 5.f };
+	//const float btnHeight{ 3.f };
+	//const float margin{ 100.f };
+	//const float centerWidth = m_SceneContext.windowWidth * .5f;
+	//const float centerHeight = m_SceneContext.windowHeight * .5f;
 
-	SpriteFont *pFont = ContentManager::Load<SpriteFont>(FilePath::DEFAULT_FONT);
+	//SpriteFont *pFont = ContentManager::Load<SpriteFont>(FilePath::DEFAULT_FONT);
 
-	float depth{ 0 };
+	//float depth{ 0 };
 
-	// Main 
-	auto pMainMenu = AddChild(new ReMenu(ReMenuType::MAIN));
-	pMainMenu->GetTransform()->Scale(1.f, 1.f, 1.f);
-	m_pMenuManager->AddMenu(pMainMenu);
+	//// Main 
+	//auto pMainMenu = AddChild(new ReMenu(ReMenuType::MAIN));
+	//pMainMenu->GetTransform()->Scale(1.f, 1.f, 1.f);
 
-	//auto pStartBtn_null = pMainMenu->AddChild(new ReButton());
+	//auto pStartBtn_null = new ReButton(pFont);
 	//pStartBtn_null->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
-	//pStartBtn_null->SetOnClick([this]() { StartGame(); });
+	//pStartBtn_null->SetOnClick([]() { std::cout << "Start"; });
 	//pStartBtn_null->SetText("START_NULL");
 
-	auto pStartBtn = pMainMenu->AddChild(new ReButton(pFont));
-	pStartBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
-	pStartBtn->SetOnClick([this]() { StartGame(); });
-	pStartBtn->SetText("START");
 
-	auto pControlsBtn = pMainMenu->AddChild(new ReButton(pFont));
-	pControlsBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
-	pControlsBtn->SetOnClick([&]() { m_pMenuManager->SwitchMenu(ReMenuType::CONTROLS); });
-	pControlsBtn->SetText("CONTROLS");
-	
-	auto pExitBtn = pMainMenu->AddChild(new ReButton(pFont));
-	pExitBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
-	pExitBtn->SetOnClick([this]() { Exit(); });
-	pExitBtn->SetText("EXIT");
-	
+	//auto pStartBtn = AddChild(new ReButton(pFont));
+	//pStartBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
+	//pStartBtn->SetOnClick([this]() { StartGame(); });
+	//pStartBtn->SetText("START");
 
-	//pStartBtn_null->GetTransform()->Translate(centerWidth, centerHeight + margin, depth);
-	pStartBtn->GetTransform()->Translate(centerWidth, centerHeight - margin, depth);
-	pControlsBtn->GetTransform()->Translate(centerWidth, centerHeight, depth);
-	pExitBtn->GetTransform()->Translate(centerWidth, centerHeight + margin, depth);
+	//auto pControlsBtn = new ReButton(pFont);
+	//pControlsBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
+	//pControlsBtn->SetOnClick([&]() { m_pMenuManager->SwitchMenu(ReMenuType::CONTROLS); });
+	//pControlsBtn->SetText("CONTROLS");
+	//
+	//auto pExitBtn = new ReButton(pFont);
+	//pExitBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
+	//pExitBtn->SetOnClick([this]() { Exit(); });
+	//pExitBtn->SetText("EXIT");
 
-	pMainMenu->AddButton(pStartBtn);
-	pMainMenu->AddButton(pControlsBtn);
-	pMainMenu->AddButton(pExitBtn);
-	
-	m_pButtons.push_back(pStartBtn);
-	m_pButtons.push_back(pExitBtn);
-	m_pButtons.push_back(pControlsBtn);
-	m_pMenus.push_back(pMainMenu);
 
-	// Controls
-	auto pControlsMenu = AddChild(new ReMenu(ReMenuType::CONTROLS)); // todo add controls sprite
-	auto pBackBtn = pControlsMenu->AddChild(new ReButton(pFont));
-	pBackBtn->SetText("BACK");
-	pBackBtn->GetTransform()->Scale(btnWidth, btnHeight, 1.f);
-	pBackBtn->GetTransform()->Translate(0, 0, 0.f);
-	pBackBtn->SetOnClick([this]() {  m_pMenuManager->SwitchMenu(ReMenuType::CONTROLS); });
-	pControlsMenu->AddButton(pBackBtn);
+	//pMainMenu->AddButton(pExitBtn);
+	//pMainMenu->AddButton(pControlsBtn);
+	//pMainMenu->AddButton(pStartBtn_null);
+	//m_pMenuManager->AddMenu(pMainMenu);
 
-	m_pMenuManager->AddMenu(pMainMenu);
-	m_pMenuManager->AddMenu(pControlsMenu);
+	//pStartBtn_null->GetTransform()->Translate(centerWidth, centerHeight - margin, depth);
+	////pStartBtn->GetTransform()->Translate(centerWidth, centerHeight - margin, depth);
+	//pControlsBtn->GetTransform()->Translate(centerWidth, centerHeight, depth);
+	//pExitBtn->GetTransform()->Translate(centerWidth, centerHeight + margin, depth);
 
-	m_pMenuManager->DisableMenus();
-	m_pMenuManager->SwitchMenu(ReMenuType::MAIN);
+	//m_pButtons.push_back(pStartBtn);
+	//m_pButtons.push_back(pExitBtn);
+	//m_pButtons.push_back(pControlsBtn);
+	//m_pMenus.push_back(pMainMenu);
+
+	////// Controls
+	////auto pControlsMenu = AddChild(new ReMenu(ReMenuType::CONTROLS)); // todo add controls sprite
+	////auto pBackBtn = pControlsMenu->AddChild(new ReButton(pFont));
+	////pBackBtn->SetText("BACK");
+	////pBackBtn->GetTransform()->Scale(btnWidth, btnHeight, 1.f);
+	////pBackBtn->GetTransform()->Translate(0, 0, 0.f);
+	////pBackBtn->SetOnClick([this]() {  m_pMenuManager->SwitchMenu(ReMenuType::CONTROLS); });
+	////pControlsMenu->AddButton(pBackBtn);
+
+	////m_pMenuManager->AddMenu(pMainMenu);
+	////m_pMenuManager->AddMenu(pControlsMenu);
+
+	////m_pMenuManager->DisableMenus();
+	////m_pMenuManager->SwitchMenu(ReMenuType::MAIN);
 }
 
 void MainMenuScene::OnGUI()

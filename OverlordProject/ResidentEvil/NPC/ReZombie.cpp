@@ -54,6 +54,11 @@ void ReZombie::Initialize(const SceneContext&)
 	particleSettings.velocity = XMFLOAT3(-10.f, 10.f, 0.f);
 	particleSettings.offset = XMFLOAT3(0.f, m_CharacterDesc.controller.height / 2, 0.f);
 	m_pBloodEmitter = bloodemitterObj->AddComponent(new ParticleEmitterComponent(FilePath::BLOOD_PARTICLE, particleSettings, 200));
+
+	OnPlayerDetected.AddFunction([this]()
+		{
+			SoundManager::Get()->GetSystem()->playSound(m_pDetectedSound, nullptr, false, &m_pZombieChannel);
+		});
 }
 
 void ReZombie::Update(const SceneContext& sceneContext)
@@ -106,6 +111,8 @@ void ReZombie::Update(const SceneContext& sceneContext)
 		// if player is in range, move towards player
 		if (distance < aggroDist && distance > m_CharacterDesc.attackDistance)
 		{
+			if (!m_DetectedPlayer) OnPlayerDetected.Invoke();
+
 			m_State = ZState::WALKING;
 			m_Speed += m_Acceleration;
 			m_Speed = std::min(m_Speed, m_CharacterDesc.maxMoveSpeed);
@@ -165,16 +172,22 @@ void ReZombie::Die()
 		});
 }
 
+void ReZombie::Reset()
+{
+	m_pAnimController->Reset();
+	m_State = ZState::IDLE;
+	m_pAnimController->TriggerState(ZState::IDLE);
+	m_Dead = false;
+	GetTransform()->Translate(m_CharacterDesc.spawnPosition);
+}
+
 void ReZombie::Attack()
 {
 	m_State = ZState::ATTACKING;
 	m_pAnimController->TriggerState(ZState::ATTACKING);
 
 	if (m_pTarget == m_pPlayer->GetTransform())
-	{
 		m_pPlayer->GetAttacked();
-	}
-
 }
 
 void ReZombie::OnTakeDamage()

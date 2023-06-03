@@ -158,8 +158,8 @@ void MainGame::Initialize()
 
 #ifdef EXAM
 	//SceneManager::Get()->AddGameScene(new MainMenuScene());
-	//SceneManager::Get()->AddGameScene(new DiningHallScene());
 	SceneManager::Get()->AddGameScene(new MainHallScene());
+	//SceneManager::Get()->AddGameScene(new DiningHallScene());
 #endif
 
 #ifdef MILESTONE_1
