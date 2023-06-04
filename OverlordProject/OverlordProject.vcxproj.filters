@@ -63,6 +63,7 @@
     <ClCompile Include="Utils\FbxLoader.cpp" />
     <ClCompile Include="ResidentEvil\ReGameManager.cpp" />
     <ClCompile Include="Scenes\ResidentEvil\ReScene.cpp" />
+    <ClCompile Include="Scenes\ResidentEvil\DeathScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -128,6 +129,7 @@
     <ClInclude Include="Utils\FbxLoader.h" />
     <ClInclude Include="ResidentEvil\ReGameManager.h" />
     <ClInclude Include="Scenes\ResidentEvil\ReScene.h" />
+    <ClInclude Include="Scenes\ResidentEvil\DeathScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scenes">

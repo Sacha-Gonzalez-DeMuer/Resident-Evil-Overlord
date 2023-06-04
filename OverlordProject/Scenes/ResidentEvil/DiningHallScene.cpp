@@ -4,12 +4,10 @@
 #include "Materials/DiffuseMaterial.h"
 #include "FilePaths.h"
 #include "Utils/StaticMeshFactory.h"
-#include "Utils/FbxLoader.h"
 #include "Utils/Utils.h"
 #include <codecvt>
 #include <locale>
 #include <iostream>
-
 #include "ResidentEvil/Camera/ReCameraManager.h"
 #include "ResidentEvil/Camera/ReCamera.h"
 #include "ResidentEvil/Camera/CameraSwitch.h"
@@ -31,12 +29,16 @@
 #include "Materials/Post/PostBloom.h"
 #include "Materials/Post/PostGrain.h"
 
+// FBX SDK has a leak... spent way too much time on this thing. wish i never tried it.
+#include "Utils/FbxLoader.h"
+
 DiningHallScene::DiningHallScene(void) : ReScene(L"DiningHallScene")
 {
 }
 
 DiningHallScene::~DiningHallScene(void)
 {
+
 }
 
 void DiningHallScene::Initialize()
@@ -48,9 +50,11 @@ void DiningHallScene::Initialize()
 	m_SceneContext.pLights->GetDirectionalLight().isEnabled = true;
 	m_SceneContext.pLights->SetDefaultDirectionalPos({ 0, 56, 0 });
 	m_SceneContext.pLights->SetDefaultDirectionalDir({ 4, -2.43f, .040f });
-
+	ReGameManager::Get();
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
+	
 
+	// load some things in advance for less downtime
 	AddHUD();
 	AddPlayer(pDefaultMaterial);
 	AddZombie(pDefaultMaterial);
@@ -58,14 +62,17 @@ void DiningHallScene::Initialize()
 	AddMenus();
 	AddPostProcessing();
 	AddNavCollider(*pDefaultMaterial);
-	AddDoors();
 	AddSound();
-
-	m_pClassicDoor = AddChild(new ReClassicDoor());
 }
 
 void DiningHallScene::Update()
 {
+	if (m_SceneContext.pInput->IsActionTriggered(MenuUp))
+	{
+		TogglePause();
+		m_pMenuManager->SwitchMenu(m_Pause ? ReMenuType::INGAME : ReMenuType::EMPTY);
+	}
+
 	if (m_SceneContext.pInput->IsActionTriggered(ResetScene))
 		Reset();
 }
@@ -74,12 +81,12 @@ void DiningHallScene::Update()
 void DiningHallScene::Start()
 {
 	LoadWorld();
-	m_pClassicDoor->ClearDelegates();
-	m_pClassicDoor->OnAnimationStart.AddFunction([&]() {
-		SceneManager::Get()->SetActiveGameScene(L"DiningHallScene");
-		});
+	m_pThunderController->Disable();
+
+	m_pClassicDoor->SetSceneToLoad(ReScenes::ZERO);
 	m_pClassicDoor->OnAnimationFinished.AddFunction([&]() {
 		ReCameraManager::Get().SetActiveCamera(UINT(0));
+		m_pThunderController->Enable();
 
 		auto result = m_pFMODSys->playSound(m_pAmbientSound, nullptr, false, &m_pAmbientChannel);
 		if (result != FMOD_OK)
@@ -92,7 +99,6 @@ void DiningHallScene::Start()
 		});
 
 	m_pClassicDoor->Trigger();
-
 
 	m_pClassicDoor->OnAnimationStart.AddFunction([&]() {
 		m_pThunderController->Disable();
@@ -115,14 +121,28 @@ void DiningHallScene::Reset()
 	m_pZombie->Reset();
 }
 
+void DiningHallScene::TogglePause()
+{
+	m_Pause = !m_Pause;
+	m_pCharacter->SetActive(m_Pause);
+	m_pZombie->SetActive(m_Pause);
+
+}
+
 void DiningHallScene::LoadWorld()
 {
 	ReCameraManager::Get().Reset();
 	AddCameras();
 	AddCameraSwitches();
 
+	if(!m_pClassicDoor) m_pClassicDoor = AddChild(new ReClassicDoor());
+	else { // if it already exists, just add its camera back and update the cam id
+		m_pClassicDoor->SetCamID(ReCameraManager::Get().AddVolume(m_pClassicDoor->GetCamera()));
+	}
+
 	if (m_WorldLoaded) return;
 
+	AddDoors(); // linked to classic door so must be initialized together
 
 	auto pOccluder = AddChild(new GameObject());
 	pOccluder->AddComponent(new ModelComponent(FilePath::ENV_OCCLUDER));
@@ -133,18 +153,17 @@ void DiningHallScene::LoadWorld()
 	auto pDiningHall = AddChild(new GameObject());
 	std::wstring dining_fbx_path = ContentManager::GetFullAssetPath(FilePath::ENV_DINING_FBX);
 	const auto& dining_fbx_path_c = StringUtil::ConvertWStringToChar(dining_fbx_path);
-	dae::FbxLoader loader{ dining_fbx_path_c };
+
+	auto pFBXLoader = AddChild(new dae::FbxLoader{ dining_fbx_path_c });
 	delete[] dining_fbx_path_c;
-	loader.LoadToOverlord(*pDiningHall, m_SceneContext, FilePath::FOLDER_ENV_DINING);
+	pFBXLoader->LoadToOverlord(*pDiningHall, m_SceneContext, FilePath::FOLDER_ENV_DINING);
 
 
+	m_WorldLoaded = true;
 }
 
 void DiningHallScene::AddHUD()
 {
-	auto pStandby = AddChild(new GameObject());
-	m_pControlsImg = pStandby->AddComponent(new SpriteComponent(FilePath::CONTROLS_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
-	m_pControlsImg->SetActive(false);
 }
 
 void DiningHallScene::AddPlayer(PxMaterial* material)
@@ -197,7 +216,7 @@ void DiningHallScene::AddInput()
 	inputAction = InputAction(CharacterMoveBackward, InputState::down, 'S');
 	m_SceneContext.pInput->AddInputAction(inputAction);
 
-	inputAction = InputAction(Interact, InputState::down, 'E');
+	inputAction = InputAction(Interact, InputState::down, 'F');
 	m_SceneContext.pInput->AddInputAction(inputAction);
 
 	inputAction = InputAction(CharacterSprint, InputState::down, VK_SHIFT);
@@ -209,8 +228,8 @@ void DiningHallScene::AddInput()
 	inputAction = InputAction(ResetScene, InputState::down, 'P');
 	m_SceneContext.pInput->AddInputAction(inputAction);
 
-	m_SceneContext.pInput->AddInputAction(inputAction);
 	inputAction = InputAction(MenuUp, InputState::down, 'M');
+	m_SceneContext.pInput->AddInputAction(inputAction);
 }
 
 void DiningHallScene::AddNavCollider(const PxMaterial& material)
@@ -236,6 +255,8 @@ void DiningHallScene::AddCameras()
 	auto cam = reCam->GetCamera();
 	cam->SetFieldOfView(fov);
 	cam->UpdateRotation(m_SceneContext, camUp, camLook);
+	reCam->SetLightOrientation({ 4, -1.53f, -4.560f, 1.f });
+	reCam->SetLightPosition({ 0, 56, 0, 1.0f });
 	AddChild(reCam);
 	ReCameraManager::Get().AddVolume(reCam);
 
@@ -244,6 +265,8 @@ void DiningHallScene::AddCameras()
 	camLook = { 0.787276f, -0.178562f, -0.59018f };
 	camUp = { 0.142874f, 0.983929f, -0.107105f };
 	reCam = new ReCamera(camPos, true);
+	reCam->SetLightOrientation({ 4, -2.43f, .040f, 1.f });
+	reCam->SetLightPosition({ 0, 56, 0, 1.0f });
 	cam = reCam->GetCamera();
 	cam->SetFieldOfView(fov);
 	cam->UpdateRotation(m_SceneContext, camUp, camLook);
@@ -255,6 +278,8 @@ void DiningHallScene::AddCameras()
 	camLook = { 0.406008f, -0.0598116f, 0.91191f };
 	camUp = { 0.0243276f, 0.99821f, 0.0546406f };
 	reCam = new ReCamera(camPos, true);
+	reCam->SetLightOrientation({ 4, -2.43f, .040f, 1.f });
+	reCam->SetLightPosition({ 0, 56, 0, 1.0f });
 	fov = 0.681f;
 	cam = reCam->GetCamera();
 	cam->SetFieldOfView(fov);
@@ -267,6 +292,8 @@ void DiningHallScene::AddCameras()
 	camLook = { 0.584543f, -0.294758f, 0.755928f };
 	camUp = { 0.180309f, 0.955572f, 0.233175f };
 	reCam = new ReCamera(camPos);
+	reCam->SetLightOrientation({ 4, -2.43f, .040f, 1.f });
+	reCam->SetLightPosition({ 0, 56, 0, 1.0f });
 	cam = reCam->GetCamera();
 	cam->SetFieldOfView(fov);
 	cam->UpdateRotation(m_SceneContext, camUp, camLook);
@@ -314,7 +341,7 @@ void DiningHallScene::AddCameraSwitches()
 	pSwitch->SetTargets(1, 2);
 	m_pSwitches.push_back(pSwitch);
 
-	//pSwitch = AddChild(new CameraSwitch({ 0, 0, 0 }, { 1, 1, 1 }, true));
+	//pSwitch = AddChild(new CameraSwitch({ 0, 0, 0 }, { 1, 1, 1 }));
 	//m_pSwitches.push_back(pSwitch);
 
 	/*
@@ -340,14 +367,8 @@ void DiningHallScene::AddDoors()
 
 void DiningHallScene::AddMenus()
 {
-
-	// Background
-	const float centerWidth = m_SceneContext.windowWidth * .5f;
-	const float centerHeight = m_SceneContext.windowHeight * .5f;
-
-	auto pBackground = AddChild(new GameObject());
-	m_pBackgroundImg = pBackground->AddComponent(new SpriteComponent(FilePath::MAINMENU_BACKGROUND_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
-	pBackground->GetTransform()->Translate(centerWidth, centerHeight, 0.f);
+	//const float centerWidth = m_SceneContext.windowWidth * .5f;
+	//const float centerHeight = m_SceneContext.windowHeight * .5f;
 
 	m_pMenuManager = AddChild(new ReMenuManager());
 	const float margin{ 35.f };
@@ -355,49 +376,26 @@ void DiningHallScene::AddMenus()
 	const XMFLOAT2 btnSize{ 75, 25 };
 	SpriteFont* pFont = ContentManager::Load<SpriteFont>(FilePath::SUB_FONT);
 
-	// Main 
 	auto pMainMenu = AddChild(new ReMenu(ReMenuType::INGAME));
 	pMainMenu->GetTransform()->Scale(1.f, 1.f, 1.f);
 
-	auto pToMainBtn = new ReButton({ centerWidth - btnSize.x * .5f, centerHeight + offset }, btnSize, pFont);
+
+	auto pToMainBtn = new ReButton({ m_SceneContext.windowWidth - btnSize.x - margin,  m_SceneContext.windowHeight - offset - margin * 3 }, btnSize, pFont);
 	pToMainBtn->AddOnClick([this]() { ReGameManager::Get().StartScene(ReScenes::MAIN); });
-	pToMainBtn->SetText("START");
+	pToMainBtn->SetText("MAIN MENU");
 
-	auto pControlsBtn = new ReButton({ centerWidth - btnSize.x * .7f, centerHeight + offset + margin }, btnSize, pFont);
-	pControlsBtn->SetText("CONTROLS");
+	auto pResetBtn = new ReButton({ m_SceneContext.windowWidth - btnSize.x - margin,m_SceneContext.windowHeight - offset - margin * 2}, btnSize, pFont);
+	pResetBtn->AddOnClick([this]() { Reset(); });
+	pResetBtn->SetText("RESET");
 
-	auto pExitBtn = new ReButton({ centerWidth - btnSize.x * .5f, centerHeight + offset + margin * 2 }, btnSize, pFont);
-	pExitBtn->AddOnClick([this]() {
-		std::cout << "Exit\n";
-		});
+	auto pExitBtn = new ReButton({ m_SceneContext.windowWidth - btnSize.x - margin,m_SceneContext.windowHeight - offset - margin}, btnSize, pFont);
+	pExitBtn->AddOnClick([this]() { ReGameManager::Get().Exit(); });
 	pExitBtn->SetText("EXIT");
 
+	pMainMenu->AddButton(pResetBtn);
 	pMainMenu->AddButton(pToMainBtn);
 	pMainMenu->AddButton(pExitBtn);
-	pMainMenu->AddButton(pControlsBtn);
-	pMainMenu->AddImage(m_pBackgroundImg);
 	m_pMenuManager->AddMenu(pMainMenu);
-
-	// Controls
-	auto pControlsMenu = AddChild(new ReMenu(ReMenuType::CONTROLS));
-	pControlsMenu->GetTransform()->Scale(1.f, 1.f, 1.f);
-	m_pMenuManager->AddMenu(pControlsMenu);
-
-	auto pControls = AddChild(new GameObject());
-	auto pControlsImg = pControls->AddComponent(new SpriteComponent(FilePath::CONTROLS_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
-	pControls->GetTransform()->Translate(centerWidth, centerHeight, 0.f);
-	pControlsMenu->AddImage(pControlsImg);
-
-	auto pBackBtn = new ReButton({ margin, m_SceneContext.windowHeight - margin }, btnSize, pFont);
-	pBackBtn->AddOnClick([this]() { m_pMenuManager->SwitchMenu(ReMenuType::MAIN); });
-	pBackBtn->SetActive(false);
-	pBackBtn->SetText("RETURN");
-	pControlsMenu->AddButton(pBackBtn);
-
-	pControlsBtn->m_OnClick.AddFunction([&]()
-		{
-			m_pMenuManager->SwitchMenu(ReMenuType::CONTROLS);
-		});
 
 	m_pMenuManager->DisableMenus();
 }

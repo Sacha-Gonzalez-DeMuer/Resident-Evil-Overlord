@@ -10,6 +10,7 @@
 #include "ResidentEvil/Items/ReInventory.h"
 #include "ResidentEvil/HUD/SubtitleManager.h"
 #include "ResidentEvil/Components/HealthComponent.h"
+#include "ResidentEvil/ReGameManager.h"
 
 RePlayerController::RePlayerController(const ReCharacterDesc& characterDesc) 
 	: m_CharacterDesc(characterDesc),
@@ -20,19 +21,24 @@ RePlayerController::RePlayerController(const ReCharacterDesc& characterDesc)
 
 void RePlayerController::GetAttacked()
 {
-	m_pHealth->TakeDamage(33.f);
 	SetAnimLocked(true);
-	m_pAnimController->TriggerAnim(PAnimNames::Bitten);
+	m_pAnimController->TriggerAnim(PAnimNames::Bitten, PAnimNames::Idle, [this]() {m_pHealth->TakeDamage(100.f); });
 }
 
 void RePlayerController::Reset()
 {
+	SetActive(true);
+	m_AnimationLocked = false;
 	m_pInventory->Reset();
 	m_pAnimController->Reset();
 	m_pHealth->Reset();
 	const auto& spawnPos = m_CharacterDesc.spawnPosition;
 	GetTransform()->Translate(spawnPos.x, spawnPos.y + m_CharacterDesc.controller.height * .5f, spawnPos.z);
+}
 
+bool RePlayerController::IsDead() const
+{
+	return m_pHealth->IsDead();
 }
 
 void RePlayerController::Initialize(const SceneContext&)
@@ -104,12 +110,13 @@ void RePlayerController::Initialize(const SceneContext&)
 	 m_pHealth = AddComponent(new HealthComponent(m_CharacterDesc.maxHealth));
 	 m_pHealth->OnDeath.AddFunction([this]() {
 		 OnDeath();
-		 //m_pAnimController->Pause();
 		 });
 }
 
 void RePlayerController::Update(const SceneContext& sceneContext)
 {
+	if (!m_Active || m_pHealth->IsDead()) return;
+
 	GetTransform()->Rotate(0.f, m_TotalYaw, 0.f);
 
 	if (sceneContext.pCamera->IsActive() && !m_AnimationLocked)
@@ -164,9 +171,6 @@ void RePlayerController::Update(const SceneContext& sceneContext)
 
 			m_MoveSpeed += acceleration;
 			m_MoveSpeed = std::min(m_MoveSpeed, m_CharacterDesc.maxMoveSpeed);
-
-
-
 		}
 		else
 		{
@@ -196,6 +200,7 @@ void RePlayerController::Update(const SceneContext& sceneContext)
 		if (m_IsSprinting)
 		{
 			m_CurrentStepInterval = m_StepInterval *(1-m_SprintScale);
+			m_TotalVelocity = XMFLOAT3(m_TotalVelocity.x * m_SprintScale, m_TotalVelocity.y, m_TotalVelocity.z * m_SprintScale);
 		}
 		else
 			m_CurrentStepInterval = m_StepInterval;
@@ -229,7 +234,9 @@ void RePlayerController::UpdateStepSound(float dt)
 
 void RePlayerController::OnDeath()
 {
-	m_pAnimController->TriggerAnim(PAnimNames::Death);
+	SetAnimLocked(true);
+	SetActive(false);
+	m_pAnimController->TriggerAnim(PAnimNames::Death, PAnimNames::Death, [this]() {	LoadDeathScene(); });
 }
 
 void RePlayerController::OnCamSwitch()
@@ -264,13 +271,6 @@ void RePlayerController::Interact()
 	//if (pSubtitles.IsDisplaying())
 	//	pSubtitles.CloseSubtitle();
 
-	// Interactables
-	const auto& origin = m_pControllerComponent->GetPosition();
-	PxVec3 pxOrigin = { origin.x, origin.y, origin.z };
-
-	const auto& forward = m_pControllerComponent->GetTransform()->GetForward();
-	PxVec3 pxForward = { forward.x, forward.y, forward.z };
-
 	PxRaycastBuffer hit;
 	PxQueryFilterData filterData{};
 
@@ -282,6 +282,11 @@ void RePlayerController::Interact()
 			pInteractable->Interact();
 	}
 
+}
+
+void RePlayerController::LoadDeathScene()
+{
+		ReGameManager::Get().StartScene(ReScenes::DEATH); // i couldn't get the animator to take this as callback
 }
 
 void RePlayerController::Shoot()
@@ -307,7 +312,7 @@ GameObject* RePlayerController::Raycast()
 	const auto& origin = m_pControllerComponent->GetPosition();
 	PxVec3 pxOrigin = { origin.x, origin.y, origin.z };
 
-	const auto& forward = m_pControllerComponent->GetTransform()->GetForward();
+	const auto& forward = GetTransform()->GetForward();
 	PxVec3 pxForward = { forward.x, forward.y, forward.z };
 
 	PxRaycastBuffer pxHit;

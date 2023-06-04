@@ -89,6 +89,8 @@ void ReClassicDoor::Update(const SceneContext& sceneContext)
 	const float dt = sceneContext.pGameTime->GetElapsed();
 	m_TimePassed += dt;
 	UpdateKeyframeEvents();
+	GetTransform()->Rotate(0.f, m_TotalYaw, 0.f);
+
 
 	if (!m_CamMoved && m_TimePassed < m_DoorOpenTime)
 	{
@@ -108,11 +110,11 @@ void ReClassicDoor::Update(const SceneContext& sceneContext)
 		t = std::clamp(t, 0.0f, 1.0f); // Ensure t is within the range [0, 1]
 
 		m_TotalYaw = m_StartYaw + (m_EndYaw - m_StartYaw) * t;
-		GetTransform()->Rotate(0.f, m_TotalYaw, 0.f);
 	}
 
 	if (m_TimePassed > m_Duration)
 	{
+		if(m_SceneToLoad != ReScenes::ZERO) ReGameManager::Get().StartScene(m_SceneToLoad);
 		OnAnimationFinished.Invoke();
 		Reset();
 	}
@@ -131,10 +133,6 @@ void ReClassicDoor::Trigger()
 void ReClassicDoor::SetSceneToLoad(const ReScenes& scene)
 {
 	m_SceneToLoad = scene;
-	OnAnimationFinished.AddFunction([this]()
-		{
-			ReGameManager::Get().StartScene(m_SceneToLoad);
-		});
 }
 
 void ReClassicDoor::Reset()

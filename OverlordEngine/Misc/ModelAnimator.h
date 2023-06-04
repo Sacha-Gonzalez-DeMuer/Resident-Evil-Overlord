@@ -31,11 +31,13 @@ public:
 	const std::wstring& GetClipName() const { ASSERT_IF_(!m_ClipSet) return m_CurrentClip.name; }
 	const std::vector<XMFLOAT4X4>& GetBoneTransforms() const { return m_Transforms; }
 
+	void ClearNextAnim();
 
 
 private:
 	AnimationClip m_CurrentClip{};
 	AnimationClip m_NextClip{};
+	bool m_HasNext{true};
 	std::function<void()> m_OnCompletionCallback{};
 
 	std::vector<AnimationClip> m_AnimationClips{};

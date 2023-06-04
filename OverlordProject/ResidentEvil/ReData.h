@@ -66,6 +66,7 @@ enum class ReMenuType
 	MAIN,
 	INGAME,
 	CONTROLS,
+	DEATH,
 	EMPTY
 };
 
@@ -131,7 +132,9 @@ enum class ReScenes
 	MAIN_UPPER,
 	DINING,
 	DINING_UPPER,
-	MENU
+	MENU,
+	DEATH,
+	ZERO
 };
 
 namespace SpawnPositions

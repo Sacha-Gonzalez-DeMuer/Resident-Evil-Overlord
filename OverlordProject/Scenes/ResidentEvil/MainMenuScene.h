@@ -23,8 +23,6 @@ private:
 	FMOD::Sound* m_pEVILSound{};
 	FMOD::Sound* m_pStandBySound{};
 
-	bool m_Wait;
-
 	void Start() override {};
 	void Reset() override {};
 	void StartGame();

@@ -82,7 +82,7 @@ void ReZombie::Initialize(const SceneContext&)
 
 void ReZombie::Update(const SceneContext& sceneContext)
 {
-	if (m_Dead) return;
+	if (m_Dead || !m_IsActive) return;
 	const float deltaTime{ sceneContext.pGameTime->GetElapsed() };
 
 	// play sounds according to moantimer
@@ -118,8 +118,6 @@ void ReZombie::Update(const SceneContext& sceneContext)
 		if (m_pAnimController->GetAnimName() == ZAnimNames::Attack)
 		{
 			m_State = ZState::ATTACKING;
-
-			m_pFMODSys->playSound(m_pAggroSound, nullptr, false, &m_pZombieChannel);
 
 			const auto& lockedPos = XMVectorScale(XMVector3Normalize(difference), m_CharacterDesc.attackDistance * .7f);
 			XMFLOAT3 fdisplacement;
@@ -217,7 +215,7 @@ void ReZombie::Attack()
 {
 	m_State = ZState::ATTACKING;
 	m_pAnimController->TriggerState(ZState::ATTACKING);
-
+	m_pFMODSys->playSound(m_pAggroSound, nullptr, false, &m_pZombieChannel);
 	if (m_pTarget == m_pPlayer->GetTransform())
 		m_pPlayer->GetAttacked();
 }

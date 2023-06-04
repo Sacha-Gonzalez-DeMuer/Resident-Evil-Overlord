@@ -37,7 +37,7 @@ void ModelAnimator::Update(const SceneContext& sceneContext)
 						m_OnCompletionCallback();
 						m_OnCompletionCallback = nullptr;
 					}
-					SetAnimation(m_NextClip);
+					if (m_HasNext) SetAnimation(m_NextClip);
 				}
 
 				m_TickCount = 0;
@@ -198,8 +198,13 @@ void ModelAnimator::PlayOnce(const std::wstring& clipName, const std::wstring& n
 	m_IsPlaying = true;
 	m_SinglePlay = true;
 	m_OnCompletionCallback = onCompletion;
+	if (!nextClipName.empty())
+	{
+		SetNextClip(nextClipName);
+		m_HasNext = true;
+	}
+	else { m_HasNext = false; }
 
-	SetNextClip(nextClipName);
 
 	//Check if clipName is different than the current clip m_CurrentClip.name
 	if (clipName != m_CurrentClip.name)
@@ -207,6 +212,11 @@ void ModelAnimator::PlayOnce(const std::wstring& clipName, const std::wstring& n
 		//	Call SetAnimation(clipName)
 		SetAnimation(clipName);
 	}
+}
+
+void ModelAnimator::ClearNextAnim()
+{
+	m_NextClip = AnimationClip();
 }
 
 void ModelAnimator::SetNextClip(const std::wstring& clipName)

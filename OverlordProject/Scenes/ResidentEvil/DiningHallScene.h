@@ -53,10 +53,9 @@ private:
 
 	// HUD
 	ReMenuManager* m_pMenuManager{};
-	SpriteComponent* m_pBackgroundImg{};
-	SpriteComponent* m_pControlsImg{};
 
-
+	bool m_Pause{ false };
+	void TogglePause();
 	void LoadWorld();
 	void AddHUD();
 	void AddPlayer(PxMaterial* material);
@@ -71,6 +70,6 @@ private:
 	void AddClock();
 	void AddSubtitles();
 	void AddSound();
-	void AddParticles();
+	//void AddParticles();
 };
 

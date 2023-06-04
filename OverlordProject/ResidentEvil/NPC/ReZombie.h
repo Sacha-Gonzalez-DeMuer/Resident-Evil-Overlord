@@ -24,6 +24,7 @@ public:
 	ZState GetState() const { return m_State; }
 	void Die();
 	void Reset();
+	void SetActive(bool active) { m_IsActive = active; }
 	Delegate<> OnPlayerDetected;
 private:
 	// Components
@@ -49,6 +50,7 @@ private:
 	float m_CooldownTimer = { 5.f };
 	bool m_Dead{ false };
 	bool m_DetectedPlayer{ false };
+	bool m_IsActive{ true };
 
 	//Audio
 	float m_MoanTimer{ 10.f };

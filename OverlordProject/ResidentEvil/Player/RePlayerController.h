@@ -24,13 +24,16 @@ public:
 
 	bool IsMoving() const { return m_IsMoving; }
 	bool IsAiming() const { return m_IsAiming; }
+	bool IsSprinting() const { return m_IsSprinting; }
 	bool IsAnimLocked() const { return m_AnimationLocked; }
 	void SetAnimLocked(bool locked) { m_AnimationLocked = locked; }
 	void GetAttacked();
 	ParticleEmitterComponent* GetEmitter() { return m_pBloodEmitter; };
 	void SetYaw(const float yaw) { m_TotalYaw = yaw; }
-
+	void SetActive(const bool active) { m_Active = active; }
 	void Reset();
+	bool IsDead() const;
+	
 protected:
 	void Initialize(const SceneContext&) override;
 	void Update(const SceneContext&) override;
@@ -58,6 +61,7 @@ private:
 	float m_CamCleanTimer{ .1f };
 	float m_CamCleanDelay{ .3f }; // amount of time before new camera transform is used for movement
 
+	bool m_Active{ true };
 	bool m_IsMoving{ false };
 	bool m_IsAiming{ false };
 	bool m_IsSprinting{};
@@ -67,6 +71,7 @@ private:
 	FMOD::Channel* m_pPlayerChannel{};
 	FMOD::Sound* m_pStepSoundA{};
 	FMOD::Sound* m_pStepSoundB{};
+	FMOD::Sound* m_pDeathSound{};
 	float m_StepInterval{ .55f };
 	float m_CurrentStepInterval{ .5f };
 	float m_StepTimer{ .5f };
@@ -76,6 +81,7 @@ private:
 	void OnCamSwitch();
 	void HandleInputActions(InputManager* input);
 	void Interact();
+	void LoadDeathScene();
 	void Shoot();
 	float m_GunDmg{ 25.f };
 

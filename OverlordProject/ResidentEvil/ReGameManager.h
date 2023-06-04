@@ -2,6 +2,7 @@
 #include <map>
 #include "ReData.h"
 
+class ReScene;
 class ReGameManager 
 {
 public:
@@ -28,6 +29,7 @@ public:
 
 private:
 	ReGameManager() = default;
+	ReScene* m_CurrentScene;
 	XMFLOAT3 m_SpawnPos{};
 	std::map<ReScenes, XMFLOAT3> m_SpawnPosMap{};
 	std::map<ReScenes, ReSceneData> m_ScenesMap{};

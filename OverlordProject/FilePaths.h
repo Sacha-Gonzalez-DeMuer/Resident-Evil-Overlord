@@ -77,6 +77,8 @@ namespace FilePath
 	const std::wstring BUTTON_HOVER_AUDIO{ L"ResidentEvil/Audio/Hover.wav" };
 	const std::wstring EVIL01_AUDIO{ L"ResidentEvil/Audio/EVIL01.wav" };
 	const std::wstring STANDBY_AUDIO{ L"ResidentEvil/Audio/Standby.wav" };
+	const std::wstring DEATH_MUSIC{ L"ResidentEvil/Audio/Death.wav" };
+	const std::wstring BLOOD_SPLATTER{ L"ResidentEvil/Audio/BloodSplatting.mp3" };
 
 
 	// Door
@@ -93,4 +95,5 @@ namespace FilePath
 	const std::wstring MAINMENU_BACKGROUND_IMG{ L"ResidentEvil/Img/MenuBackground.jpg" };
 	const std::wstring MAINMENU_STANDBY_IMG{L"ResidentEvil/Img/Standby.jpg"};
 	const std::wstring CONTROLS_IMG{ L"ResidentEvil/Img/Controls.jpg" };
+	const std::wstring DEATH_IMG{L"ResidentEvil/Img/Death.jpg"};
 }

@@ -19,19 +19,10 @@ void HealthComponent::TakeDamage(float damage)
 		OnTakeDamage.Invoke();
 }
 
-void HealthComponent::Heal(float heal)
-{
-	m_Health += heal;
-	if (m_Health > m_MaxHealth)
-	{
-		m_Health = m_MaxHealth;
-	}
-}
 
 void HealthComponent::Reset()
 {
 	m_Health = m_MaxHealth;
-
 }
 
 void HealthComponent::Initialize(const SceneContext& )

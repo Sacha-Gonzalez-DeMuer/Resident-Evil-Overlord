@@ -31,8 +31,6 @@ MainHallScene::MainHallScene()
 void MainHallScene::Initialize()
 {
 	m_SceneContext.useDeferredRendering = true;
-
-
 	m_SceneContext.settings.drawPhysXDebug = false;
 	m_SceneContext.settings.enableOnGUI = true;
 	m_SceneContext.settings.drawGrid = false;
@@ -40,13 +38,9 @@ void MainHallScene::Initialize()
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
 	m_pFMODSys = SoundManager::Get()->GetSystem();
 
-	m_pClassicDoor = AddChild(new ReClassicDoor());
-
-	m_pThunderController = AddChild(new ThunderController());
 	LoadMainMenu();
 	AddLights();
 	AddDoors();
-	//AddCameraSwitches();
 	AddInput();
 	AddNavCollider(*pDefaultMaterial);
 	AddPlayer(pDefaultMaterial);
@@ -55,15 +49,8 @@ void MainHallScene::Initialize()
 	AddSound();
 }
 
-static int m_SelectedLight;
 void MainHallScene::Update()
 {
-	if (m_pDebugCube)
-	{
-		const auto& selectedLightPos = m_SceneContext.pLights->GetLights()[m_SelectedLight].position;
-		m_pDebugCube->GetTransform()->Translate(selectedLightPos.x, selectedLightPos.y, selectedLightPos.z);
-	}
-
 	if (m_SceneContext.pInput->IsActionTriggered(ResetScene))
 		Reset();
 
@@ -77,12 +64,12 @@ void MainHallScene::PostDraw()
 		ShadowMapRenderer::Get()->Debug_DrawDepthSRV();
 }
 
-// function that saves variables to a text file
 void gSaveReCamVariables(const ReCamera& cam)
 {
 	std::ofstream myfile;
 	myfile.open("variables.txt");
 	// print lookat
+// function that saves variables to a text file
 	XMFLOAT3 lookat;
 	XMStoreFloat3(&lookat, cam.GetLookAt());
 	myfile << "LookAt: " << lookat.x << "f, " << lookat.y << "f, " << lookat.z << "f\n";
@@ -163,6 +150,7 @@ void MainHallScene::OnGUI()
 
 		if (useLight)
 		{
+			static int m_SelectedLight;
 			ImGui::InputInt("Selected Light", &m_SelectedLight);
 			auto& light = m_SceneContext.pLights->GetLights()[m_SelectedLight];
 
@@ -310,7 +298,6 @@ void MainHallScene::OnGUI()
 	//	ImGui::DragFloat3("Size", navSizeArray);
 	//	m_pNavCollider->GetTransform()->Scale(navSizeArray[0], navSizeArray[1], navSizeArray[2]);
 	//}
-
 }
 
 void MainHallScene::Start()
@@ -322,7 +309,6 @@ void MainHallScene::Start()
 	m_pAmbientChannel->setPaused(false);
 	m_pFMODSys->playSound(m_pAmbientSound, nullptr, false, &m_pAmbientChannel);
 	ReCameraManager::Get().SetActiveCamera(UINT(0));
-
 
 	SceneManager::Get()->SetActiveGameScene(L"MainHallScene");
 }
@@ -382,34 +368,33 @@ void MainHallScene::LoadMainMenu()
 	pToMainBtn->AddOnClick([this]() { ReGameManager::Get().StartScene(ReScenes::MENU); });
 	pToMainBtn->SetText("MAIN MENU");
 
-	auto pRestart = new ReButton({ centerWidth - btnSize.x * .7f, centerHeight + offset + margin }, btnSize, pFont);
-	pRestart->SetText("Reset");
-	pRestart->AddOnClick([this]() { Reset(); });
+	auto pReset = new ReButton({ centerWidth - btnSize.x * .7f, centerHeight + offset + margin }, btnSize, pFont);
+	pReset->SetText("Reset");
+	pReset->AddOnClick([this]() { Reset(); });
 
 	auto pExitBtn = new ReButton({ centerWidth - btnSize.x * .5f, centerHeight + offset + margin * 2 }, btnSize, pFont);
-	pExitBtn->AddOnClick([this]() {
-		std::cout << "Exit\n";
-		});
+	pExitBtn->AddOnClick([this]() { ReGameManager::Get().Exit(); });
 	pExitBtn->SetText("EXIT");
 
 	pMainMenu->AddButton(pToMainBtn);
 	pMainMenu->AddButton(pExitBtn);
-	pMainMenu->AddButton(pRestart);
+	pMainMenu->AddButton(pReset);
 	pMainMenu->AddImage(m_pBackground);
 	m_pMenuManager->AddMenu(pMainMenu);
-
 
 	m_pMenuManager->DisableMenus();
 
 }
 void MainHallScene::LoadWorld()
 {
-	if (m_WorldLoaded) {
-		ReCameraManager::Get().Reset();
-		AddCameras();
-		return;
-	};
+	ReCameraManager::Get().Reset();
+	AddCameras();
+	AddCameraSwitches();
+	m_pClassicDoor = AddChild(new ReClassicDoor());
 
+	if (m_WorldLoaded) return;
+
+	m_pThunderController = AddChild(new ThunderController());
 	auto pOccluder = AddChild(new GameObject());
 	pOccluder->AddComponent(new ModelComponent(FilePath::ENV_OCCLUDER));
 
@@ -462,11 +447,10 @@ void MainHallScene::AddLights()
 
 	// Door light R1
 	light.type = LightType::Spot;
-	light.position = { 54.2f, 28.f, 62.2f, 1.f };
-	light.direction = { 0.f, -1.f, 0.f, 1.f };
-	light.spotLightAngle = 0.785398f;
+	light.position = { 54.2f, 28.6f,62.2f, 1.f };
+	light.direction = { -18.1f, 80.f, -55.f, 1.f };
 	light.color = color;
-	light.intensity = .9f;
+	light.intensity = .905f;
 	light.range = 37.143f;
 	light.isEnabled = true;
 	m_SceneContext.pLights->AddLight(light);
@@ -477,36 +461,47 @@ void MainHallScene::AddLights()
 	light.color = color;
 	light.intensity = .352f;
 	light.range = 43.81f;
-	light.isEnabled = false;
+	light.isEnabled = true;
 	m_SceneContext.pLights->AddLight(light);
 
 	// Stair light
 	light.type = LightType::Spot;
-	light.position = { 0.2f, 0.f, 0, 1 };
+	light.position = { 2.18f, 67.74f, 95.78f, 1 };
 	light.color = color;
 	light.direction = { 0.f, -1.f, 0.f, 1.f };
 	light.spotLightAngle = 0.785398f;
-	light.intensity = .0f;
-	light.range = 10.f;
-	light.isEnabled = false;
+	light.intensity = .481f;
+	light.range = 49.048f;
+	light.isEnabled = true;
 	m_SceneContext.pLights->AddLight(light);
 
 	// CT1 
 	light.type = LightType::Point;
-	light.position = { 54.2f, 29.f, 11.2f, 1.f };
-	light.color = { -31.62f, 13.34f, 88.78f, 1.f };
-	light.intensity = .352f;
-	light.range = 43.81f;
-	light.isEnabled = false;
+	light.position = { -31.62f, 13.34f, 88.78f, 1.f };
+	light.color = { 1.62f, 1.66f, 2.0f, 1.f };
+	light.intensity = .843f;
+	light.range = 21.381f;
+	light.isEnabled = true;
 	m_SceneContext.pLights->AddLight(light);
 
 	// CT2
 	light.type = LightType::Point;
-	light.position = { 34.98f, 13.34f, 88.78f, 1.f };
-	light.color = { 1.68f, 1.66f, 2.f, 1.f };
+	light.position = { -37.f, 13.f, 88.78f, 1.f };
+	light.color = { 1.f, 1.66f, 2.f, 1.f };
 	light.intensity = .962f;
 	light.range = 21.905f;
-	light.isEnabled = false;
+	light.isEnabled = true;
+	m_SceneContext.pLights->AddLight(light);
+	m_TestLight = light;
+
+
+	// Entrance
+	light.type = LightType::Point;
+	light.position = { 0.f,0.f, -10.78f, 1.f };
+	light.color = { 1.f, 1.66f, 2.f, 1.f };
+	light.intensity = .4f;
+	light.range = 30.905f;
+	light.isEnabled = true;
 	m_SceneContext.pLights->AddLight(light);
 }
 
@@ -630,13 +625,13 @@ void MainHallScene::AddCameras()
 	pCamManager.AddVolume(reCam);
 
 	// [8] Upper Main
-	camLook = { -0.82755f, -0.294758f, -0.477786f };
-	camUp = { -0.255268f, 0.955572f - 0.147379f };
+	camLook = { -0.75737f, -0.119392f, -0.641978f  };
+	camUp = { -0.0910751f, 0.992847f, -0.0771991f };
 	camPos = { 60, 72, 81 };
 	lOrientation = { -1.2f, -.7f, 1.5f, 1.0f };
 	lPosition = { 0.f, 80.4f, 0.f, 1.0f };
 	fov = .898f;
-	reCam = new ReCamera(camPos);
+	reCam = new ReCamera(camPos, false);
 	cam = reCam->GetCamera();
 	cam->SetFieldOfView(fov);
 	reCam->SetLightOrientation(lOrientation);
@@ -646,13 +641,13 @@ void MainHallScene::AddCameras()
 	pCamManager.AddVolume(reCam);
 
 	// [8] Upper Dining
-	camLook = { -0.777137f - 0.406737f, 0.480232f };
-	camUp = { -0.346004f, 0.913545f, 0.213813f };
+	camLook = { -0.765578f, -0.351368f, 0.538916f };
+	camUp = { -0.28732f, 0.936238f, 0.202254f };
 	camPos = { -14, 78 ,-29 };
 	lOrientation = { -1.4f, -.8f, 1.5f, 1.5f };
 	lPosition = { 16.9f, 63.9f, 3.1f, 1.0f };
 	fov = .770f;
-	reCam = new ReCamera(camPos);
+	reCam = new ReCamera(camPos, false);
 	cam = reCam->GetCamera();
 	cam->SetFieldOfView(fov);
 	reCam->SetLightOrientation(lOrientation);
@@ -721,7 +716,6 @@ void MainHallScene::AddCameraSwitches()
 	pSwitch->GetTransform()->Rotate(0, 29, 0);
 	m_pSwitches.push_back(pSwitch);
 
-
 	// -> Stairs
 	pos = { 43.8f, 9.6f, 28.8f };
 	size = { 43, 21, 2 };
@@ -729,9 +723,23 @@ void MainHallScene::AddCameraSwitches()
 	pSwitch->SetTarget(SC_UINT(ReMainHallCamera::STAIRS));
 	pSwitch->GetTransform()->Rotate(0, 29, 0);
 
+	// --> Dining
+	pos = { -15.f, 6.4f, 2.2f };
+	size = { 1.f, 31.f, 74.f };
+	pSwitch = AddChild(new CameraSwitch(pos, size));
+	pSwitch->SetTarget(SC_UINT(ReMainHallCamera::DINING));
+	pSwitch->GetTransform()->Rotate(-1, 2, 0);
 
-	pSwitch = AddChild(new CameraSwitch({ 0, 0, 0 }, { 1, 1, 1 }, true));
-	m_pSwitches.push_back(pSwitch);
+
+	// --> Main (center)
+	pos = {26.2f, 6.2f, 3.8f};
+	size = { 24.0f, 45.f, 57.f };
+	pSwitch = AddChild(new CameraSwitch(pos, size));
+	pSwitch->SetTarget(SC_UINT(ReMainHallCamera::MAIN));
+	pSwitch->GetTransform()->Rotate(0, 29, 0);
+
+	//pSwitch = AddChild(new CameraSwitch({ 0, 0, 0 }, { 1, 1, 1 }, true));
+	//m_pSwitches.push_back(pSwitch);
 }
 
 void MainHallScene::AddDoors()
@@ -740,7 +748,7 @@ void MainHallScene::AddDoors()
 	XMFLOAT3 size{ 1.f, 1.f,1.f };
 
 	// To Dining
-	pos = { -56.0f, 11.0f, 26.0f };
+	pos = { -56.0f, 20.0f, 26.0f };
 	size = { 7.0f, 31.0f, 29.0f };
 	auto pDoor = AddChild(new ReDoor(pos, size));
 	pDoor->OnInteract.AddFunction([this]()
@@ -779,7 +787,7 @@ void MainHallScene::AddInput()
 	m_SceneContext.pInput->AddInputAction(inputAction);
 	inputAction = InputAction(CharacterMoveBackward, InputState::down, 'S');
 	m_SceneContext.pInput->AddInputAction(inputAction);
-	inputAction = InputAction(Interact, InputState::down, 'E');
+	inputAction = InputAction(Interact, InputState::down, 'F');
 	m_SceneContext.pInput->AddInputAction(inputAction);
 	inputAction = InputAction(CharacterSprint, InputState::down, VK_SHIFT);
 	m_SceneContext.pInput->AddInputAction(inputAction);
@@ -817,7 +825,6 @@ void MainHallScene::AddPlayer(PxMaterial* material)
 	characterDesc.rotationSpeed = 120.f;
 	characterDesc.maxMoveSpeed = 15.f;
 	characterDesc.moveAccelerationTime = 0.01f;
-	//characterDesc.spawnPosition = m_SpawnPos = ReGameManager::Get().GetSpawnPos();
 	characterDesc.spawnPosition = m_PlayerStartPos;
 	m_pCharacter = AddChild(new RePlayerController(characterDesc));
 }

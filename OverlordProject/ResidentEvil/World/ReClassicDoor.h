@@ -18,7 +18,8 @@ class ReClassicDoor final : public GameObject
 	void Update(const SceneContext& sceneContext) override;
 	void Trigger();
 	void SetSceneToLoad(const ReScenes& scene);
-
+	ReCamera* GetCamera() const { return m_pCamera; }
+	void SetCamID(const int id) { m_CamID = id; }
 	Delegate<> OnAnimationStart;
 	Delegate<> OnAnimationFinished;
 

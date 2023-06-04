@@ -3,7 +3,7 @@
 namespace dae
 {
 	struct FBXSceneData;
-	class FbxLoader final
+	class FbxLoader final : public GameObject
 	{
 	public:
 		FbxLoader(const char* file);

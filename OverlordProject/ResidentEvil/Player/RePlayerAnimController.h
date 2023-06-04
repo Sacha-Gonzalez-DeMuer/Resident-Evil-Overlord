@@ -29,9 +29,12 @@ public:
 	void Initialize(const SceneContext& sceneContext) override;
 	void Update(const SceneContext& sceneContext) override;
 	void TriggerAnim(const std::wstring& clipName);
+	void TriggerAnim(const std::wstring& clipName, const std::wstring& nextClipName, std::function<void()> callback);
 	void SetBloodEmitter(ParticleEmitterComponent* emitter) { m_pBloodEmitter = emitter; }
-
+	void ClearNextAnim();
 	void Pause();
+	bool IsPaused() const { return m_Pause; }
+	void PausePlayerAnimator() { m_Pause = true; }
 	void Reset();
 private:
 	ModelAnimator* m_pAnimator{};
@@ -39,6 +42,10 @@ private:
 	ParticleEmitterComponent* m_pBloodEmitter{};
 	float m_BloodDelay{ 1.f };
 	float m_BloodTimer{};
+	// death callback wouldn't work so doing it this way..
+	float m_DeathAnimTime{2.83f}; 
+	float m_DeathTimer{ 2.83f };
+	bool m_Pause{ false };
 
 	enum class AnimState
 	{

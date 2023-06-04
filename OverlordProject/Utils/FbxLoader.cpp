@@ -56,6 +56,8 @@ namespace dae
 	{
 		m_pFbxManager->Destroy(); //TODO: fbxmanager leaks anyway? 
 		
+
+
 		//m_pFbxScene->Destroy();
 	}
 
