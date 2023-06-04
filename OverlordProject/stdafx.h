@@ -92,3 +92,6 @@ using namespace physx;
 
 //Engine Includes
 #include "OverlordAPI.h"
+
+// RE Includes
+#include <fbxsdk.h>

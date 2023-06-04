@@ -52,7 +52,7 @@ PS_INPUT VS(VS_INPUT input)
 }
 
 float gGrainAmount = .1f;
-float gGrainSize = 2.5f;
+float gGrainSize = .3f;
 
 float GetNoise(float2 uv) /* https://gist.github.com/keijiro/ee7bc388272548396870 */
 {

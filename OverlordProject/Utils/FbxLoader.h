@@ -1,9 +1,8 @@
 #pragma once
-#include <fbxsdk.h>
 namespace dae
 {
 	struct FBXSceneData;
-	class FbxLoader final : public GameObject
+	class FbxLoader final
 	{
 	public:
 		FbxLoader(const char* file);

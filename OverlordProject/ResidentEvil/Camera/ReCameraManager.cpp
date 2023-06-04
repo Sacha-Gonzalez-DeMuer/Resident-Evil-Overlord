@@ -27,6 +27,7 @@ int ReCameraManager::RemoveCamera(CameraComponent* pCamera)
 
 void ReCameraManager::SetActiveCamera(UINT index)
 {
+	if(index < 0) 
 	if (m_pCameraVolumes[index] == nullptr) Logger::LogError(L"Camera doesnt exist");
 
 	if (index < m_pCameraVolumes.size())

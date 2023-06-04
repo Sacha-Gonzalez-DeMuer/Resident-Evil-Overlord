@@ -52,7 +52,7 @@ private:
 
 	XMVECTOR m_CamForward{};
 	XMVECTOR m_CamRight{};
-	float m_TotalYaw{};								//Total gamobject Yaw(Y) rotation
+	float m_TotalYaw{180.f};								//Total gamobject Yaw(Y) rotation
 	float m_MoveAcceleration{},						//Acceleration required to reach maxMoveVelocity after 1 second (maxMoveVelocity / moveAccelerationTime)
 		m_FallAcceleration{},						//Acceleration required to reach maxFallVelocity after 1 second (maxFallVelocity / fallAccelerationTime)
 		m_MoveSpeed{}, m_SprintScale{ 2.f };		//MoveSpeed > Horizontal Velocity = MoveDirection * MoveVelocity (= TotalVelocity.xz)

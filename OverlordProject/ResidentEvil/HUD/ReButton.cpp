@@ -21,7 +21,11 @@ void ReButton::Draw(const SceneContext& /*sceneContext*/)
 {
 	if(!m_IsActive || m_Text.empty()) return;
 
-	TextRenderer::Get()->DrawText(m_pFont, StringUtil::utf8_decode(m_Text), { m_Position.x, m_Position.y });
+	auto pos = m_Position;
+	if (m_IsHovered)
+		pos.x += m_HoverOffset.x; pos.y += m_HoverOffset.y;
+
+	TextRenderer::Get()->DrawText(m_pFont, StringUtil::utf8_decode(m_Text), pos);
 }
 
 void ReButton::Update(const SceneContext& sceneContext)

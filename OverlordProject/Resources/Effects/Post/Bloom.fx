@@ -51,12 +51,12 @@ PS_INPUT VS(VS_INPUT input)
     return output;
 }
 
-float gThreshold = .2f;
+float gThreshold = .5f;
 float3 gGrayScales = float3(0.1f, 0.5f, 0.114f);
 float4 gBlurColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
 float gBlurRadius = 1.0f;
 float gSmoothness = 0.1f;
-float gIntensity = .5f;
+float gIntensity = .3f;
 
 // PIXEL SHADER
 // ------------

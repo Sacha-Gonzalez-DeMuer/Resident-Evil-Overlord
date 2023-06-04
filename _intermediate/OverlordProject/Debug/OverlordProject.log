@@ -1,7 +1,80 @@
 ﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
+  stdafx.cpp
+cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
+  Main.cpp
+  MainGame.cpp
+  ColorMaterial.cpp
+  BasicMaterial.cpp
+  BasicMaterial_Deferred.cpp
+  BasicMaterial_Deferred_Shadow.cpp
+  DiffuseMaterial.cpp
+  DiffuseMaterial_Skinned.cpp
+  PostAmbientOcclusion.cpp
+  PostBloom.cpp
+  PostBlur.cpp
+  PostGrain.cpp
+  PostGrayscale.cpp
+  DiffuseMaterial_Shadow.cpp
+  DiffuseMaterial_Shadow_Skinned.cpp
+  SpikyMaterial.cpp
+  UberMaterial.cpp
+  BoneObject.cpp
+  Character.cpp
+  CubePrefab.cpp
+  Generating Code...
+  Compiling...
+  Player.cpp
+  PongGameSettings.cpp
+  SpherePrefab.cpp
+  TorusPrefab.cpp
+  CameraSwitch.cpp
+  ReCamera.cpp
+  ReCameraManager.cpp
+  HealthComponent.cpp
+  ReMenu.cpp
+  ReButton.cpp
+  ReMenuManager.cpp
+  SubtitleController.cpp
+  SubtitleManager.cpp
+  ReGun.cpp
+  ReInventory.cpp
+  ReZombie.cpp
+  ReZombieAnimController.cpp
+  RePlayerAnimController.cpp
+  RePlayerController.cpp
+  ReGameManager.cpp
+  Generating Code...
+  Compiling...
+  IInteractable.cpp
+  InteractableComponent.cpp
+  ReClassicDoor.cpp
+  ReClock.cpp
+  ReDoor.cpp
+  ReInteractableObject.cpp
+  ThunderController.cpp
+  DeathScene.cpp
   DiningHallScene.cpp
+  MainHallScene.cpp
+  MainMenuScene.cpp
+  ReScene.cpp
+  PostProcessingScene.cpp
+  DeferredRenderingScene.cpp
+  SpriteTestScene.cpp
+  CharacterScene.cpp
+  FontTestScene.cpp
+  PickingScene.cpp
+  ShadowMappingScene.cpp
+  ParticleScene.cpp
+  Generating Code...
+  Compiling...
+  FbxLoader.cpp
+  StaticMeshFactory.cpp
+  Generating Code...
+     Creating library D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.lib and object D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.exp
   OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.exe
   0 File(s) copied
   0 File(s) copied
   0 File(s) copied
-  0 File(s) copied
+  D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\OverlordProject\Resources\Effects\Post\Bloom.fx
+  D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\OverlordProject\Resources\Effects\Post\FilmGrain.fx
+  2 File(s) copied

@@ -31,6 +31,7 @@ MainHallScene::MainHallScene()
 void MainHallScene::Initialize()
 {
 	m_SceneContext.useDeferredRendering = true;
+	m_SceneContext.settings.showInfoOverlay = true;
 	m_SceneContext.settings.drawPhysXDebug = false;
 	m_SceneContext.settings.enableOnGUI = true;
 	m_SceneContext.settings.drawGrid = false;
@@ -44,7 +45,7 @@ void MainHallScene::Initialize()
 	AddInput();
 	AddNavCollider(*pDefaultMaterial);
 	AddPlayer(pDefaultMaterial);
-	AddPostProcessing();
+	AddPostProcessing(); 
 
 	AddSound();
 }
@@ -55,7 +56,12 @@ void MainHallScene::Update()
 		Reset();
 
 	if (m_SceneContext.pInput->IsActionTriggered(MenuUp))
-		m_pMenuManager->SwitchMenu(ReMenuType::INGAME);
+	{
+		SetActiveCamera(nullptr);
+		m_SceneContext.settings.showInfoOverlay = !m_SceneContext.settings.showInfoOverlay;
+	}
+	//m_pMenuManager->SwitchMenu(ReMenuType::INGAME);
+
 }
 
 void MainHallScene::PostDraw()
@@ -96,15 +102,16 @@ void MainHallScene::OnGUI()
 	DeferredRenderer::Get()->DrawImGui();
 	ImGui::Checkbox("Draw ShadowMap", &m_DrawShadowMap);
 
+	static bool camunlocked = false;
+	if (ImGui::Button("Unlock Camera"))
+	{
+		camunlocked = true;
+		SetActiveCamera(nullptr);
+	}
+
 	if (ImGui::CollapsingHeader("Camera"))
 	{
-		static bool camunlocked = false;
 		static bool useCam;
-		if (ImGui::Button("Unlock Camera"))
-		{
-			camunlocked = true;
-			SetActiveCamera(nullptr);
-		}
 		ImGui::Checkbox("Use Camera", &useCam);
 		if (!camunlocked && useCam)
 		{
@@ -145,12 +152,12 @@ void MainHallScene::OnGUI()
 
 	if (ImGui::CollapsingHeader("Lights"))
 	{
+		static int m_SelectedLight;
 		static bool useLight;
-		ImGui::Checkbox("Use Camera", &useLight);
+		ImGui::Checkbox("Use Lights", &useLight);
 
 		if (useLight)
 		{
-			static int m_SelectedLight;
 			ImGui::InputInt("Selected Light", &m_SelectedLight);
 			auto& light = m_SceneContext.pLights->GetLights()[m_SelectedLight];
 
@@ -395,8 +402,6 @@ void MainHallScene::LoadWorld()
 	if (m_WorldLoaded) return;
 
 	m_pThunderController = AddChild(new ThunderController());
-	auto pOccluder = AddChild(new GameObject());
-	pOccluder->AddComponent(new ModelComponent(FilePath::ENV_OCCLUDER));
 
 	m_pMainHall = AddChild(new GameObject());
 	std::wstring mainhall_folder = ContentManager::GetFullAssetPath(FilePath::FOLDER_ENV_MAINHALL);
@@ -426,7 +431,6 @@ void MainHallScene::AddLights()
 	light.isEnabled = true;
 	m_SceneContext.pLights->AddLight(light);
 
-
 	// Main candle right
 	light.type = LightType::Point;
 	light.position = { -14.8f, 29.f, 33.4f, 1 };
@@ -446,7 +450,7 @@ void MainHallScene::AddLights()
 	m_SceneContext.pLights->AddLight(light);
 
 	// Door light R1
-	light.type = LightType::Spot;
+	light.type = LightType::Point;
 	light.position = { 54.2f, 28.6f,62.2f, 1.f };
 	light.direction = { -18.1f, 80.f, -55.f, 1.f };
 	light.color = color;
@@ -465,7 +469,7 @@ void MainHallScene::AddLights()
 	m_SceneContext.pLights->AddLight(light);
 
 	// Stair light
-	light.type = LightType::Spot;
+	light.type = LightType::Point;
 	light.position = { 2.18f, 67.74f, 95.78f, 1 };
 	light.color = color;
 	light.direction = { 0.f, -1.f, 0.f, 1.f };
@@ -492,15 +496,13 @@ void MainHallScene::AddLights()
 	light.range = 21.905f;
 	light.isEnabled = true;
 	m_SceneContext.pLights->AddLight(light);
-	m_TestLight = light;
-
 
 	// Entrance
 	light.type = LightType::Point;
-	light.position = { 0.f,0.f, -10.78f, 1.f };
-	light.color = { 1.f, 1.66f, 2.f, 1.f };
+	light.position = { 0.f,0.f, -30.78f, 1.f };
+	light.color = { 1.580f, 1.54f, 1.18f, 1.f };
 	light.intensity = .4f;
-	light.range = 30.905f;
+	light.range = 40.905f;
 	light.isEnabled = true;
 	m_SceneContext.pLights->AddLight(light);
 }
@@ -749,7 +751,7 @@ void MainHallScene::AddDoors()
 
 	// To Dining
 	pos = { -56.0f, 20.0f, 26.0f };
-	size = { 7.0f, 31.0f, 29.0f };
+	size = { 40.0f, 40.0f, 40.0f };
 	auto pDoor = AddChild(new ReDoor(pos, size));
 	pDoor->OnInteract.AddFunction([this]()
 		{
@@ -772,7 +774,7 @@ void MainHallScene::AddPostProcessing()
 
 	auto bloom = pMatManager->CreateMaterial<PostBloom>();
 	AddPostProcessingEffect(bloom);
-
+	
 	auto grain = pMatManager->CreateMaterial<PostGrain>();
 	AddPostProcessingEffect(grain);
 }

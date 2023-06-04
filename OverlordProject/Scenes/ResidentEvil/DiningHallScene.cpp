@@ -38,7 +38,6 @@ DiningHallScene::DiningHallScene(void) : ReScene(L"DiningHallScene")
 
 DiningHallScene::~DiningHallScene(void)
 {
-
 }
 
 void DiningHallScene::Initialize()
@@ -46,7 +45,9 @@ void DiningHallScene::Initialize()
 	m_SceneContext.settings.enableOnGUI = true;
 	m_SceneContext.settings.drawGrid = false;
 	m_SceneContext.settings.drawPhysXDebug = false;
+	m_SceneContext.settings.showInfoOverlay = true;
 	m_SceneContext.useDeferredRendering = true;
+	
 	m_SceneContext.pLights->GetDirectionalLight().isEnabled = true;
 	m_SceneContext.pLights->SetDefaultDirectionalPos({ 0, 56, 0 });
 	m_SceneContext.pLights->SetDefaultDirectionalDir({ 4, -2.43f, .040f });
@@ -67,14 +68,20 @@ void DiningHallScene::Initialize()
 
 void DiningHallScene::Update()
 {
-	if (m_SceneContext.pInput->IsActionTriggered(MenuUp))
-	{
-		TogglePause();
-		m_pMenuManager->SwitchMenu(m_Pause ? ReMenuType::INGAME : ReMenuType::EMPTY);
-	}
+	//if (m_SceneContext.pInput->IsActionTriggered(MenuUp))
+	//{
+	//	TogglePause();
+	//	m_pMenuManager->SwitchMenu(m_Pause ? ReMenuType::INGAME : ReMenuType::EMPTY);
+	//}
 
 	if (m_SceneContext.pInput->IsActionTriggered(ResetScene))
 		Reset();
+
+	if (m_SceneContext.pInput->IsActionTriggered(MenuUp))
+	{
+		SetActiveCamera(nullptr);
+		m_SceneContext.settings.showInfoOverlay = !m_SceneContext.settings.showInfoOverlay;
+	}
 }
 
 
@@ -135,17 +142,14 @@ void DiningHallScene::LoadWorld()
 	AddCameras();
 	AddCameraSwitches();
 
-	if(!m_pClassicDoor) m_pClassicDoor = AddChild(new ReClassicDoor());
-	else { // if it already exists, just add its camera back and update the cam id
+	if (m_pClassicDoor) { // if it already exists, just add its camera back and update the cam id
 		m_pClassicDoor->SetCamID(ReCameraManager::Get().AddVolume(m_pClassicDoor->GetCamera()));
-	}
+	};
 
 	if (m_WorldLoaded) return;
 
+	if (!m_pClassicDoor) m_pClassicDoor = AddChild(new ReClassicDoor());
 	AddDoors(); // linked to classic door so must be initialized together
-
-	auto pOccluder = AddChild(new GameObject());
-	pOccluder->AddComponent(new ModelComponent(FilePath::ENV_OCCLUDER));
 
 	m_pThunderController = AddChild(new ThunderController());
 	m_pThunderController->SetMaxDelay(6.f);
@@ -153,10 +157,9 @@ void DiningHallScene::LoadWorld()
 	auto pDiningHall = AddChild(new GameObject());
 	std::wstring dining_fbx_path = ContentManager::GetFullAssetPath(FilePath::ENV_DINING_FBX);
 	const auto& dining_fbx_path_c = StringUtil::ConvertWStringToChar(dining_fbx_path);
-
-	auto pFBXLoader = AddChild(new dae::FbxLoader{ dining_fbx_path_c });
+	dae::FbxLoader pFBXLoader{ dining_fbx_path_c };
 	delete[] dining_fbx_path_c;
-	pFBXLoader->LoadToOverlord(*pDiningHall, m_SceneContext, FilePath::FOLDER_ENV_DINING);
+	pFBXLoader.LoadToOverlord(*pDiningHall, m_SceneContext, FilePath::FOLDER_ENV_DINING);
 
 
 	m_WorldLoaded = true;
@@ -574,26 +577,26 @@ void DiningHallScene::OnGUI()
 		pDoor->GetTransform()->Scale(sizeArray[0], sizeArray[1], sizeArray[2]);
 	}
 
-	//if (ImGui::CollapsingHeader("DirectionalLight"))
-	//{
-	//	// get light pos
-	//	const auto& pLight = m_SceneContext.pLights->GetDirectionalLight();
-	//	const auto& pos =  pLight.position;
-	//	const auto& dir = pLight.direction;
+	if (ImGui::CollapsingHeader("DirectionalLight"))
+	{
+		// get light pos
+		const auto& pLight = m_SceneContext.pLights->GetDirectionalLight();
+		const auto& pos =  pLight.position;
+		const auto& dir = pLight.direction;
 
-	//	static float positionArray[3] = { pos.x, pos.y, pos.z };
-	//	static float directionArray[3] = { dir.x, dir.y, dir.z };
+		static float positionArray[3] = { pos.x, pos.y, pos.z };
+		static float directionArray[3] = { dir.x, dir.y, dir.z };
 
-	//	ImGui::DragFloat3("Position", positionArray, .05f, 0, 100);
-	//	ImGui::DragFloat3("Direction", directionArray, .01f, -4, 4);
-	//	ImGui::Checkbox("Enable", &m_SceneContext.pLights->GetDirectionalLight().isEnabled);
-	//	ImGui::InputFloat("Intensity", &m_SceneContext.pLights->GetDirectionalLight().intensity, .1f, 1.f);
+		ImGui::DragFloat3("Position", positionArray, .05f, 0, 100);
+		ImGui::DragFloat3("Direction", directionArray, .01f, -4, 4);
+		ImGui::Checkbox("Enable", &m_SceneContext.pLights->GetDirectionalLight().isEnabled);
+		ImGui::InputFloat("Intensity", &m_SceneContext.pLights->GetDirectionalLight().intensity, .1f, 1.f);
 
-	//	m_SceneContext.pLights->SetDirectionalLight(
-	//		{ positionArray[0], positionArray[1], positionArray[2] },
-	//		{ directionArray[0], directionArray[1], directionArray[2] }
-	//	);
-	//}
+		m_SceneContext.pLights->SetDirectionalLight(
+			{ positionArray[0], positionArray[1], positionArray[2] },
+			{ directionArray[0], directionArray[1], directionArray[2] }
+		);
+	}
 
 	if (ImGui::CollapsingHeader("Clock"))
 	{

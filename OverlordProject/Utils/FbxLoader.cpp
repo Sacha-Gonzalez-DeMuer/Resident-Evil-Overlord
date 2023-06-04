@@ -10,17 +10,8 @@
 #include "ResidentEvil/Camera/ReCamera.h"
 #include "ResidentEvil/Camera/ReCameraManager.h"
 
-//TODO: remove this
-#pragma warning (disable: 4129)
-#if _DEBUG
-#pragma comment(lib, "D:\\DAE_SEM4\\Graphics Prog 2\\OverlordEngine\\3rdParty\\FBX SDK\\2020.0.1\\lib\\vs2017\\x64\\Debug\\libfbxsdk-md.lib")
-#pragma comment(lib, "D:\\DAE_SEM4\\Graphics Prog 2\\OverlordEngine\\3rdParty\\FBX SDK\\2020.0.1\\lib\\vs2017\\x64\\Debug\\libxml2-md.lib")
-#pragma comment(lib, "D:\\DAE_SEM4\\Graphics Prog 2\\OverlordEngine\\3rdParty\\FBX SDK\\2020.0.1\\lib\\vs2017\\x64\\Debug\\zlib-md.lib")
-#else				  				
-#pragma comment(lib, "D:\\DAE_SEM4\\Graphics Prog 2\\OverlordEngine\\3rdParty\\FBX SDK\\2020.0.1\\lib\\vs2017\\x64\\Release\\libfbxsdk-md.lib")
-#pragma comment(lib, "D:\\DAE_SEM4\\Graphics Prog 2\\OverlordEngine\\3rdParty\\FBX SDK\\2020.0.1\\lib\\vs2017\\x64\\Release\\libxml2-md.lib")
-#pragma comment(lib, "D:\\DAE_SEM4\\Graphics Prog 2\\OverlordEngine\\3rdParty\\FBX SDK\\2020.0.1\\lib\\vs2017\\x64\\Release\\zlib-md.lib")
-#endif
+
+
 
 // helpful links
 // http://docs.autodesk.com/FBX/2014/ENU/FBX-SDK-Documentation

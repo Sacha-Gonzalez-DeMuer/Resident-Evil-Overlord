@@ -312,7 +312,7 @@ GameObject* RePlayerController::Raycast()
 	const auto& origin = m_pControllerComponent->GetPosition();
 	PxVec3 pxOrigin = { origin.x, origin.y, origin.z };
 
-	const auto& forward = GetTransform()->GetForward();
+	const auto& forward = m_pModelObject->GetTransform()->GetForward();
 	PxVec3 pxForward = { forward.x, forward.y, forward.z };
 
 	PxRaycastBuffer pxHit;

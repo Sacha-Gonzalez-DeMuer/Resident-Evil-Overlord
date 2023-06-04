@@ -11,7 +11,7 @@ ReInteractableObject::ReInteractableObject(const XMFLOAT3& pos, const XMFLOAT3& 
 	interactable->SetInteractCallback([this]() { Interact(); });
 
 	// debug
-	AddChild(new CubePrefab(size.x, size.y, size.z));
+	//AddChild(new CubePrefab(size.x, size.y, size.z));
 }
 
 void ReInteractableObject::InitializeCollisionBox(const XMFLOAT3& pos, const XMFLOAT3& size)

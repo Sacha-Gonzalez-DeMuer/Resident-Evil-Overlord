@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "ReClassicDoor.h"
 #include "FilePaths.h"
-#include "Materials/Deferred/BasicMaterial_Deferred_Shadow.h"
-#include "Materials/Shadow/DiffuseMaterial_Shadow.h"
+#include "Materials/Deferred/BasicMaterial_Deferred.h"
+#include "Materials/DiffuseMaterial.h"
 #include "Utils/StaticMeshFactory.h"
 #include "ResidentEvil/Camera/ReCameraManager.h"
 #include "ResidentEvil/Camera/ReCamera.h"
@@ -34,16 +34,15 @@ void ReClassicDoor::Initialize(const SceneContext& sceneContext)
 	auto pDoorModel = AddComponent(new ModelComponent(ContentManager::GetFullAssetPath(FilePath::DOOR_MESH)));
 	if (sceneContext.useDeferredRendering)
 	{
-		auto pMaterial = MaterialManager::Get()->CreateMaterial<BasicMaterial_Deferred_Shadow>();
-		pMaterial->SetDiffuseTexture(FilePath::DOOR_DIFFUSE);
+		auto pMaterial = MaterialManager::Get()->CreateMaterial<BasicMaterial_Deferred>();
+		pMaterial->SetDiffuseMap(FilePath::DOOR_DIFFUSE);
 		pMaterial->SetNormalMap(FilePath::DOOR_NORMAL);
 		pDoorModel->SetMaterial(pMaterial);
 	} 
 	else
 	{
-		auto pMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
+		auto pMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial>();
 		pMaterial->SetDiffuseTexture(FilePath::DOOR_DIFFUSE);
-		pMaterial->SetNormalMap(FilePath::DOOR_NORMAL);
 		pDoorModel->SetMaterial(pMaterial);
 	}
 
@@ -59,6 +58,7 @@ void ReClassicDoor::Initialize(const SceneContext& sceneContext)
 	auto cam = m_pCamera->GetCamera();
 	cam->SetFieldOfView(fov);
 	cam->UpdateRotation(sceneContext, camUp, camLook);
+	m_pCamera->SetLightOrientation({ 4, -1.53f, -4.560f, 1.f });
 	sceneContext.pCamera->GetScene()->AddChild(m_pCamera);
 	m_CamID = pCamManager.AddVolume(m_pCamera);
 
@@ -86,6 +86,7 @@ void ReClassicDoor::Update(const SceneContext& sceneContext)
 	if (!m_TriggerOpen)
 		return;
 
+	
 	const float dt = sceneContext.pGameTime->GetElapsed();
 	m_TimePassed += dt;
 	UpdateKeyframeEvents();
@@ -145,6 +146,7 @@ void ReClassicDoor::Reset()
 	m_TotalYaw = 0;
 	m_pCamera->GetTransform()->Rotate(0.f, 0.f, 0.f);
 	m_pCamera->GetTransform()->Translate(0.f, -90.f, -30.f);
+	OnAnimationStart.Clear();
 	OnAnimationFinished.Clear();
 }
 

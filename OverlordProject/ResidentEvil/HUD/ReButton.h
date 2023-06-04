@@ -28,6 +28,7 @@ private:
 	bool m_IsActive{ true };
 
 	XMFLOAT2 m_Position{};
+	XMFLOAT2 m_HoverOffset{ 5.f, 5.f };
 	float m_Width{};
 	float m_Height{};
 };

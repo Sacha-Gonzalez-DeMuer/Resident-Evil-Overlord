@@ -11,6 +11,8 @@ void DeathScene::Initialize()
 	m_SceneContext.settings.enableOnGUI = true;
 	m_SceneContext.settings.drawGrid = false;
 	m_SceneContext.settings.drawPhysXDebug = false;
+	m_SceneContext.settings.showInfoOverlay = false;
+
 	m_SceneContext.useDeferredRendering = false;
 	m_SceneContext.pLights->GetDirectionalLight().isEnabled = true;
 	ReGameManager::Get();
@@ -20,7 +22,7 @@ void DeathScene::Initialize()
 	const float centerHeight = m_SceneContext.windowHeight * .5f;
 	const XMFLOAT2 btnSize{ 75, 25 };
 	const float margin{ 35.f };
-	const float offset{ 150.f };
+	const float offset{ 170.f };
 	SpriteFont* pFont = ContentManager::Load<SpriteFont>(FilePath::SUB_FONT);
 	auto pBackground = AddChild(new GameObject());
 	m_pDeathScreen = pBackground->AddComponent(new SpriteComponent(FilePath::DEATH_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
@@ -35,9 +37,9 @@ void DeathScene::Initialize()
 	pToMainBtn->AddOnClick([this]() { ReGameManager::Get().StartScene(ReScenes::MENU); });
 	pToMainBtn->SetText("MAIN MENU");
 
-	auto pReset = AddChild(new ReButton({ centerWidth - btnSize.x * .7f, centerHeight + offset + margin }, btnSize, pFont));
-	pReset->SetText("Reset");
-	pReset->AddOnClick([this]() { Reset(); });
+	auto pReset = AddChild(new ReButton({ centerWidth - btnSize.x * .5f, centerHeight + offset + margin }, btnSize, pFont));
+	pReset->SetText("RESET");
+	pReset->AddOnClick([this]() { RestartGame(); });
 
 	auto pExitBtn = AddChild(new ReButton({ centerWidth - btnSize.x * .5f, centerHeight + offset + margin * 2 }, btnSize, pFont));
 	pExitBtn->AddOnClick([this]() { ReGameManager::Get().Exit(); });
@@ -75,5 +77,6 @@ void DeathScene::Reset()
 
 void DeathScene::RestartGame()
 {
+	m_pDeathChannel->stop();
 	ReGameManager::Get().StartScene(ReScenes::DINING);
 }

@@ -16,8 +16,8 @@ private:
 	ReMenuManager* m_pMenuManager{};
 	SpriteComponent* m_pDeathScreen{};
 
-	FMOD::Channel* m_pDeathChannel;
-	FMOD::Sound* m_pDeathMusic;
+	FMOD::Channel* m_pDeathChannel{};
+	FMOD::Sound* m_pDeathMusic{};
 
 	void RestartGame();
 };
