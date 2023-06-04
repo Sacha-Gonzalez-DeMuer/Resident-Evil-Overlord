@@ -17,12 +17,13 @@ public:
 	bool IsActive() const { return m_IsActive; }
 	ReMenuType GetType() const { return m_Type; }
 	void AddButton(ReButton* pButton);
+	void AddImage(SpriteComponent* pImage);
 
 private:
 	ReMenuType m_Type{};
 	bool m_IsActive{ true };
 	std::vector<ReButton*> m_pButtons{};
-	SpriteComponent* m_pBackgroundImg{};
+	std::vector<SpriteComponent*> m_pImages{};
 
 	FMOD::System* m_pSoundSystem{};
 	FMOD::Channel* m_pMenuChannel{};

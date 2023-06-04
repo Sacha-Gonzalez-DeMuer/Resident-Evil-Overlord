@@ -25,6 +25,7 @@ private:
 	SpriteFont* m_pFont{};
 	std::string m_Text{};
 	bool m_IsHovered{ false };
+	bool m_IsActive{ true };
 
 	XMFLOAT2 m_Position{};
 	float m_Width{};

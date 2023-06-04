@@ -6,6 +6,9 @@ class CameraSwitch;
 class ReDoor;
 class CubePrefab;
 class ReClassicDoor;
+class ReGun;
+class ReMenuManager;
+class ThunderController;
 class MainHallScene final : public ReScene
 {
 public:
@@ -40,13 +43,17 @@ private:
 	// Misc
 	ReClassicDoor* m_pClassicDoor{};
 	Light m_TestLight;
-	SpriteComponent* m_pStandBy{};
-
+	ReGun* m_pGun{};
+	ThunderController* m_pThunderController{};
 
 	//Audio
 	FMOD::System* m_pFMODSys{};
 	FMOD::Channel* m_pAmbientChannel{};
 	FMOD::Sound* m_pAmbientSound{};
+
+	// HUD
+	ReMenuManager* m_pMenuManager{};
+	SpriteComponent* m_pBackground{};
 
 	bool m_DrawShadowMap{};
 	void LoadMainMenu();
@@ -62,5 +69,6 @@ private:
 	void AddPlayer(PxMaterial* material);
 	void AddSound();
 	void AddMenu();
+	void AddGun();
 
 };

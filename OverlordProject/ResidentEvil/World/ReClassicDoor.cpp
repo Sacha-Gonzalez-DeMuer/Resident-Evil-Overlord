@@ -122,7 +122,9 @@ void ReClassicDoor::Trigger()
 {
 	m_TriggerOpen = true;
 	ReCameraManager::Get().SetActiveCamera(m_CamID);
-	
+
+	m_TotalYaw = 0;
+	m_pCamera->GetTransform()->Translate(0.f, -90.f, -30.f);
 	OnAnimationStart.Invoke(); // watch out for unwanted invokes
 }
 
@@ -142,7 +144,22 @@ void ReClassicDoor::Reset()
 	m_TimePassed = 0.0f;
 	m_OpenDoor = false;
 	m_CamMoved = false;
+	m_TotalYaw = 0;
+	m_pCamera->GetTransform()->Rotate(0.f, 0.f, 0.f);
+	m_pCamera->GetTransform()->Translate(0.f, -90.f, -30.f);
 	OnAnimationFinished.Clear();
+}
+
+void ReClassicDoor::ClearDelegates()
+{
+	OnAnimationStart.Clear();
+	OnAnimationFinished.Clear();
+
+
+	OnAnimationStart.AddFunction([this]()
+		{
+			SoundManager::Get()->GetSystem()->playSound(m_pDoorAnimSound, nullptr, false, &m_pDoorChannel);
+		});
 }
 
 void ReClassicDoor::UpdateKeyframeEvents()

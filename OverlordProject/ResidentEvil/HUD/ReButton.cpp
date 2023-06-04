@@ -19,23 +19,16 @@ void ReButton::Initialize(const SceneContext&)
 
 void ReButton::Draw(const SceneContext& /*sceneContext*/)
 {
-	if(m_Text.empty()) return;
+	if(!m_IsActive || m_Text.empty()) return;
 
 	TextRenderer::Get()->DrawText(m_pFont, StringUtil::utf8_decode(m_Text), { m_Position.x, m_Position.y });
 }
 
 void ReButton::Update(const SceneContext& sceneContext)
 {
+	if (!m_IsActive) return;
+
 	const auto mousePos = sceneContext.pInput->GetMousePosition();
-
-	// print everything
-	std::cout << "mouse pos: " << mousePos.x << ", " << mousePos.y << std::endl;
-	std::cout << "button pos: " << m_Position.x << ", " << m_Position.y << std::endl;
-	std::cout << "button width: " << m_Width << std::endl;
-	std::cout << "button height: " << m_Height << std::endl;
-	std::cout << "////////////////////////////////////////////" << std::endl;
-
-
 	// check if mousepos in button
 	if (mousePos.x > m_Position.x
 		&& mousePos.x < m_Position.x + m_Width
@@ -62,9 +55,7 @@ void ReButton::SetText(const std::string& text)
 	m_Text = text;
 }
 
-void ReButton::SetActive(const bool /*active*/)
+void ReButton::SetActive(const bool active)
 {
-	//m_pBackgroundImg->SetActive(active);
-
-	//todo: disable text 
+	m_IsActive = active;
 }

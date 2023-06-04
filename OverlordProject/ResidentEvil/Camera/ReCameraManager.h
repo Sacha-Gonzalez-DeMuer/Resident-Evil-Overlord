@@ -25,7 +25,7 @@ public:
 
 	void SetTarget(TransformComponent* pTarget) { m_pTarget = pTarget; }
 	TransformComponent* GetTarget() const { return m_pTarget; }
-
+	void Reset();
 	Delegate<> OnCameraSwitch;
 private:
 	ReCameraManager() = default;

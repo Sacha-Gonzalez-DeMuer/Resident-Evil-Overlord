@@ -21,6 +21,8 @@
 #include "ResidentEvil/HUD/Menus/ReMenu.h"
 #include "ResidentEvil/HUD/ReButton.h"
 #include "ResidentEvil/ReGameManager.h"
+#include "ResidentEvil/Items/ReGun.h"
+
 MainHallScene::MainHallScene()
 	: ReScene(L"MainHallScene")
 {
@@ -38,29 +40,19 @@ void MainHallScene::Initialize()
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
 	m_pFMODSys = SoundManager::Get()->GetSystem();
 
-
-	auto pStandby = AddChild(new GameObject());
-	m_pStandBy = pStandby->AddComponent(new SpriteComponent(FilePath::MAINMENU_STANDBY_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
-	m_pStandBy->SetActive(false);
-
-
-	m_pDebugCube = AddChild(new CubePrefab());
 	m_pClassicDoor = AddChild(new ReClassicDoor());
 
-	AddChild(new ThunderController());
+	m_pThunderController = AddChild(new ThunderController());
 	LoadMainMenu();
 	AddLights();
 	AddDoors();
-	AddCameras();
 	//AddCameraSwitches();
 	AddInput();
 	AddNavCollider(*pDefaultMaterial);
 	AddPlayer(pDefaultMaterial);
-	//AddPostProcessing();
+	AddPostProcessing();
 
 	AddSound();
-
-	ReCameraManager::Get().SetActiveCamera(UINT(0));
 }
 
 static int m_SelectedLight;
@@ -74,6 +66,9 @@ void MainHallScene::Update()
 
 	if (m_SceneContext.pInput->IsActionTriggered(ResetScene))
 		Reset();
+
+	if (m_SceneContext.pInput->IsActionTriggered(MenuUp))
+		m_pMenuManager->SwitchMenu(ReMenuType::INGAME);
 }
 
 void MainHallScene::PostDraw()
@@ -221,6 +216,20 @@ void MainHallScene::OnGUI()
 	}
 
 
+	if (ImGui::CollapsingHeader("Gun"))
+	{
+		const auto& pos = m_pGun->GetTransform()->GetPosition();
+		float positionArray[3] = { pos.x, pos.y, pos.z };
+		ImGui::DragFloat3("Position", positionArray);
+
+		const auto& size = m_pGun->GetTransform()->GetScale();
+		float sizeArray[3] = { size.x, size.y, size.z };
+		ImGui::DragFloat3("Size", sizeArray);
+
+		m_pGun->GetTransform()->Translate(positionArray[0], positionArray[1], positionArray[2]);
+		m_pGun->GetTransform()->Scale(sizeArray[0], sizeArray[1], sizeArray[2]);
+	}
+
 	if (ImGui::CollapsingHeader("DirectionalLight"))
 	{
 		static bool useLight;
@@ -306,28 +315,22 @@ void MainHallScene::OnGUI()
 
 void MainHallScene::Start()
 {
-	m_pStandBy->SetActive(true);
-
-	if (!m_WorldLoaded) {
-		LoadWorld();
-		m_WorldLoaded = true;
-	}
-	m_pStandBy->SetActive(false);
-
+	LoadWorld();
 	Reset();
 
-	auto result = m_pFMODSys->playSound(m_pAmbientSound, nullptr, false, &m_pAmbientChannel);
-	if (result != FMOD_OK)
-	{
-		Logger::LogError(L"Failed to play sound: " + FilePath::MAINHALL_AMBIENT_AUDIO);
-		return;
-	}
+	m_pThunderController->Enable();
+	m_pAmbientChannel->setPaused(false);
+	m_pFMODSys->playSound(m_pAmbientSound, nullptr, false, &m_pAmbientChannel);
+	ReCameraManager::Get().SetActiveCamera(UINT(0));
+
+
+	SceneManager::Get()->SetActiveGameScene(L"MainHallScene");
 }
 
 void MainHallScene::Reset()
 {
 	m_pCharacter->Reset();
-
+	m_pGun->Reset();
 	ReCameraManager::Get().SetActiveCamera(static_cast<UINT>(ReMainHallCamera::MAIN));
 }
 
@@ -337,6 +340,11 @@ void MainHallScene::AddMenu()
 	
 }
 
+void MainHallScene::AddGun()
+{
+	//m_pGun = AddChild(new ReGun({ 8,10,-63 }, { -15,29,8 }));
+	//m_pGun->SetDestInventory(m_pCharacter->GetInventory());
+}
 
 void MainHallScene::AddSound()
 {
@@ -352,21 +360,59 @@ void MainHallScene::AddSound()
 
 void MainHallScene::LoadMainMenu()
 {
-	//auto pMenuManager = AddChild(new ReMenuManager());
-	////const float thirdHeight{ m_SceneContext.windowHeight * .33f };
-	////const float quarterHeight{ m_SceneContext.windowHeight * .25f };
-	//const float btnWidth{ 5.f };
-	//const float btnHeight{ 3.f };
-	//const float margin{ 100.f };
-	//const float centerWidth = m_SceneContext.windowWidth * .5f;
-	//const float centerHeight = m_SceneContext.windowHeight * .5f;
+	// Background
+	const float centerWidth = m_SceneContext.windowWidth * .5f;
+	const float centerHeight = m_SceneContext.windowHeight * .5f;
 
-	//SpriteFont* pFont = ContentManager::Load<SpriteFont>(FilePath::DEFAULT_FONT);
+	auto pBackground = AddChild(new GameObject());
+	m_pBackground = pBackground->AddComponent(new SpriteComponent(FilePath::MAINMENU_BACKGROUND_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
+	pBackground->GetTransform()->Translate(centerWidth, centerHeight, 0.f);
 
-	//float depth{ 0 };
+	m_pMenuManager = AddChild(new ReMenuManager());
+	const float margin{ 35.f };
+	const float offset{ 150.f };
+	const XMFLOAT2 btnSize{ 75, 25 };
+	SpriteFont* pFont = ContentManager::Load<SpriteFont>(FilePath::SUB_FONT);
+
+	// Main 
+	auto pMainMenu = AddChild(new ReMenu(ReMenuType::INGAME));
+	pMainMenu->GetTransform()->Scale(1.f, 1.f, 1.f);
+
+	auto pToMainBtn = new ReButton({ centerWidth - btnSize.x * .5f, centerHeight + offset }, btnSize, pFont);
+	pToMainBtn->AddOnClick([this]() { ReGameManager::Get().StartScene(ReScenes::MENU); });
+	pToMainBtn->SetText("MAIN MENU");
+
+	auto pRestart = new ReButton({ centerWidth - btnSize.x * .7f, centerHeight + offset + margin }, btnSize, pFont);
+	pRestart->SetText("Reset");
+	pRestart->AddOnClick([this]() { Reset(); });
+
+	auto pExitBtn = new ReButton({ centerWidth - btnSize.x * .5f, centerHeight + offset + margin * 2 }, btnSize, pFont);
+	pExitBtn->AddOnClick([this]() {
+		std::cout << "Exit\n";
+		});
+	pExitBtn->SetText("EXIT");
+
+	pMainMenu->AddButton(pToMainBtn);
+	pMainMenu->AddButton(pExitBtn);
+	pMainMenu->AddButton(pRestart);
+	pMainMenu->AddImage(m_pBackground);
+	m_pMenuManager->AddMenu(pMainMenu);
+
+
+	m_pMenuManager->DisableMenus();
+
 }
 void MainHallScene::LoadWorld()
 {
+	if (m_WorldLoaded) {
+		ReCameraManager::Get().Reset();
+		AddCameras();
+		return;
+	};
+
+	auto pOccluder = AddChild(new GameObject());
+	pOccluder->AddComponent(new ModelComponent(FilePath::ENV_OCCLUDER));
+
 	m_pMainHall = AddChild(new GameObject());
 	std::wstring mainhall_folder = ContentManager::GetFullAssetPath(FilePath::FOLDER_ENV_MAINHALL);
 	if (m_SceneContext.useDeferredRendering)
@@ -375,6 +421,8 @@ void MainHallScene::LoadWorld()
 		StaticMeshFactory::Get()->AddMtlModelComponent<DiffuseMaterial_Shadow>(*m_pMainHall, mainhall_folder);
 	m_pMainHall->GetTransform()->Scale(100.f, 100.f, 100.f);
 	m_pMainHall->GetTransform()->Translate(-1.f, -24.f, 23.f);
+
+	m_WorldLoaded = true;
 }
 
 void MainHallScene::AddLights()
@@ -737,7 +785,9 @@ void MainHallScene::AddInput()
 	m_SceneContext.pInput->AddInputAction(inputAction);
 	inputAction = InputAction(CharacterAim, InputState::down, VK_RBUTTON);
 	m_SceneContext.pInput->AddInputAction(inputAction);
-	inputAction = InputAction(ResetScene, InputState::down, 'M');
+	inputAction = InputAction(ResetScene, InputState::down, 'P');
+	m_SceneContext.pInput->AddInputAction(inputAction);
+	inputAction = InputAction(MenuUp, InputState::down, 'M');
 	m_SceneContext.pInput->AddInputAction(inputAction);
 }
 

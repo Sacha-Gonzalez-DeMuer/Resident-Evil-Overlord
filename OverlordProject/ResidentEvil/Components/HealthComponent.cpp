@@ -7,16 +7,16 @@ HealthComponent::HealthComponent(float health)
 {
 }
 
-void HealthComponent::TakeDamage(float /*damage*/)
+void HealthComponent::TakeDamage(float damage)
 {
-	//m_Health -= damage;
-	//if (m_Health <= 0)
-	//{
-	//	m_Health = 0;
-	//	OnDeath.Invoke();
-	//}
-	//else
-	//	OnTakeDamage.Invoke();
+	m_Health -= damage;
+	if (m_Health <= 0)
+	{
+		m_Health = 0;
+		OnDeath.Invoke();
+	}
+	else
+		OnTakeDamage.Invoke();
 }
 
 void HealthComponent::Heal(float heal)

@@ -79,7 +79,8 @@ enum InputIds
 	CharacterSprint,
 	CharacterAim,
 	CharacterAttack,
-	ResetScene
+	ResetScene,
+	MenuUp
 };
 
 enum class ReMainHallCamera
@@ -99,6 +100,30 @@ enum class ReMainHallCamera
 
 	DOORS,
 };
+
+/*
+enum class ReCameraID
+{
+	MAIN_MAIN,
+	MAIN_DINING,
+	MAIN_CT1,
+	MAIN_STAIRS,
+	MAIN_ENTRANCE,
+	MAIN_CT2,
+	MAIN_STAIRS_MID,
+	MAIN_UPPER_MAIN,
+	MAIN_UPPER_DINING,
+	MAIN_STAIRS_BRIDGE,
+	MAIN_UPPER_RCORNER,
+	MAIN_WINDOW,
+
+	DINING_MAIN,
+	DINING_CLOCK,
+	DINING_FIREPLACE,
+
+	DOORS,
+};
+*/
 
 enum class ReScenes
 {

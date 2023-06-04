@@ -17,47 +17,64 @@ void MainMenuScene::Initialize()
 	m_SceneContext.settings.drawPhysXDebug = false;
 	m_SceneContext.useDeferredRendering = false;
 	m_SceneContext.pLights->GetDirectionalLight().isEnabled = true;
-
+	ReGameManager::Get();
 
 	// Background
 	const float centerWidth = m_SceneContext.windowWidth * .5f;
 	const float centerHeight = m_SceneContext.windowHeight * .5f;
 
 	auto pBackground = AddChild(new GameObject());
-	pBackground->AddComponent(new SpriteComponent(FilePath::MAINMENU_BACKGROUND_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
+	m_pBackground = pBackground->AddComponent(new SpriteComponent(FilePath::MAINMENU_BACKGROUND_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
 	pBackground->GetTransform()->Translate(centerWidth, centerHeight, 0.f);
 
-	auto pStandby = AddChild(new GameObject());
-	m_pStandBy = pStandby->AddComponent(new SpriteComponent(FilePath::MAINMENU_STANDBY_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
-	m_pStandBy->SetActive(false);
-
-	auto pMenuManager = AddChild(new ReMenuManager());
+	m_pMenuManager = AddChild(new ReMenuManager());
 	const float margin{ 35.f };
 	const float offset{ 150.f };
-	const XMFLOAT2 btnSize{ 128, 50 };
-	SpriteFont* pFont = ContentManager::Load<SpriteFont>(FilePath::DEFAULT_FONT);
-
-
-
+	const XMFLOAT2 btnSize{ 75, 25 };
+	SpriteFont* pFont = ContentManager::Load<SpriteFont>(FilePath::SUB_FONT);
 
 	// Main 
 	auto pMainMenu = AddChild(new ReMenu(ReMenuType::MAIN));
 	pMainMenu->GetTransform()->Scale(1.f, 1.f, 1.f);
 
-	auto pStartBtn = new ReButton({ centerWidth, centerHeight + offset}, btnSize, pFont);
+	auto pStartBtn = new ReButton({ centerWidth - btnSize.x * .5f, centerHeight + offset}, btnSize, pFont);
 	pStartBtn->AddOnClick([this]() { StartGame(); });
 	pStartBtn->SetText("START");
 
-
-	auto pExitBtn = new ReButton({ centerWidth, centerHeight + offset + margin }, btnSize, pFont);
-	pExitBtn->AddOnClick([this]() {
-		std::cout << "Exit\n";
-		});
+	auto pControlsBtn = new ReButton({ centerWidth - btnSize.x * .7f, centerHeight + offset + margin }, btnSize, pFont);
+	pControlsBtn->SetText("CONTROLS");
+	
+	auto pExitBtn = new ReButton({ centerWidth - btnSize.x * .5f, centerHeight + offset + margin*2 }, btnSize, pFont);
+	pExitBtn->AddOnClick([this]() { ReGameManager::Get().Exit(); });
 	pExitBtn->SetText("EXIT");
 
 	pMainMenu->AddButton(pStartBtn);
 	pMainMenu->AddButton(pExitBtn);
-	pMenuManager->AddMenu(pMainMenu);
+	pMainMenu->AddButton(pControlsBtn);
+	pMainMenu->AddImage(m_pBackground);
+	m_pMenuManager->AddMenu(pMainMenu);
+
+	// Controls
+	auto pControlsMenu = AddChild(new ReMenu(ReMenuType::CONTROLS));
+	pControlsMenu->GetTransform()->Scale(1.f, 1.f, 1.f);
+	m_pMenuManager->AddMenu(pControlsMenu);
+	
+	auto pControls = AddChild(new GameObject());
+	m_pControlsImg = pControls->AddComponent(new SpriteComponent(FilePath::CONTROLS_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
+	pControls->GetTransform()->Translate(centerWidth, centerHeight, 0.f);
+	pControlsMenu->AddImage(m_pControlsImg);
+	
+	auto pBackBtn = new ReButton({ margin, m_SceneContext.windowHeight - margin}, btnSize, pFont);
+	pBackBtn->AddOnClick([this]() { m_pMenuManager->SwitchMenu(ReMenuType::MAIN); });
+	pBackBtn->SetActive(false);
+	pBackBtn->SetText("RETURN");
+	pControlsMenu->AddButton(pBackBtn);
+	
+	pControlsBtn->m_OnClick.AddFunction([&]()
+		{
+			m_pMenuManager->SwitchMenu(ReMenuType::CONTROLS);
+		});
+
 
 	// load evil sound
 	m_pFMODSys = SoundManager::Get()->GetSystem();
@@ -119,18 +136,13 @@ void MainMenuScene::OnGUI()
 
 void MainMenuScene::StartGame()
 {
-	m_pStandBy->SetActive(true);
+	//m_pStandBy->SetActive(true);
+	m_pControlsImg->SetActive(true);
 	auto pFMOD = SoundManager::Get()->GetSystem();
 	pFMOD->playSound(m_pEVILSound, nullptr, false, &m_pMenuChannel);
 
 	// fade to black
 	m_pFMODSys->playSound(m_pStandBySound, nullptr, false, &m_pMenuChannel);
 
-	ReGameManager::Get().SetSpawnPos({ 0.f, 15.f, -90.f });
 	ReGameManager::Get().StartScene(ReScenes::DINING);
-}
-
-void MainMenuScene::Exit()
-{
-	std::cout << "leaving so soon?\n";
 }

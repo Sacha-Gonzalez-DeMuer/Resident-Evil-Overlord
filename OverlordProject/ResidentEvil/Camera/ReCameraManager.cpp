@@ -27,6 +27,8 @@ int ReCameraManager::RemoveCamera(CameraComponent* pCamera)
 
 void ReCameraManager::SetActiveCamera(UINT index)
 {
+	if (m_pCameraVolumes[index] == nullptr) Logger::LogError(L"Camera doesnt exist");
+
 	if (index < m_pCameraVolumes.size())
 	{
 		m_pCameras[index]->SetActive(true);
@@ -41,4 +43,11 @@ void ReCameraManager::SetActiveCamera(ReCamera* pVolume)
 	pVolume->GetCamera()->SetActive(true);
 	m_pActiveCamera = pVolume;
 	OnCameraSwitch.Invoke();
+}
+
+void ReCameraManager::Reset()
+{
+	m_pCameraVolumes.clear();
+	m_pCameras.clear();
+	m_pActiveCamera = nullptr;
 }

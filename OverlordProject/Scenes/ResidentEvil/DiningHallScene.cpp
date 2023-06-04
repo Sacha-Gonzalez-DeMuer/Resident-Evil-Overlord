@@ -55,13 +55,9 @@ void DiningHallScene::Initialize()
 	AddPlayer(pDefaultMaterial);
 	AddZombie(pDefaultMaterial);
 	AddInput();
-	AddGun();
 	AddMenus();
 	AddPostProcessing();
 	AddNavCollider(*pDefaultMaterial);
-	ReCameraManager::Get(); // initalize manager
-	AddCameras();
-	AddCameraSwitches();
 	AddDoors();
 	AddSound();
 
@@ -77,13 +73,11 @@ void DiningHallScene::Update()
 
 void DiningHallScene::Start()
 {
-	m_pStandBy->SetActive(true);
-	if (!m_WorldLoaded) {
-		LoadWorld();
-		m_WorldLoaded = true;
-	}
-	m_pStandBy->SetActive(false);
-
+	LoadWorld();
+	m_pClassicDoor->ClearDelegates();
+	m_pClassicDoor->OnAnimationStart.AddFunction([&]() {
+		SceneManager::Get()->SetActiveGameScene(L"DiningHallScene");
+		});
 	m_pClassicDoor->OnAnimationFinished.AddFunction([&]() {
 		ReCameraManager::Get().SetActiveCamera(UINT(0));
 
@@ -98,6 +92,7 @@ void DiningHallScene::Start()
 		});
 
 	m_pClassicDoor->Trigger();
+
 
 	m_pClassicDoor->OnAnimationStart.AddFunction([&]() {
 		m_pThunderController->Disable();
@@ -118,11 +113,20 @@ void DiningHallScene::Reset()
 	m_pCharacter->Reset();
 	m_pClassicDoor->Reset();
 	m_pZombie->Reset();
-	m_pGun->Reset();
 }
 
 void DiningHallScene::LoadWorld()
 {
+	ReCameraManager::Get().Reset();
+	AddCameras();
+	AddCameraSwitches();
+
+	if (m_WorldLoaded) return;
+
+
+	auto pOccluder = AddChild(new GameObject());
+	pOccluder->AddComponent(new ModelComponent(FilePath::ENV_OCCLUDER));
+
 	m_pThunderController = AddChild(new ThunderController());
 	m_pThunderController->SetMaxDelay(6.f);
 
@@ -132,13 +136,15 @@ void DiningHallScene::LoadWorld()
 	dae::FbxLoader loader{ dining_fbx_path_c };
 	delete[] dining_fbx_path_c;
 	loader.LoadToOverlord(*pDiningHall, m_SceneContext, FilePath::FOLDER_ENV_DINING);
+
+
 }
 
 void DiningHallScene::AddHUD()
 {
 	auto pStandby = AddChild(new GameObject());
-	m_pStandBy = pStandby->AddComponent(new SpriteComponent(FilePath::MAINMENU_STANDBY_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
-	m_pStandBy->SetActive(false);
+	m_pControlsImg = pStandby->AddComponent(new SpriteComponent(FilePath::CONTROLS_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
+	m_pControlsImg->SetActive(false);
 }
 
 void DiningHallScene::AddPlayer(PxMaterial* material)
@@ -156,7 +162,7 @@ void DiningHallScene::AddPlayer(PxMaterial* material)
 	characterDesc.rotationSpeed = 120.f;
 	characterDesc.maxMoveSpeed = 15.f;
 	characterDesc.moveAccelerationTime = 0.01f;
-	characterDesc.spawnPosition = { 0.f, 15.f, -90.f };
+	characterDesc.spawnPosition = { 0.f, 2.f, -90.f };
 
 	m_pCharacter = AddChild(new RePlayerController(characterDesc));
 }
@@ -170,11 +176,10 @@ void DiningHallScene::AddZombie(PxMaterial* material)
 	zombieDesc.maxMoveSpeed = 10.f;
 	zombieDesc.moveAccelerationTime = 0.3f;
 	zombieDesc.attackDistance = 20.f;
+	zombieDesc.spawnPosition = { 26.f, 10.f, 63.f };
 
 	m_pZombie = AddChild(new ReZombie(zombieDesc));
-	m_pZombie->GetTransform()->Translate(26.f, 10.f, 63.f); // spawn pos
 	m_pZombie->SetTarget(m_pCharacter);
-
 }
 
 void DiningHallScene::AddInput()
@@ -201,8 +206,11 @@ void DiningHallScene::AddInput()
 	inputAction = InputAction(CharacterAim, InputState::down, VK_RBUTTON);
 	m_SceneContext.pInput->AddInputAction(inputAction);
 
-	inputAction = InputAction(ResetScene, InputState::down, 'M');
+	inputAction = InputAction(ResetScene, InputState::down, 'P');
 	m_SceneContext.pInput->AddInputAction(inputAction);
+
+	m_SceneContext.pInput->AddInputAction(inputAction);
+	inputAction = InputAction(MenuUp, InputState::down, 'M');
 }
 
 void DiningHallScene::AddNavCollider(const PxMaterial& material)
@@ -306,8 +314,8 @@ void DiningHallScene::AddCameraSwitches()
 	pSwitch->SetTargets(1, 2);
 	m_pSwitches.push_back(pSwitch);
 
-	pSwitch = AddChild(new CameraSwitch({ 0, 0, 0 }, { 1, 1, 1 }, true));
-	m_pSwitches.push_back(pSwitch);
+	//pSwitch = AddChild(new CameraSwitch({ 0, 0, 0 }, { 1, 1, 1 }, true));
+	//m_pSwitches.push_back(pSwitch);
 
 	/*
 	m_pSwitches.push_back(pSwitch);
@@ -322,6 +330,8 @@ void DiningHallScene::AddDoors()
 	auto pDoor = AddChild(new ReDoor(pos, size));
 	pDoor->OnInteract.AddFunction([this]()
 		{
+			m_pThunderController->Disable();
+			m_pAmbientChannel->stop();
 			m_pClassicDoor->SetSceneToLoad(ReScenes::MAIN);
 			m_pClassicDoor->Trigger();
 		});
@@ -331,6 +341,65 @@ void DiningHallScene::AddDoors()
 void DiningHallScene::AddMenus()
 {
 
+	// Background
+	const float centerWidth = m_SceneContext.windowWidth * .5f;
+	const float centerHeight = m_SceneContext.windowHeight * .5f;
+
+	auto pBackground = AddChild(new GameObject());
+	m_pBackgroundImg = pBackground->AddComponent(new SpriteComponent(FilePath::MAINMENU_BACKGROUND_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
+	pBackground->GetTransform()->Translate(centerWidth, centerHeight, 0.f);
+
+	m_pMenuManager = AddChild(new ReMenuManager());
+	const float margin{ 35.f };
+	const float offset{ 150.f };
+	const XMFLOAT2 btnSize{ 75, 25 };
+	SpriteFont* pFont = ContentManager::Load<SpriteFont>(FilePath::SUB_FONT);
+
+	// Main 
+	auto pMainMenu = AddChild(new ReMenu(ReMenuType::INGAME));
+	pMainMenu->GetTransform()->Scale(1.f, 1.f, 1.f);
+
+	auto pToMainBtn = new ReButton({ centerWidth - btnSize.x * .5f, centerHeight + offset }, btnSize, pFont);
+	pToMainBtn->AddOnClick([this]() { ReGameManager::Get().StartScene(ReScenes::MAIN); });
+	pToMainBtn->SetText("START");
+
+	auto pControlsBtn = new ReButton({ centerWidth - btnSize.x * .7f, centerHeight + offset + margin }, btnSize, pFont);
+	pControlsBtn->SetText("CONTROLS");
+
+	auto pExitBtn = new ReButton({ centerWidth - btnSize.x * .5f, centerHeight + offset + margin * 2 }, btnSize, pFont);
+	pExitBtn->AddOnClick([this]() {
+		std::cout << "Exit\n";
+		});
+	pExitBtn->SetText("EXIT");
+
+	pMainMenu->AddButton(pToMainBtn);
+	pMainMenu->AddButton(pExitBtn);
+	pMainMenu->AddButton(pControlsBtn);
+	pMainMenu->AddImage(m_pBackgroundImg);
+	m_pMenuManager->AddMenu(pMainMenu);
+
+	// Controls
+	auto pControlsMenu = AddChild(new ReMenu(ReMenuType::CONTROLS));
+	pControlsMenu->GetTransform()->Scale(1.f, 1.f, 1.f);
+	m_pMenuManager->AddMenu(pControlsMenu);
+
+	auto pControls = AddChild(new GameObject());
+	auto pControlsImg = pControls->AddComponent(new SpriteComponent(FilePath::CONTROLS_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
+	pControls->GetTransform()->Translate(centerWidth, centerHeight, 0.f);
+	pControlsMenu->AddImage(pControlsImg);
+
+	auto pBackBtn = new ReButton({ margin, m_SceneContext.windowHeight - margin }, btnSize, pFont);
+	pBackBtn->AddOnClick([this]() { m_pMenuManager->SwitchMenu(ReMenuType::MAIN); });
+	pBackBtn->SetActive(false);
+	pBackBtn->SetText("RETURN");
+	pControlsMenu->AddButton(pBackBtn);
+
+	pControlsBtn->m_OnClick.AddFunction([&]()
+		{
+			m_pMenuManager->SwitchMenu(ReMenuType::CONTROLS);
+		});
+
+	m_pMenuManager->DisableMenus();
 }
 
 void DiningHallScene::AddPostProcessing()
@@ -342,12 +411,6 @@ void DiningHallScene::AddPostProcessing()
 
 	auto grain = pMatManager->CreateMaterial<PostGrain>();
 	AddPostProcessingEffect(grain);
-}
-
-void DiningHallScene::AddGun()
-{
-	//m_pGun = AddChild(new ReGun({ 8,10,-63 }, { -15,29,8 }));
-	//m_pGun->SetDestInventory(m_pCharacter->GetInventory());
 }
 
 void DiningHallScene::AddClock()
@@ -548,19 +611,6 @@ void DiningHallScene::OnGUI()
 		m_pClock->GetTransform()->Scale(sizeArray[0], sizeArray[1], sizeArray[2]);
 	}
 
-	if (ImGui::CollapsingHeader("Gun"))
-	{
-		const auto& pos = m_pGun->GetTransform()->GetPosition();
-		float positionArray[3] = { pos.x, pos.y, pos.z };
-		ImGui::DragFloat3("Position", positionArray);
-
-		const auto& size = m_pGun->GetTransform()->GetScale();
-		float sizeArray[3] = { size.x, size.y, size.z };
-		ImGui::DragFloat3("Size", sizeArray);
-
-		m_pGun->GetTransform()->Translate(positionArray[0], positionArray[1], positionArray[2]);
-		m_pGun->GetTransform()->Scale(sizeArray[0], sizeArray[1], sizeArray[2]);
-	}
 
 	if (ImGui::CollapsingHeader("Zombie"))
 	{

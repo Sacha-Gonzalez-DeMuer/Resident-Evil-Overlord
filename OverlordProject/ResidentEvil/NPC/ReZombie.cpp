@@ -55,6 +55,25 @@ void ReZombie::Initialize(const SceneContext&)
 	particleSettings.offset = XMFLOAT3(0.f, m_CharacterDesc.controller.height / 2, 0.f);
 	m_pBloodEmitter = bloodemitterObj->AddComponent(new ParticleEmitterComponent(FilePath::BLOOD_PARTICLE, particleSettings, 200));
 
+
+	// Sound
+	m_pFMODSys = SoundManager::Get()->GetSystem();
+	const auto& idleSoundPath = ContentManager::GetFullAssetPath(FilePath::ZOMBIE_IDLE_AUDIO);
+	const auto& attackSoundPath = ContentManager::GetFullAssetPath(FilePath::ZOMBIE_AGGRO_AUDIO);
+	const auto& detectedSoundPath = ContentManager::GetFullAssetPath(FilePath::ZOMBIE_DETECTED_AUDIO);
+
+	auto result = m_pFMODSys->createStream(idleSoundPath.string().c_str(), FMOD_LOOP_OFF | FMOD_3D, nullptr, &m_pIdleSound);
+	if (result != FMOD_OK)
+		Logger::LogError(L"Failed to load zombie idle sound");
+
+	result = m_pFMODSys->createStream(attackSoundPath.string().c_str(), FMOD_LOOP_OFF | FMOD_3D, nullptr, &m_pAggroSound);
+	if (result != FMOD_OK)
+		Logger::LogError(L"Failed to load zombie attack sound");
+
+	result = m_pFMODSys->createStream(detectedSoundPath.string().c_str(), FMOD_LOOP_OFF | FMOD_3D, nullptr, &m_pDetectedSound);
+	if (result != FMOD_OK)
+		Logger::LogError(L"Failed to load zombie detected sound");
+
 	OnPlayerDetected.AddFunction([this]()
 		{
 			SoundManager::Get()->GetSystem()->playSound(m_pDetectedSound, nullptr, false, &m_pZombieChannel);
@@ -64,9 +83,20 @@ void ReZombie::Initialize(const SceneContext&)
 void ReZombie::Update(const SceneContext& sceneContext)
 {
 	if (m_Dead) return;
+	const float deltaTime{ sceneContext.pGameTime->GetElapsed() };
+
+	// play sounds according to moantimer
+	m_MoanTimer -= deltaTime;
+	if (m_MoanTimer <= 0)
+	{
+		m_MoanCooldown = MathHelper::randF(m_MinMoanCooldown, m_MaxMoanCooldown);
+		m_MoanTimer = m_MoanCooldown;
+		SoundManager::Get()->GetSystem()->playSound(m_State == ZState::IDLE ? m_pIdleSound : m_pDetectedSound, nullptr, false, &m_pZombieChannel);
+	}
+
+
 	if (sceneContext.pCamera->IsActive())
 	{
-		const float deltaTime{ sceneContext.pGameTime->GetElapsed() };
 		if (m_CooldownTimer > 0)
 		{
 			m_CooldownTimer -= deltaTime;
@@ -88,6 +118,8 @@ void ReZombie::Update(const SceneContext& sceneContext)
 		if (m_pAnimController->GetAnimName() == ZAnimNames::Attack)
 		{
 			m_State = ZState::ATTACKING;
+
+			m_pFMODSys->playSound(m_pAggroSound, nullptr, false, &m_pZombieChannel);
 
 			const auto& lockedPos = XMVectorScale(XMVector3Normalize(difference), m_CharacterDesc.attackDistance * .7f);
 			XMFLOAT3 fdisplacement;

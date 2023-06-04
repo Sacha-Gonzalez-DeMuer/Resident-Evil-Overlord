@@ -23,6 +23,8 @@ class ReClassicDoor final : public GameObject
 	Delegate<> OnAnimationFinished;
 
 	void Reset();
+	void ClearDelegates();
+
 private:
 	void UpdateKeyframeEvents();
 	ReScenes m_SceneToLoad{};

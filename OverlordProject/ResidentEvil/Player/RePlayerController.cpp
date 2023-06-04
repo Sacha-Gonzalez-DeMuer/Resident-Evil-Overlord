@@ -9,7 +9,6 @@
 #include "ResidentEvil/Player/RePlayerAnimController.h"
 #include "ResidentEvil/Items/ReInventory.h"
 #include "ResidentEvil/HUD/SubtitleManager.h"
-//#include "ResidentEvil/NPC/ReZombie.h"
 #include "ResidentEvil/Components/HealthComponent.h"
 
 RePlayerController::RePlayerController(const ReCharacterDesc& characterDesc) 

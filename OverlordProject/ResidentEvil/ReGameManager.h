@@ -24,6 +24,8 @@ public:
 	void LoadResidentEvil();
 	void StartScene(ReScenes scene);
 
+	void Exit();
+
 private:
 	ReGameManager() = default;
 	XMFLOAT3 m_SpawnPos{};

@@ -4,8 +4,13 @@
 
 void ThunderController::Update(const SceneContext& sceneContext)
 {
-    if (!m_Enabled) return;
     auto& pLight = sceneContext.pLights->GetDirectionalLight();
+
+    if (!m_Enabled)
+    {
+        pLight.intensity = .6f;
+        return;
+    };
 	const auto& deltaTime = sceneContext.pGameTime->GetElapsed();
 
 

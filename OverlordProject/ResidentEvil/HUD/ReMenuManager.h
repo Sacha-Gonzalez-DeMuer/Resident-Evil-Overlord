@@ -21,6 +21,5 @@ public:
 
 private:
 	std::vector<ReMenu*> m_pMenus{};
-	std::vector<ReMenu*> m_pLastActiveMenus{};
 };
 

@@ -42,6 +42,8 @@ namespace FilePath
 	const std::wstring FOLDER_ENV_MAINHALL{ L"ResidentEvil/Environments/MainHall/" };
 	const std::wstring ENV_MAIN_NAVMESH{ L"ResidentEvil/Environments/MainHall/Additional/MainHall_NavMesh.ovpt" };
 
+	const std::wstring ENV_OCCLUDER{ L"ResidentEvil/Environments/Occluder/Occluder.ovm" };
+
 	// Stairs
 	const std::wstring FOLDER_ENV_STAIRS{ L"ResidentEvil/Environments/Stairs/FBX/" };
 	const std::wstring ENV_STAIRS_FBX{ L"ResidentEvil/Environments/Stairs/FBX/Stairs.fbx" };
@@ -85,7 +87,7 @@ namespace FilePath
 	const std::wstring DOOR_SPEC{ L"ResidentEvil/Props/Door/DoorSpecular.png "};
 
 	// Text
-	const std::wstring SUB_FONT{ L"ResidentEvil/Fonts/ReFont_subtitles.fnt" };
+	const std::wstring SUB_FONT{ L"ResidentEvil/Fonts/ReSubFont.fnt" };
 
 	// Images
 	const std::wstring MAINMENU_BACKGROUND_IMG{ L"ResidentEvil/Img/MenuBackground.jpg" };

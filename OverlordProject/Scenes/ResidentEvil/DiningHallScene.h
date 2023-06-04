@@ -6,13 +6,13 @@ class RePlayerController;
 class CameraSwitch;
 class ReDoor;
 class ReClock;
-class ReGun;
 class ReZombie;
 class ParticleEmitterComponent;
 class ReButton;
 class ReMenu;
 class ReClassicDoor;
 class ThunderController;
+class ReMenuManager;
 class DiningHallScene final : public ReScene
 {
 	public:
@@ -44,17 +44,21 @@ private:
 	ReClassicDoor* m_pClassicDoor{};
 	ReZombie* m_pZombie{};
 	ReClock* m_pClock{};
-	ReGun* m_pGun{};
 	GameObject* m_pParticleEmitter{};
-	SpriteComponent* m_pStandBy{};
 
 	// Audio
 	FMOD::System* m_pFMODSys{};
 	FMOD::Channel* m_pAmbientChannel{};
 	FMOD::Sound* m_pAmbientSound{};
 
+	// HUD
+	ReMenuManager* m_pMenuManager{};
+	SpriteComponent* m_pBackgroundImg{};
+	SpriteComponent* m_pControlsImg{};
+
 
 	void LoadWorld();
+	void AddHUD();
 	void AddPlayer(PxMaterial* material);
 	void AddZombie(PxMaterial* material);
 	void AddInput();
@@ -64,9 +68,9 @@ private:
 	void AddDoors();
 	void AddMenus();
 	void AddPostProcessing();
-	void AddGun();
 	void AddClock();
 	void AddSubtitles();
 	void AddSound();
+	void AddParticles();
 };
 

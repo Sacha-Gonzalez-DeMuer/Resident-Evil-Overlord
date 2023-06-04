@@ -51,10 +51,12 @@ private:
 	bool m_DetectedPlayer{ false };
 
 	//Audio
-	float m_MoanTimer;
+	float m_MoanTimer{ 10.f };
 	float m_MoanCooldown{ 5.f };
 	float m_MinMoanCooldown{6.f};
 	float m_MaxMoanCooldown{ 15.f };
+
+	FMOD::System* m_pFMODSys{};
 	FMOD::Channel* m_pZombieChannel{};
 	FMOD::Sound* m_pIdleSound{};
 	FMOD::Sound* m_pDetectedSound{};
