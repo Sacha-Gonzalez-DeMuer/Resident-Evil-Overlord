@@ -56,12 +56,7 @@ void MainHallScene::Update()
 		Reset();
 
 	if (m_SceneContext.pInput->IsActionTriggered(MenuUp))
-	{
-		SetActiveCamera(nullptr);
-		m_SceneContext.settings.showInfoOverlay = !m_SceneContext.settings.showInfoOverlay;
-	}
-	//m_pMenuManager->SwitchMenu(ReMenuType::INGAME);
-
+		m_pMenuManager->SwitchMenu(ReMenuType::INGAME);
 }
 
 void MainHallScene::PostDraw()
@@ -633,7 +628,7 @@ void MainHallScene::AddCameras()
 	lOrientation = { -1.2f, -.7f, 1.5f, 1.0f };
 	lPosition = { 0.f, 80.4f, 0.f, 1.0f };
 	fov = .898f;
-	reCam = new ReCamera(camPos, false);
+	reCam = new ReCamera(camPos);
 	cam = reCam->GetCamera();
 	cam->SetFieldOfView(fov);
 	reCam->SetLightOrientation(lOrientation);
@@ -649,7 +644,7 @@ void MainHallScene::AddCameras()
 	lOrientation = { -1.4f, -.8f, 1.5f, 1.5f };
 	lPosition = { 16.9f, 63.9f, 3.1f, 1.0f };
 	fov = .770f;
-	reCam = new ReCamera(camPos, false);
+	reCam = new ReCamera(camPos);
 	cam = reCam->GetCamera();
 	cam->SetFieldOfView(fov);
 	reCam->SetLightOrientation(lOrientation);

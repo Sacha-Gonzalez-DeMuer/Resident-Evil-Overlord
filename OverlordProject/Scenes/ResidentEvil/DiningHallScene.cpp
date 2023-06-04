@@ -68,20 +68,14 @@ void DiningHallScene::Initialize()
 
 void DiningHallScene::Update()
 {
-	//if (m_SceneContext.pInput->IsActionTriggered(MenuUp))
-	//{
-	//	TogglePause();
-	//	m_pMenuManager->SwitchMenu(m_Pause ? ReMenuType::INGAME : ReMenuType::EMPTY);
-	//}
+	if (m_SceneContext.pInput->IsActionTriggered(MenuUp))
+	{
+		TogglePause();
+		m_pMenuManager->SwitchMenu(m_Pause ? ReMenuType::INGAME : ReMenuType::EMPTY);
+	}
 
 	if (m_SceneContext.pInput->IsActionTriggered(ResetScene))
 		Reset();
-
-	if (m_SceneContext.pInput->IsActionTriggered(MenuUp))
-	{
-		SetActiveCamera(nullptr);
-		m_SceneContext.settings.showInfoOverlay = !m_SceneContext.settings.showInfoOverlay;
-	}
 }
 
 
