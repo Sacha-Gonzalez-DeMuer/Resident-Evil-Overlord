@@ -25,6 +25,11 @@ public:
 		}
 	}
 
+	void Clear()
+	{
+		m_Functions.clear();
+	}
+
 private:
 	std::vector<OverlordDelegate> m_Functions;
 };

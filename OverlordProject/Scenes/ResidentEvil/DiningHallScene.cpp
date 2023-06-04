@@ -4,7 +4,7 @@
 #include "Materials/DiffuseMaterial.h"
 #include "FilePaths.h"
 #include "Utils/StaticMeshFactory.h"
-//#include "Utils/FbxLoader.h"
+#include "Utils/FbxLoader.h"
 #include "Utils/Utils.h"
 #include <codecvt>
 #include <locale>
@@ -27,11 +27,11 @@
 #include "ResidentEvil/HUD/Menus/ReMenu.h"
 #include "ResidentEvil/HUD/ReButton.h"
 #include "ResidentEvil/World/ReClassicDoor.h"
-
+#include "ResidentEvil/ReGameManager.h"
 #include "Materials/Post/PostBloom.h"
 #include "Materials/Post/PostGrain.h"
 
-DiningHallScene::DiningHallScene(void) : GameScene(L"DiningHallScene")
+DiningHallScene::DiningHallScene(void) : ReScene(L"DiningHallScene")
 {
 }
 
@@ -51,7 +51,7 @@ void DiningHallScene::Initialize()
 
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
 
-	AddSound();
+	AddHUD();
 	AddPlayer(pDefaultMaterial);
 	AddZombie(pDefaultMaterial);
 	AddInput();
@@ -59,27 +59,13 @@ void DiningHallScene::Initialize()
 	AddMenus();
 	AddPostProcessing();
 	AddNavCollider(*pDefaultMaterial);
-
-	auto& pCamVolumeManager = ReCameraManager::Get();
+	ReCameraManager::Get(); // initalize manager
 	AddCameras();
-	pCamVolumeManager.SetActiveCamera(UINT(0));
 	AddCameraSwitches();
 	AddDoors();
-	auto thunder = AddChild(new ThunderController());
+	AddSound();
 
-	auto loadingDoor = AddChild(new ReClassicDoor());
-
-	loadingDoor->OnAnimationStart.AddFunction([&]() {
-		thunder->Disable(); 
-		m_pAmbientChannel->setPaused(true);
-		});
-
-	loadingDoor->OnAnimationFinished.AddFunction([&]() {
-		thunder->Enable();
-		m_pAmbientChannel->setPaused(false);
-		});
-
-	LoadWorld();
+	m_pClassicDoor = AddChild(new ReClassicDoor());
 }
 
 void DiningHallScene::Update()
@@ -88,6 +74,44 @@ void DiningHallScene::Update()
 		Reset();
 }
 
+
+void DiningHallScene::Start()
+{
+	m_pStandBy->SetActive(true);
+	if (!m_WorldLoaded) {
+		LoadWorld();
+		m_WorldLoaded = true;
+	}
+	m_pStandBy->SetActive(false);
+
+	m_pClassicDoor->OnAnimationFinished.AddFunction([&]() {
+		ReCameraManager::Get().SetActiveCamera(UINT(0));
+
+		auto result = m_pFMODSys->playSound(m_pAmbientSound, nullptr, false, &m_pAmbientChannel);
+		if (result != FMOD_OK)
+		{
+			std::wstringstream ss;
+			ss << "Failed to play sound: " << FilePath::DINING_AMBIENT_AUDIO << std::endl;
+			Logger::LogError(ss.str());
+			return;
+		}
+		});
+
+	m_pClassicDoor->Trigger();
+
+	m_pClassicDoor->OnAnimationStart.AddFunction([&]() {
+		m_pThunderController->Disable();
+		m_pAmbientChannel->setPaused(true);
+		});
+
+	m_pClassicDoor->OnAnimationFinished.AddFunction([&]() {
+		m_pThunderController->Enable();
+		m_pAmbientChannel->setPaused(false);
+		Reset();
+		ReCameraManager::Get().SetActiveCamera(UINT(0));
+		});
+
+}
 
 void DiningHallScene::Reset()
 {
@@ -99,12 +123,22 @@ void DiningHallScene::Reset()
 
 void DiningHallScene::LoadWorld()
 {
-	//auto pDiningHall = AddChild(new GameObject());
-	//std::wstring dining_fbx_path = ContentManager::GetFullAssetPath(FilePath::ENV_DINING_FBX);
-	//const auto& dining_fbx_path_c = StringUtil::ConvertWStringToChar(dining_fbx_path);
-	//dae::FbxLoader loader{ dining_fbx_path_c };
-	//delete[] dining_fbx_path_c;
-	//loader.LoadToOverlord(*pDiningHall, m_SceneContext, FilePath::FOLDER_ENV_DINING);
+	m_pThunderController = AddChild(new ThunderController());
+	m_pThunderController->SetMaxDelay(6.f);
+
+	auto pDiningHall = AddChild(new GameObject());
+	std::wstring dining_fbx_path = ContentManager::GetFullAssetPath(FilePath::ENV_DINING_FBX);
+	const auto& dining_fbx_path_c = StringUtil::ConvertWStringToChar(dining_fbx_path);
+	dae::FbxLoader loader{ dining_fbx_path_c };
+	delete[] dining_fbx_path_c;
+	loader.LoadToOverlord(*pDiningHall, m_SceneContext, FilePath::FOLDER_ENV_DINING);
+}
+
+void DiningHallScene::AddHUD()
+{
+	auto pStandby = AddChild(new GameObject());
+	m_pStandBy = pStandby->AddComponent(new SpriteComponent(FilePath::MAINMENU_STANDBY_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
+	m_pStandBy->SetActive(false);
 }
 
 void DiningHallScene::AddPlayer(PxMaterial* material)
@@ -122,7 +156,7 @@ void DiningHallScene::AddPlayer(PxMaterial* material)
 	characterDesc.rotationSpeed = 120.f;
 	characterDesc.maxMoveSpeed = 15.f;
 	characterDesc.moveAccelerationTime = 0.01f;
-	characterDesc.spawnPosition = m_BottomSpawnPos;
+	characterDesc.spawnPosition = { 0.f, 15.f, -90.f };
 
 	m_pCharacter = AddChild(new RePlayerController(characterDesc));
 }
@@ -286,53 +320,17 @@ void DiningHallScene::AddDoors()
 	XMFLOAT3 size{ 33.0f, 30.0f, 15.0f };
 
 	auto pDoor = AddChild(new ReDoor(pos, size));
+	pDoor->OnInteract.AddFunction([this]()
+		{
+			m_pClassicDoor->SetSceneToLoad(ReScenes::MAIN);
+			m_pClassicDoor->Trigger();
+		});
 	m_pDoors.emplace_back(pDoor);
 }
 
 void DiningHallScene::AddMenus()
 {
-	auto pMenuManager = AddChild(new ReMenuManager());
-	//const float thirdHeight{ m_SceneContext.windowHeight * .33f };
-	//const float quarterHeight{ m_SceneContext.windowHeight * .25f };
-	const float halfWidth{ m_SceneContext.windowWidth * .5f };
-	const float btnWidth{ 1.0f };
-	const float btnHeight{ 1.0f };
-	const float centerWidth = m_SceneContext.windowWidth * .5f;
-	const float centerHeight = m_SceneContext.windowHeight * .5f;
-	
-	// In-game Menu
-	auto pInGameMenu = AddChild(new ReMenu(ReMenuType::INGAME));
-	pInGameMenu->GetTransform()->Translate(centerWidth, centerHeight, 0);
 
-	auto pToMainBtn = pInGameMenu->AddChild(new ReButton());
-	pToMainBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
-	pToMainBtn->GetTransform()->Translate(0, btnHeight, 0.f);
-	pToMainBtn->SetOnClick([this]() { SceneManager::Get()->SetActiveGameScene(L"MainMenu"); });
-	pInGameMenu->AddButton(pToMainBtn);
-
-	auto pToGameBtn = pInGameMenu->AddChild(new ReButton());
-	pToGameBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
-	pToGameBtn->GetTransform()->Translate(halfWidth, 0, 0.f);
-	pToGameBtn->SetOnClick([&]() { pMenuManager->SwitchMenu(ReMenuType::EMPTY); });
-	pInGameMenu->AddButton(pToGameBtn);
-
-	m_pMenus.push_back(pInGameMenu);
-
-	//auto pRestartBtn = AddChild(new ReButton(FilePath::TEST_SPRITE));
-	//pRestartBtn->GetTransform()->Scale(btnWidth, btnHeight, 1.f);
-	//pRestartBtn->GetTransform()->Translate(halfWidth, thirdHeight * 2, 0.f);
-	//pInGameMenu->AddButton(pRestartBtn);
-	//pInGameMenu->AddButton(pExitBtn);
-
-	//// Controls
-	//auto pControlsMenu = AddChild(new ReMenu(ReMenuType::CONTROLS, FilePath::TEST_SPRITE)); // todo add controls sprite
-	//auto pBackBtn = new ReButton(FilePath::TEST_SPRITE);
-	//pBackBtn->GetTransform()->Scale(btnWidth, btnHeight, 1.f);
-	//pBackBtn->GetTransform()->Translate(halfWidth, quarterHeight, 0.f);
-	//pBackBtn->SetOnClick([this]() { std::cout << "Back to main menu!"; });
-	//pControlsMenu->AddButton(pBackBtn);
-
-	//pMenuManager->SwitchMenu(ReMenuType::MAIN);
 }
 
 void DiningHallScene::AddPostProcessing()
@@ -369,9 +367,9 @@ void DiningHallScene::AddSubtitles()
 
 void DiningHallScene::AddSound()
 {
-	auto pFMODSys = SoundManager::Get()->GetSystem();
+	m_pFMODSys = SoundManager::Get()->GetSystem();
 	const auto& ambientPath = ContentManager::GetFullAssetPath(FilePath::DINING_AMBIENT_AUDIO);
-	auto result = pFMODSys->createStream(ambientPath.string().c_str(), FMOD_LOOP_NORMAL, nullptr, &m_pAmbientSound);
+	auto result = m_pFMODSys->createStream(ambientPath.string().c_str(), FMOD_LOOP_NORMAL, nullptr, &m_pAmbientSound);
 	if (result != FMOD_OK)
 	{
 		std::wstringstream ss;
@@ -380,14 +378,6 @@ void DiningHallScene::AddSound()
 		return;
 	}
 
-	result = pFMODSys->playSound(m_pAmbientSound, nullptr, false, &m_pAmbientChannel);
-	if (result != FMOD_OK)
-	{
-		std::wstringstream ss;
-		ss << "Failed to play sound: " << FilePath::DINING_AMBIENT_AUDIO << std::endl;
-		Logger::LogError(ss.str());
-		return;
-	}
 }
 // function that saves variables to a text file
 void gSaveCamVariables(const ReCamera& cam)

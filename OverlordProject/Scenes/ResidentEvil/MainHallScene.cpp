@@ -20,15 +20,15 @@
 #include "ResidentEvil/HUD/ReMenuManager.h"
 #include "ResidentEvil/HUD/Menus/ReMenu.h"
 #include "ResidentEvil/HUD/ReButton.h"
-
+#include "ResidentEvil/ReGameManager.h"
 MainHallScene::MainHallScene()
-	: GameScene(L"MainHallScene")
+	: ReScene(L"MainHallScene")
 {
 }
 
 void MainHallScene::Initialize()
 {
-	m_SceneContext.useDeferredRendering = false;
+	m_SceneContext.useDeferredRendering = true;
 
 
 	m_SceneContext.settings.drawPhysXDebug = false;
@@ -36,9 +36,16 @@ void MainHallScene::Initialize()
 	m_SceneContext.settings.drawGrid = false;
 	m_SceneContext.pLights->GetDirectionalLight().isEnabled = true;
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
+	m_pFMODSys = SoundManager::Get()->GetSystem();
+
+
+	auto pStandby = AddChild(new GameObject());
+	m_pStandBy = pStandby->AddComponent(new SpriteComponent(FilePath::MAINMENU_STANDBY_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
+	m_pStandBy->SetActive(false);
+
 
 	m_pDebugCube = AddChild(new CubePrefab());
-	//m_pClassicDoor = AddChild(new ReClassicDoor());
+	m_pClassicDoor = AddChild(new ReClassicDoor());
 
 	AddChild(new ThunderController());
 	LoadMainMenu();
@@ -49,9 +56,8 @@ void MainHallScene::Initialize()
 	AddInput();
 	AddNavCollider(*pDefaultMaterial);
 	AddPlayer(pDefaultMaterial);
-	AddPostProcessing();
+	//AddPostProcessing();
 
-	LoadWorld();
 	AddSound();
 
 	ReCameraManager::Get().SetActiveCamera(UINT(0));
@@ -298,27 +304,19 @@ void MainHallScene::OnGUI()
 
 }
 
-void MainHallScene::Reset()
+void MainHallScene::Start()
 {
-	m_pCharacter->Reset();
+	m_pStandBy->SetActive(true);
 
-	ReCameraManager::Get().SetActiveCamera(static_cast<UINT>(ReMainHallCamera::MAIN));
-
-}
-
-
-void MainHallScene::AddSound()
-{
-	auto pFMODSys = SoundManager::Get()->GetSystem();
-	const auto& ambientPath = ContentManager::GetFullAssetPath(FilePath::MAINHALL_AMBIENT_AUDIO);
-	auto result = pFMODSys->createStream(ambientPath.string().c_str(), FMOD_LOOP_NORMAL, nullptr, &m_pAmbientSound);
-	if (result != FMOD_OK)
-	{
-		Logger::LogError(L"Failed to load sound: " + FilePath::MAINHALL_AMBIENT_AUDIO);
-		return;
+	if (!m_WorldLoaded) {
+		LoadWorld();
+		m_WorldLoaded = true;
 	}
+	m_pStandBy->SetActive(false);
 
-	result = pFMODSys->playSound(m_pAmbientSound, nullptr, false, &m_pAmbientChannel);
+	Reset();
+
+	auto result = m_pFMODSys->playSound(m_pAmbientSound, nullptr, false, &m_pAmbientChannel);
 	if (result != FMOD_OK)
 	{
 		Logger::LogError(L"Failed to play sound: " + FilePath::MAINHALL_AMBIENT_AUDIO);
@@ -326,64 +324,46 @@ void MainHallScene::AddSound()
 	}
 }
 
+void MainHallScene::Reset()
+{
+	m_pCharacter->Reset();
+
+	ReCameraManager::Get().SetActiveCamera(static_cast<UINT>(ReMainHallCamera::MAIN));
+}
+
+void MainHallScene::AddMenu()
+{
+	//auto pMenuManager = AddChild(new GameObject());
+	
+}
+
+
+void MainHallScene::AddSound()
+{
+	const auto& ambientPath = ContentManager::GetFullAssetPath(FilePath::MAINHALL_AMBIENT_AUDIO);
+	auto result = m_pFMODSys->createStream(ambientPath.string().c_str(), FMOD_LOOP_NORMAL, nullptr, &m_pAmbientSound);
+	if (result != FMOD_OK)
+	{
+		Logger::LogError(L"Failed to load sound: " + FilePath::MAINHALL_AMBIENT_AUDIO);
+		return;
+	}
+
+}
+
 void MainHallScene::LoadMainMenu()
 {
-	auto pMenuManager = AddChild(new ReMenuManager());
-	//const float thirdHeight{ m_SceneContext.windowHeight * .33f };
-	//const float quarterHeight{ m_SceneContext.windowHeight * .25f };
-	const float btnWidth{ 5.f };
-	const float btnHeight{ 3.f };
-	const float margin{ 100.f };
-	const float centerWidth = m_SceneContext.windowWidth * .5f;
-	const float centerHeight = m_SceneContext.windowHeight * .5f;
+	//auto pMenuManager = AddChild(new ReMenuManager());
+	////const float thirdHeight{ m_SceneContext.windowHeight * .33f };
+	////const float quarterHeight{ m_SceneContext.windowHeight * .25f };
+	//const float btnWidth{ 5.f };
+	//const float btnHeight{ 3.f };
+	//const float margin{ 100.f };
+	//const float centerWidth = m_SceneContext.windowWidth * .5f;
+	//const float centerHeight = m_SceneContext.windowHeight * .5f;
 
-	SpriteFont* pFont = ContentManager::Load<SpriteFont>(FilePath::DEFAULT_FONT);
+	//SpriteFont* pFont = ContentManager::Load<SpriteFont>(FilePath::DEFAULT_FONT);
 
-	float depth{ 0 };
-
-	// Main 
-	auto pMainMenu = AddChild(new ReMenu(ReMenuType::MAIN));
-	pMainMenu->GetTransform()->Scale(1.f, 1.f, 1.f);
-
-	auto pStartBtn_null = new ReButton(pFont);
-	pStartBtn_null->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
-	pStartBtn_null->SetOnClick([]() { std::cout << "Start"; });
-	pStartBtn_null->SetText("START_NULL");
-
-
-	//auto pStartBtn = AddChild(new ReButton(pFont));
-	//pStartBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
-	//pStartBtn->SetOnClick([this]() { StartGame(); });
-	//pStartBtn->SetText("START");
-
-	auto pControlsBtn = new ReButton(pFont);
-	pControlsBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
-	pControlsBtn->SetOnClick([&]() {
-		//m_pMenuManager->SwitchMenu(ReMenuType::CONTROLS); 
-		std::cout << "Controls\n";
-		});
-	pControlsBtn->SetText("CONTROLS");
-
-	auto pExitBtn = new ReButton(pFont);
-	pExitBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
-	pExitBtn->SetOnClick([this]() {
-		std::cout << "Exit\n";
-		});
-	pExitBtn->SetText("EXIT");
-
-
-	pMainMenu->AddButton(pExitBtn);
-	pMainMenu->AddButton(pControlsBtn);
-	pMainMenu->AddButton(pStartBtn_null);
-	pMenuManager->AddMenu(pMainMenu);
-
-
-	pStartBtn_null->GetTransform()->Translate(centerWidth, centerHeight - margin, depth);
-	//pStartBtn->GetTransform()->Translate(centerWidth, centerHeight - margin, depth);
-	pControlsBtn->GetTransform()->Translate(centerWidth, centerHeight, depth);
-	pExitBtn->GetTransform()->Translate(centerWidth, centerHeight + margin, depth);
-
-
+	//float depth{ 0 };
 }
 void MainHallScene::LoadWorld()
 {
@@ -717,12 +697,12 @@ void MainHallScene::AddDoors()
 	auto pDoor = AddChild(new ReDoor(pos, size));
 	pDoor->OnInteract.AddFunction([this]()
 		{
-			m_pClassicDoor->SetSceneToLoad(L"DiningRoomScene");
+			ReGameManager::Get().SetSpawnPos(SpawnPositions::Dining_Bottom);
+			m_pClassicDoor->SetSceneToLoad(ReScenes::DINING);
 			m_pClassicDoor->Trigger();
 		});
 
 	m_pDoors.emplace_back(pDoor);
-
 
 	// To Upper Dining
 	pos = { -56.0f, 61.0f, 26.0f };
@@ -787,6 +767,7 @@ void MainHallScene::AddPlayer(PxMaterial* material)
 	characterDesc.rotationSpeed = 120.f;
 	characterDesc.maxMoveSpeed = 15.f;
 	characterDesc.moveAccelerationTime = 0.01f;
+	//characterDesc.spawnPosition = m_SpawnPos = ReGameManager::Get().GetSpawnPos();
 	characterDesc.spawnPosition = m_PlayerStartPos;
 	m_pCharacter = AddChild(new RePlayerController(characterDesc));
 }

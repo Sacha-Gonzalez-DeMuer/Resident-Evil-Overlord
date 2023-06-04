@@ -71,9 +71,11 @@ namespace FilePath
 	const std::wstring GUNSHOT_AUDIO{ L"ResidentEvil/Audio/Gunshot.wav" };
 	const std::wstring FOOTSTEPA_AUDIO{ L"ResidentEvil/Audio/SE_StepA.wav "};
 	const std::wstring FOOTSTEPB_AUDIO { L"ResidentEvil/Audio/SE_StepB.wav" };
-	const std::wstring BUTTON_CONFIRM_AUDIO{ L"ResidentEvil/Audio/Confirm.wav" };
+	const std::wstring BUTTON_CLICK_AUDIO{ L"ResidentEvil/Audio/Confirm.wav" };
 	const std::wstring BUTTON_HOVER_AUDIO{ L"ResidentEvil/Audio/Hover.wav" };
-	const std::wstring INTRO_AUDIO{ L"ResidentEvil/Audio/ResidentEvillll.wav" };
+	const std::wstring EVIL01_AUDIO{ L"ResidentEvil/Audio/EVIL01.wav" };
+	const std::wstring STANDBY_AUDIO{ L"ResidentEvil/Audio/Standby.wav" };
+
 
 	// Door
 	const std::wstring DOOR_FOLDER{ L"ResidentEvil/Props/Door/" };
@@ -84,4 +86,9 @@ namespace FilePath
 
 	// Text
 	const std::wstring SUB_FONT{ L"ResidentEvil/Fonts/ReFont_subtitles.fnt" };
+
+	// Images
+	const std::wstring MAINMENU_BACKGROUND_IMG{ L"ResidentEvil/Img/MenuBackground.jpg" };
+	const std::wstring MAINMENU_STANDBY_IMG{L"ResidentEvil/Img/Standby.jpg"};
+	const std::wstring CONTROLS_IMG{ L"ResidentEvil/Img/Controls.jpg" };
 }

@@ -3,6 +3,8 @@
 #include "ResidentEvil/HUD/Menus/ReMenu.h"
 
 
+
+
 void ReMenuManager::SwitchMenu(ReMenuType type)
 {
 	for (auto pLastActiveMenu : m_pLastActiveMenus)

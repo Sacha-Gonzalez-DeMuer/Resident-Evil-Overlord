@@ -68,6 +68,7 @@
 #include "Scenes/ResidentEvil/DiningHallScene.h"
 #include "Scenes/ResidentEvil/MainHallScene.h"
 #include "Scenes/ResidentEvil/MainMenuScene.h"
+#include "ResidentEvil/ReGameManager.h"
 #endif
 
 #ifdef MILESTONE_1
@@ -157,9 +158,7 @@ void MainGame::Initialize()
 #endif
 
 #ifdef EXAM
-	//SceneManager::Get()->AddGameScene(new MainMenuScene());
-	SceneManager::Get()->AddGameScene(new MainHallScene());
-	//SceneManager::Get()->AddGameScene(new DiningHallScene());
+	ReGameManager::Get().LoadResidentEvil();
 #endif
 
 #ifdef MILESTONE_1

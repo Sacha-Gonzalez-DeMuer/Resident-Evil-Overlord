@@ -3,6 +3,7 @@
 
 class ThunderController;
 class ReCamera;
+enum class ReScenes;
 class ReClassicDoor final : public GameObject
 {
 	public:
@@ -16,7 +17,7 @@ class ReClassicDoor final : public GameObject
 	void Initialize(const SceneContext& sceneContext) override;
 	void Update(const SceneContext& sceneContext) override;
 	void Trigger();
-	void SetSceneToLoad(const std::wstring& scene) { m_SceneToLoad = scene; }
+	void SetSceneToLoad(const ReScenes& scene);
 
 	Delegate<> OnAnimationStart;
 	Delegate<> OnAnimationFinished;
@@ -24,7 +25,8 @@ class ReClassicDoor final : public GameObject
 	void Reset();
 private:
 	void UpdateKeyframeEvents();
-	ReCamera* m_pCamera;
+	ReScenes m_SceneToLoad{};
+	ReCamera* m_pCamera{};
 
 	bool m_TriggerOpen{};
 	float m_Duration{};
@@ -33,8 +35,7 @@ private:
 	float m_EndYaw{};
 	float m_TimePassed{};
 	int m_CamID{-1};
-	std::wstring m_SceneToLoad{ };
-
+	bool m_AnimationOnly{ false };
 	// keyframes
 	float m_StartMoveCamTime{ 2.f };
 	bool m_CamMoved{ false };
@@ -50,6 +51,6 @@ private:
 
 	// AUDIO
 	FMOD::Channel* m_pDoorChannel{};
-	FMOD::Sound* m_pDoorAnimSound;
+	FMOD::Sound* m_pDoorAnimSound{};
 };
 

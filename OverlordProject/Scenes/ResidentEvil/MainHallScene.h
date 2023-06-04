@@ -1,10 +1,12 @@
 #pragma once
+#include "Scenes/ResidentEvil/ReScene.h"
+
 class RePlayerController;
 class CameraSwitch;
 class ReDoor;
 class CubePrefab;
 class ReClassicDoor;
-class MainHallScene final : public GameScene
+class MainHallScene final : public ReScene
 {
 public:
 	MainHallScene();
@@ -18,6 +20,9 @@ public:
 	void Update() override;
 	void OnGUI() override;
 	void PostDraw() override;
+
+	void Start() override;
+	void Reset() override;
 
 private:
 	RePlayerController* m_pCharacter{};
@@ -35,8 +40,11 @@ private:
 	// Misc
 	ReClassicDoor* m_pClassicDoor{};
 	Light m_TestLight;
+	SpriteComponent* m_pStandBy{};
+
 
 	//Audio
+	FMOD::System* m_pFMODSys{};
 	FMOD::Channel* m_pAmbientChannel{};
 	FMOD::Sound* m_pAmbientSound{};
 
@@ -53,6 +61,6 @@ private:
 	void AddNavCollider(const PxMaterial& material);
 	void AddPlayer(PxMaterial* material);
 	void AddSound();
+	void AddMenu();
 
-	void Reset();
 };

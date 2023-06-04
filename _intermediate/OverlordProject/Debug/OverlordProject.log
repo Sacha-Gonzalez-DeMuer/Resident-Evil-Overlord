@@ -1,6 +1,6 @@
 ﻿cl : command line  warning D9002: ignoring unknown option '/ignore:4099'
-  RePlayerController.cpp
-  MainHallScene.cpp
+  ReClassicDoor.cpp
+  DiningHallScene.cpp
   Generating Code...
   OverlordProject.vcxproj -> D:\DAE_SEM4\Graphics Prog 2\Resident-Evil-Overlord\_build\Debug\OverlordProject.exe
   0 File(s) copied

@@ -18,6 +18,7 @@ public:
 	void DisableMenus();
 	void AddMenu(ReMenu* pMenu) { m_pMenus.push_back(pMenu); }
 
+
 private:
 	std::vector<ReMenu*> m_pMenus{};
 	std::vector<ReMenu*> m_pLastActiveMenus{};

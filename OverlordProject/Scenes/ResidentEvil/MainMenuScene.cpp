@@ -1,9 +1,12 @@
 #include "stdafx.h"
 #include "MainMenuScene.h"
 
+#include "ResidentEvil/ReGameManager.h"
 #include "ResidentEvil/HUD/ReMenuManager.h"
 #include "ResidentEvil/HUD/Menus/ReMenu.h"
 #include "ResidentEvil/HUD/ReButton.h"
+#include "Components/SpriteComponent.h"
+#include "ResidentEvil/ReGameManager.h"
 #include "FilePaths.h"
 
 
@@ -13,76 +16,64 @@ void MainMenuScene::Initialize()
 	m_SceneContext.settings.drawGrid = false;
 	m_SceneContext.settings.drawPhysXDebug = false;
 	m_SceneContext.useDeferredRendering = false;
-	m_SceneContext.pLights->GetDirectionalLight().isEnabled = false;
-
-	//m_pMenuManager = AddChild(new ReMenuManager());
-	////const float thirdHeight{ m_SceneContext.windowHeight * .33f };
-	////const float quarterHeight{ m_SceneContext.windowHeight * .25f };
-	//const float btnWidth{ 5.f };
-	//const float btnHeight{ 3.f };
-	//const float margin{ 100.f };
-	//const float centerWidth = m_SceneContext.windowWidth * .5f;
-	//const float centerHeight = m_SceneContext.windowHeight * .5f;
-
-	//SpriteFont *pFont = ContentManager::Load<SpriteFont>(FilePath::DEFAULT_FONT);
-
-	//float depth{ 0 };
-
-	//// Main 
-	//auto pMainMenu = AddChild(new ReMenu(ReMenuType::MAIN));
-	//pMainMenu->GetTransform()->Scale(1.f, 1.f, 1.f);
-
-	//auto pStartBtn_null = new ReButton(pFont);
-	//pStartBtn_null->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
-	//pStartBtn_null->SetOnClick([]() { std::cout << "Start"; });
-	//pStartBtn_null->SetText("START_NULL");
+	m_SceneContext.pLights->GetDirectionalLight().isEnabled = true;
 
 
-	//auto pStartBtn = AddChild(new ReButton(pFont));
-	//pStartBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
-	//pStartBtn->SetOnClick([this]() { StartGame(); });
-	//pStartBtn->SetText("START");
+	// Background
+	const float centerWidth = m_SceneContext.windowWidth * .5f;
+	const float centerHeight = m_SceneContext.windowHeight * .5f;
 
-	//auto pControlsBtn = new ReButton(pFont);
-	//pControlsBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
-	//pControlsBtn->SetOnClick([&]() { m_pMenuManager->SwitchMenu(ReMenuType::CONTROLS); });
-	//pControlsBtn->SetText("CONTROLS");
-	//
-	//auto pExitBtn = new ReButton(pFont);
-	//pExitBtn->GetTransform()->Scale(btnWidth, btnHeight, 0.f);
-	//pExitBtn->SetOnClick([this]() { Exit(); });
-	//pExitBtn->SetText("EXIT");
+	auto pBackground = AddChild(new GameObject());
+	pBackground->AddComponent(new SpriteComponent(FilePath::MAINMENU_BACKGROUND_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
+	pBackground->GetTransform()->Translate(centerWidth, centerHeight, 0.f);
+
+	auto pStandby = AddChild(new GameObject());
+	m_pStandBy = pStandby->AddComponent(new SpriteComponent(FilePath::MAINMENU_STANDBY_IMG, { 0.5f, 0.5f }, { 1.f, 1.f, 1.f, 1.f }));
+	m_pStandBy->SetActive(false);
+
+	auto pMenuManager = AddChild(new ReMenuManager());
+	const float margin{ 35.f };
+	const float offset{ 150.f };
+	const XMFLOAT2 btnSize{ 128, 50 };
+	SpriteFont* pFont = ContentManager::Load<SpriteFont>(FilePath::DEFAULT_FONT);
 
 
-	//pMainMenu->AddButton(pExitBtn);
-	//pMainMenu->AddButton(pControlsBtn);
-	//pMainMenu->AddButton(pStartBtn_null);
-	//m_pMenuManager->AddMenu(pMainMenu);
 
-	//pStartBtn_null->GetTransform()->Translate(centerWidth, centerHeight - margin, depth);
-	////pStartBtn->GetTransform()->Translate(centerWidth, centerHeight - margin, depth);
-	//pControlsBtn->GetTransform()->Translate(centerWidth, centerHeight, depth);
-	//pExitBtn->GetTransform()->Translate(centerWidth, centerHeight + margin, depth);
 
-	//m_pButtons.push_back(pStartBtn);
-	//m_pButtons.push_back(pExitBtn);
-	//m_pButtons.push_back(pControlsBtn);
-	//m_pMenus.push_back(pMainMenu);
+	// Main 
+	auto pMainMenu = AddChild(new ReMenu(ReMenuType::MAIN));
+	pMainMenu->GetTransform()->Scale(1.f, 1.f, 1.f);
 
-	////// Controls
-	////auto pControlsMenu = AddChild(new ReMenu(ReMenuType::CONTROLS)); // todo add controls sprite
-	////auto pBackBtn = pControlsMenu->AddChild(new ReButton(pFont));
-	////pBackBtn->SetText("BACK");
-	////pBackBtn->GetTransform()->Scale(btnWidth, btnHeight, 1.f);
-	////pBackBtn->GetTransform()->Translate(0, 0, 0.f);
-	////pBackBtn->SetOnClick([this]() {  m_pMenuManager->SwitchMenu(ReMenuType::CONTROLS); });
-	////pControlsMenu->AddButton(pBackBtn);
+	auto pStartBtn = new ReButton({ centerWidth, centerHeight + offset}, btnSize, pFont);
+	pStartBtn->AddOnClick([this]() { StartGame(); });
+	pStartBtn->SetText("START");
 
-	////m_pMenuManager->AddMenu(pMainMenu);
-	////m_pMenuManager->AddMenu(pControlsMenu);
 
-	////m_pMenuManager->DisableMenus();
-	////m_pMenuManager->SwitchMenu(ReMenuType::MAIN);
+	auto pExitBtn = new ReButton({ centerWidth, centerHeight + offset + margin }, btnSize, pFont);
+	pExitBtn->AddOnClick([this]() {
+		std::cout << "Exit\n";
+		});
+	pExitBtn->SetText("EXIT");
+
+	pMainMenu->AddButton(pStartBtn);
+	pMainMenu->AddButton(pExitBtn);
+	pMenuManager->AddMenu(pMainMenu);
+
+	// load evil sound
+	m_pFMODSys = SoundManager::Get()->GetSystem();
+	const auto& evilPath = ContentManager::GetFullAssetPath(FilePath::EVIL01_AUDIO);
+	auto result = m_pFMODSys->createStream(evilPath.string().c_str(), FMOD_LOOP_OFF | FMOD_2D, nullptr, &m_pEVILSound);
+	if (result != FMOD_OK)
+	{
+		Logger::LogError(L"MainMenuScene::Initialize > Failed to load evil sound!\n" + FilePath::EVIL01_AUDIO);
+	}
+
+	const auto& standByPath = ContentManager::GetFullAssetPath(FilePath::STANDBY_AUDIO);
+	result = m_pFMODSys->createStream(standByPath.string().c_str(), FMOD_LOOP_NORMAL | FMOD_2D, nullptr, &m_pStandBySound);
+	if (result != FMOD_OK)
+	{
+		Logger::LogError(L"MainMenuScene::Initialize > Failed to load standby sound!\n" + FilePath::STANDBY_AUDIO);
+	}
 }
 
 void MainMenuScene::OnGUI()
@@ -128,7 +119,15 @@ void MainMenuScene::OnGUI()
 
 void MainMenuScene::StartGame()
 {
-	SceneManager::Get()->SetActiveGameScene(L"DiningHallScene");
+	m_pStandBy->SetActive(true);
+	auto pFMOD = SoundManager::Get()->GetSystem();
+	pFMOD->playSound(m_pEVILSound, nullptr, false, &m_pMenuChannel);
+
+	// fade to black
+	m_pFMODSys->playSound(m_pStandBySound, nullptr, false, &m_pMenuChannel);
+
+	ReGameManager::Get().SetSpawnPos({ 0.f, 15.f, -90.f });
+	ReGameManager::Get().StartScene(ReScenes::DINING);
 }
 
 void MainMenuScene::Exit()

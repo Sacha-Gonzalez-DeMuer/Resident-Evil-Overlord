@@ -7,6 +7,8 @@
 #include "ResidentEvil/Camera/ReCameraManager.h"
 #include "ResidentEvil/Camera/ReCamera.h"
 #include "ThunderController.h"
+#include "ResidentEvil/ReData.h"
+#include "ResidentEvil/ReGameManager.h"
 
 ReClassicDoor::ReClassicDoor()
 	: m_TriggerOpen{ false }
@@ -23,7 +25,7 @@ ReClassicDoor::ReClassicDoor(float duration, float startYaw, float endYaw)
 	, m_TotalYaw{.0f}
 	, m_StartYaw{startYaw}
 	, m_EndYaw{endYaw}
-	, m_SceneToLoad{L"MainHallScene"}
+	, m_SceneToLoad{ReScenes::MAIN}
 {
 }
 
@@ -77,19 +79,10 @@ void ReClassicDoor::Initialize(const SceneContext& sceneContext)
 	{
 		SoundManager::Get()->GetSystem()->playSound(m_pDoorAnimSound, nullptr, false, &m_pDoorChannel);
 	});
-
-	OnAnimationFinished.AddFunction([this]()
-		{
-		SceneManager::Get()->SetActiveGameScene(m_SceneToLoad);
-	});
-
 }
 
 void ReClassicDoor::Update(const SceneContext& sceneContext)
 {
-	if (sceneContext.pInput->IsKeyboardKey(InputState::down, 'O') && !m_TriggerOpen)
-		Trigger();
-
 	if (!m_TriggerOpen)
 		return;
 
@@ -128,16 +121,28 @@ void ReClassicDoor::Update(const SceneContext& sceneContext)
 void ReClassicDoor::Trigger()
 {
 	m_TriggerOpen = true;
-	OnAnimationStart.Invoke();
 	ReCameraManager::Get().SetActiveCamera(m_CamID);
+	
+	OnAnimationStart.Invoke(); // watch out for unwanted invokes
+}
+
+void ReClassicDoor::SetSceneToLoad(const ReScenes& scene)
+{
+	m_SceneToLoad = scene;
+	OnAnimationFinished.AddFunction([this]()
+		{
+			ReGameManager::Get().StartScene(m_SceneToLoad);
+		});
 }
 
 void ReClassicDoor::Reset()
 {
+	m_AnimationOnly = false;
 	m_TriggerOpen = false;
 	m_TimePassed = 0.0f;
 	m_OpenDoor = false;
 	m_CamMoved = false;
+	OnAnimationFinished.Clear();
 }
 
 void ReClassicDoor::UpdateKeyframeEvents()

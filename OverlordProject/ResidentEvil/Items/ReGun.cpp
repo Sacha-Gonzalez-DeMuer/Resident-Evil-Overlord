@@ -15,5 +15,5 @@ void ReGun::Interact()
 
 void ReGun::Reset()
 {
-	m_IsInteracted = false;
+	//m_IsInteracted = false;
 }

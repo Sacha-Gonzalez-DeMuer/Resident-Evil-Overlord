@@ -14,6 +14,8 @@ public:
 	void Disable() {m_Enabled = false;}
 	void Enable() {m_Enabled = true;}
 
+	void SetMaxDelay(float delay) { m_MaxDelay = delay; }
+
 
 private:
 	bool m_Enabled{true};

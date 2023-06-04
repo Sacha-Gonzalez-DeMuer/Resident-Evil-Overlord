@@ -103,6 +103,21 @@ enum class ReMainHallCamera
 enum class ReScenes
 {
 	MAIN,
+	MAIN_UPPER,
 	DINING,
+	DINING_UPPER,
 	MENU
+};
+
+namespace SpawnPositions
+{
+	const XMFLOAT3 MainHall_Bottom{ 0,0,0 };
+	const XMFLOAT3 Dining_Bottom{ 0.f, 15.f, -90.f };
+}
+
+class ReScene;
+struct ReSceneData
+{
+	std::wstring sceneName;
+	ReScene* pScene;
 };

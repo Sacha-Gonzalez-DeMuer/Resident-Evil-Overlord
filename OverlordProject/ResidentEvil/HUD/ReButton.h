@@ -1,10 +1,9 @@
 #pragma once
+#include "Delegate.h"
 class ReButton  : public GameObject
 {
 public:
-	ReButton(SpriteFont* font = nullptr);
-	ReButton(const std::wstring& backgroundImg);
-	ReButton(SpriteFont* font, const std::wstring& backgroundImg);
+	ReButton(const XMFLOAT2& pos, const XMFLOAT2& size, SpriteFont* font = nullptr);
 	~ReButton() override = default;
 	ReButton(const ReButton& other) = delete;
 	ReButton(ReButton&& other) noexcept = delete;
@@ -15,21 +14,20 @@ public:
 	void Update(const SceneContext& sceneContext) override;
 
 	void SetText(const std::string& text);
-	void SetOnClick(std::function<void()> onClick) { m_OnClick = onClick; }
+	void AddOnClick(std::function<void()> onClick) 
+	{ m_OnClick.AddFunction(onClick); }
 	void SetActive(const bool active);
 
-	
+	// on click for menu sys
+	Delegate<> m_OnClick{};
+	Delegate<> m_OnHover{};
 private:
-	SpriteFont* m_pFont;
-	SpriteComponent* m_pBackgroundImg;
-	std::function<void()> m_OnClick{};
+	SpriteFont* m_pFont{};
 	std::string m_Text{};
-	bool m_IsClicked{ false };
-	
+	bool m_IsHovered{ false };
 
-	//todo
-	//bool m_IsReleased{ false };
-	//bool m_IsHovered{ false };
-	//bool m_IsPressed{ false };
+	XMFLOAT2 m_Position{};
+	float m_Width{};
+	float m_Height{};
 };
 

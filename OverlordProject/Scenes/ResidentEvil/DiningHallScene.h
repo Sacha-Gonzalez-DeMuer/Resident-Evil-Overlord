@@ -1,5 +1,7 @@
 #pragma once
 #include "Prefabs/Character.h"
+#include "Scenes/ResidentEvil/ReScene.h"
+
 class RePlayerController;
 class CameraSwitch;
 class ReDoor;
@@ -10,7 +12,8 @@ class ParticleEmitterComponent;
 class ReButton;
 class ReMenu;
 class ReClassicDoor;
-class DiningHallScene final : public GameScene
+class ThunderController;
+class DiningHallScene final : public ReScene
 {
 	public:
 	DiningHallScene(void);
@@ -20,15 +23,15 @@ class DiningHallScene final : public GameScene
 	void Update() override;
 	void OnGUI() override;
 
-	void Reset();
+	void Start() override;
+	void Reset() override;
 
 
 private:
 	// Player
 	RePlayerController* m_pCharacter{};
 	GameObject* pPlayerObject{};
-	XMFLOAT3 m_BottomSpawnPos{ 0.f, 15.f, -90.f };
-	XMFLOAT3 m_TopSpawnPos{};
+	XMFLOAT3 m_SpawnPos{ };
 
 	// ImGui ref
 	std::vector<CameraSwitch*> m_pSwitches{};
@@ -37,13 +40,16 @@ private:
 	std::vector<ReMenu*> m_pMenus{};
 
 	// Misc
+	ThunderController* m_pThunderController{};
 	ReClassicDoor* m_pClassicDoor{};
 	ReZombie* m_pZombie{};
 	ReClock* m_pClock{};
 	ReGun* m_pGun{};
 	GameObject* m_pParticleEmitter{};
+	SpriteComponent* m_pStandBy{};
 
 	// Audio
+	FMOD::System* m_pFMODSys{};
 	FMOD::Channel* m_pAmbientChannel{};
 	FMOD::Sound* m_pAmbientSound{};
 

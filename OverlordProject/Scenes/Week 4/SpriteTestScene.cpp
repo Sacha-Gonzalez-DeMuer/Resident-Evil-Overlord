@@ -20,7 +20,6 @@ void SpriteTestScene::Initialize()
 
 	m_pSecondSprite->GetTransform()->Translate(m_SceneContext.windowWidth / 2.f, m_SceneContext.windowHeight / 2.f, 1.f);
 	m_pSecondSprite->GetTransform()->Scale(1.f, 1.f, 1.f);
-
 }
 
 void SpriteTestScene::Update()

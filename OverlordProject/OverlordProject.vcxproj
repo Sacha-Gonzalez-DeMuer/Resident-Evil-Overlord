@@ -122,7 +122,8 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DoorAnimator.cpp" />
+    <ClCompile Include="Scenes\ResidentEvil\ReScene.cpp" />
+    <ClCompile Include="ResidentEvil\ReGameManager.cpp" />
     <ClCompile Include="ResidentEvil\World\ReClassicDoor.cpp" />
     <ClCompile Include="Scenes\ResidentEvil\MainMenuScene.cpp" />
     <ClCompile Include="Materials\Deferred\BasicMaterial_Deferred_Shadow.cpp" />
@@ -202,7 +203,8 @@ xcopy "$(ProjectDir)Resources\*" "$(OutDir)\Resources\*" /y /D /s
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DoorAnimator.h" />
+    <ClInclude Include="Scenes\ResidentEvil\ReScene.h" />
+    <ClInclude Include="ResidentEvil\ReGameManager.h" />
     <ClInclude Include="ResidentEvil\World\ReClassicDoor.h" />
     <ClInclude Include="Scenes\ResidentEvil\MainMenuScene.h" />
     <ClInclude Include="Materials\Deferred\BasicMaterial_Deferred_Shadow.h" />

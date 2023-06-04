@@ -142,6 +142,6 @@ void PostProcessingMaterial::DrawPass(const SceneContext& sceneContext, ID3DX11E
 	for (UINT i = 0; i < techDesc.Passes; ++i)
 	{
 		pTechnique->GetPassByIndex(i)->Apply(0, pDeviceContext);
-		pDeviceContext->Draw(m_VertexCount, 0);
+		pDeviceContext->Draw(m_VertexCount*3, 0);
 	}
 }
